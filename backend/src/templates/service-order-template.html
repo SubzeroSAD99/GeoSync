@@ -14,14 +14,16 @@
 
       html,
       body {
+        height: 210mm;
+        width: 297mm;
+      }
+
+      body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 1rem;
-        height: 210mm;
-        width: 297mm;
+        font-size: 14px;
         padding: 20px;
         gap: 15px;
       }
@@ -109,7 +111,7 @@
 
       .main__info-payment {
         padding: 8px;
-        padding-right: 23.5mm;
+        padding-right: 20mm;
       }
 
       .main__info-payment-discount {
@@ -118,7 +120,11 @@
 
       .main__info-total-os {
         padding: 20px 8px;
-        padding-right: 14mm;
+      }
+
+      .main__info-total-os-value {
+        width: 150px;
+        padding-left: 6mm;
       }
 
       footer {
@@ -214,19 +220,21 @@
             </tr>
           </thead>
           <tbody>
+            {{#each services}}
             <tr>
-              <td>LEVANTAMENTO TOPOGRAFICO PLANIMETRICO</td>
-              <td>FORTALEZA / EDSON QUEIROZ</td>
-              <td>1</td>
-              <td>-</td>
-              <td>R$ 1000,00</td>
-              <td>R$ 1000,00</td>
+              <td>{{this.description}}</td>
+              <td>{{this.location}}</td>
+              <td>{{this.quantity}}</td>
+              <td>{{this.unit}}</td>
+              <td>{{this.unitPriceFormatted}}</td>
+              <td>{{this.totalFormatted}}</td>
             </tr>
+            {{/each}}
           </tbody>
           <tfoot>
             <tr>
               <th class="table__subtotal-title" colspan="5">Subtotal da OS:</th>
-              <td class="table__subtotal-value">R$ 1000,00</td>
+              <td class="table__subtotal-value">{{subTotalOS}}</td>
             </tr>
           </tfoot>
         </table>
@@ -239,7 +247,7 @@
         </div>
         <div class="main__info-total-os flex-row full-width justify-between">
           <p><strong>Total da OS:</strong></p>
-          <p class="main__info-total-os-value">R$ 1000,00</p>
+          <p class="main__info-total-os-value">{{totalOS}}</p>
         </div>
       </section>
     </main>
