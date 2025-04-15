@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledHeader = styled.header({
   display: "flex",
@@ -12,4 +13,10 @@ const Title = styled.h1({
   borderRadius: "5px",
 });
 
-export { StyledHeader, Title };
+const StyledFontAwesome = styled(FontAwesomeIcon)({
+  fontSize: "1.5rem",
+  cursor: "pointer",
+  color: "var(--main-color)",
+});
+
+export { StyledHeader, Title, StyledFontAwesome };

@@ -10,16 +10,19 @@ const StyledMenu = styled.nav({
   color: "var(--text-color2)",
   width: "30%",
   maxWidth: "300px",
+  minWidth: "max-content",
   padding: "10px",
-  fontSize: "1.3rem",
-  WebkitFontSmoothing: "antialiased",
+  fontSize: "1.2rem",
 
   ...media({
+    display: "none",
     left: "inherit",
-    top: "35px",
-    right: "5px",
+    top: "55px",
+    right: "30px",
     height: "max-content",
     minHeight: "200px",
+    borderRadius: "10px",
+    borderTopRightRadius: "0px",
   }),
 });
 
