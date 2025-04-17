@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const StyledItemList = styled.li({
+const StyledMenuItemList = styled.li({
   listStyle: "none",
   backgroundColor: "transparent",
   borderRadius: "5px",
   cursor: "pointer",
   transition: "transform 0.3s ease",
+  userSelect: "none",
 
   "&:not(.selected):hover": {
     transform: "translateX(10px)",
@@ -29,4 +30,4 @@ const StyledLink = styled(Link)({
   color: "var(--text-color2)",
 });
 
-export { StyledItemList, StyledLink };
+export { StyledMenuItemList, StyledLink };

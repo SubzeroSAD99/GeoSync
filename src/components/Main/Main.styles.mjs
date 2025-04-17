@@ -4,9 +4,9 @@ import { media } from "../../utils/Media.styles.mjs";
 const StyledMain = styled.main({
   display: "flex",
   flexDirection: "column",
-  flex: "1",
-  marginLeft: "min(30vw, 300px)",
-  padding: "20px",
+  marginLeft: "min(25vw, 300px)",
+  padding: "30px",
+  overflow: "hidden",
 
   ...media({
     marginLeft: "0px",

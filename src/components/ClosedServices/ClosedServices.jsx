@@ -1,7 +1,7 @@
 import React from "react";
 import Services from "../Services/Services.jsx";
 
-const Section = () => {
+const ClosedServices = () => {
   const allServices = [
     {
       clientName: "ANTONIO KAUAN LOPES FREITAS",
@@ -9,7 +9,7 @@ const Section = () => {
       employeeName: "ANTONIO KAUAN LOPES FREITAS",
       municipality: "MARCO",
       priority: "BAIXA",
-      stats: "ABERTA",
+      stats: "FECHADA",
       createdDate: "17/04/2025 - 07:40:25",
     },
 
@@ -18,8 +18,8 @@ const Section = () => {
       serviceType: "PLANIMETRIA",
       employeeName: "ANTONIO KAUAN LOPES FREITAS",
       municipality: "MARCO",
-      priority: "NORMAL",
-      stats: "ABERTA",
+      priority: "BAIXA",
+      stats: "FECHADA",
       createdDate: "17/04/2025 - 07:40:25",
     },
 
@@ -28,8 +28,8 @@ const Section = () => {
       serviceType: "PLANIMETRIA",
       employeeName: "ANTONIO KAUAN LOPES FREITAS",
       municipality: "MARCO",
-      priority: "ALTA",
-      stats: "ABERTA",
+      priority: "BAIXA",
+      stats: "FECHADA",
       createdDate: "17/04/2025 - 07:40:25",
     },
     {
@@ -37,20 +37,20 @@ const Section = () => {
       serviceType: "PLANIMETRIA",
       employeeName: "ANTONIO KAUAN LOPES FREITAS",
       municipality: "MARCO",
-      priority: "ALTA",
-      stats: "ABERTA",
+      priority: "BAIXA",
+      stats: "FECHADA",
       createdDate: "17/04/2025 - 07:40:25",
     },
   ];
 
   return (
     <Services
-      title="Ordem de Serviço [Abertas]"
-      redirect="/servicos-fechados"
-      label="Serviços Fechados"
+      title="Ordem de Serviço [Fechadas]"
+      redirect="/"
+      label="Serviços Abertas"
       allServices={allServices}
     />
   );
 };
 
-export default Section;
+export default ClosedServices;

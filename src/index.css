@@ -1,9 +1,16 @@
 :root {
   --main-color: rgb(0, 95, 196);
   --highlight-main-color: rgb(0, 123, 255);
-  --bg-color: #ffffff;
+  --bg-color: #fff;
+  --bg-secundary-color: #e4e4e4;
   --text-color: #000000;
   --text-color2: #ffffff;
+}
+
+body.dark {
+  --bg-color: rgb(30, 30, 30);
+  --bg-secundary-color: rgb(50, 50, 50);
+  --text-color: #ffffff;
 }
 
 * {
@@ -18,9 +25,9 @@ body,
   display: flex;
   flex-direction: column;
   width: 100svw;
-  height: 100svh;
+  min-height: 100svh;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 }

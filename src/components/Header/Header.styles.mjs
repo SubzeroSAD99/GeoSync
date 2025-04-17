@@ -5,6 +5,7 @@ const StyledHeader = styled.header({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  userSelect: "none",
 });
 
 const Title = styled.h1({
@@ -14,7 +15,7 @@ const Title = styled.h1({
 });
 
 const StyledFontAwesome = styled(FontAwesomeIcon)({
-  fontSize: "1.5rem",
+  fontSize: "1rem",
   cursor: "pointer",
   color: "var(--main-color)",
 });
