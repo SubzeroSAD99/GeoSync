@@ -4,7 +4,7 @@ import { media } from "../../utils/Media.styles.mjs";
 const StyledMain = styled.main({
   display: "flex",
   flexDirection: "column",
-  marginLeft: "min(25vw, 300px)",
+  marginLeft: "min(25vw, 250px)",
   padding: "30px",
   overflow: "hidden",
 

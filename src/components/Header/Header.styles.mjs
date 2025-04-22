@@ -15,7 +15,7 @@ const Title = styled.h1({
 });
 
 const StyledFontAwesome = styled(FontAwesomeIcon)({
-  fontSize: "1rem",
+  fontSize: "1.8rem",
   cursor: "pointer",
   color: "var(--main-color)",
 });

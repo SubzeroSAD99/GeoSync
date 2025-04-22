@@ -6,6 +6,7 @@ import {
   faCircleInfo,
   faSun,
   faMoon,
+  faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../context/UIContext";
 import { useMediaQuery } from "react-responsive";
@@ -17,6 +18,11 @@ const Menu = () => {
 
   const menuItems = [
     { label: "Pagina Inicial", icon: faHouse, redirect: "/" },
+    {
+      label: "Cadastrar Serviços",
+      icon: faNewspaper,
+      redirect: "/cadastrar-servicos",
+    },
     { label: "Sobre", icon: faCircleInfo, redirect: "/sobre" },
   ];
 
@@ -32,9 +38,7 @@ const Menu = () => {
     if (!isMedia) return;
 
     const handleClickOutside = (event) => {
-      console.log(event.target);
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        // Se o clique for fora do menu, fecha-o
         setMenuOpen(false);
       }
     };

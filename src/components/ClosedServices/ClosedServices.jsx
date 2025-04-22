@@ -47,7 +47,7 @@ const ClosedServices = () => {
     <Services
       title="Ordem de Serviço [Fechadas]"
       redirect="/"
-      label="Serviços Abertas"
+      label="Serviços Abertos"
       allServices={allServices}
     />
   );

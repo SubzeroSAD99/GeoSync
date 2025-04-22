@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledSection = styled.section({
@@ -10,11 +11,35 @@ const StyledSection = styled.section({
   padding: "20px",
 });
 
+const TitleContainer = styled.div({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "20px",
+  flexWrap: "wrap",
+  width: "100%",
+  padding: "0px 8px",
+});
+
 const Title = styled.h2({
   borderBottom: "2px solid var(--main-color)",
   width: "max-content",
-  justifySelf: "center",
-  alignSelf: "center",
+  margin: "0px auto",
+});
+
+const StyledLink = styled(Link)({
+  textDecoration: "none",
+  padding: "5px 10px",
+  backgroundColor: "var(--main-color)",
+  color: "var(--text-color2)",
+  borderRadius: "4px",
+  boxShadow: "0px 0px 8px 0px transparent",
+  transition: "filter 0.3s ease, boxShadow 0.3s ease",
+
+  "&:hover": {
+    filter: "brightness(130%)",
+    boxShadow: "0px 0px 8px 0px var(--main-color)",
+  },
 });
 
 const ServicesContainer = styled.div({
@@ -58,7 +83,9 @@ const StyledTd = styled.td({
 
 export {
   StyledSection,
+  TitleContainer,
   Title,
+  StyledLink,
   ServicesContainer,
   StyledTable,
   StyledTBody,

@@ -18,6 +18,7 @@ const StyledMenu = styled(motion.nav)({
   maxWidth: "250px",
   minWidth: "max-content",
   fontSize: "1.2rem",
+  padding: "8px",
 
   ...media({
     zIndex: 1000,

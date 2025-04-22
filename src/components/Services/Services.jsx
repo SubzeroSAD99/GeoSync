@@ -6,19 +6,19 @@ import {
   StyledTBody,
   StyledTd,
   StyledTh,
+  TitleContainer,
   Title,
+  StyledLink,
 } from "./Services.styled.mjs";
 import RowTable from "./RowTable/RowTable.jsx";
-import { Link } from "react-router-dom";
 
 const Services = ({ title, redirect, label, allServices }) => {
   return (
     <StyledSection>
-      <div>
+      <TitleContainer>
         <Title>{title}</Title>
-
-        <Link to={redirect}>{label}</Link>
-      </div>
+        <StyledLink to={redirect}>{label}</StyledLink>
+      </TitleContainer>
 
       <ServicesContainer>
         <StyledTable>
@@ -36,16 +36,20 @@ const Services = ({ title, redirect, label, allServices }) => {
           </thead>
           <StyledTBody>
             {allServices.map(
-              ({
-                clientName,
-                serviceType,
-                employeeName,
-                municipality,
-                priority,
-                stats,
-                createdDate,
-              }) => (
+              (
+                {
+                  clientName,
+                  serviceType,
+                  employeeName,
+                  municipality,
+                  priority,
+                  stats,
+                  createdDate,
+                },
+                index
+              ) => (
                 <RowTable
+                  key={index}
                   clientName={clientName}
                   serviceType={serviceType}
                   employeeName={employeeName}

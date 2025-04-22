@@ -6,6 +6,7 @@ import HomePage from "../../pages/HomePage.jsx";
 import AboutPage from "../../pages/AboutPage.jsx";
 import NotFoundPage from "../../pages/NotFoundPage.jsx";
 import ClosedServicesPage from "../../pages/ClosedServicesPage.jsx";
+import RegisterServicesPage from "../../pages/RegisterServicesPage.jsx";
 
 const Main = () => {
   return (
@@ -14,6 +15,7 @@ const Main = () => {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/cadastrar-servicos" element={<RegisterServicesPage />} />
         <Route path="/servicos-fechados" element={<ClosedServicesPage />} />
         <Route path="/sobre" element={<AboutPage />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -79,7 +79,6 @@ const StatsContainer = styled.div(({ stats }) => {
 const Actions = styled.div({
   display: "flex",
   flexDirection: "row",
-  justifyContent: "center",
   alignItems: "center",
   flexWrap: "wrap",
   padding: "10px",
@@ -93,7 +92,7 @@ const Actions = styled.div({
     justifyContent: "center",
     alignItems: "center",
     gap: "5px",
-    flex: "1 1 0",
+    flex: "1 1 auto",
     flexWrap: "wrap",
     fontSize: "1rem",
     padding: "8px",
