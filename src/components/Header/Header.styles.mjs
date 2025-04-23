@@ -6,6 +6,8 @@ const StyledHeader = styled.header({
   justifyContent: "space-between",
   alignItems: "center",
   userSelect: "none",
+  overflow: "hidden",
+  flexShrink: "0",
 });
 
 const Title = styled.h1({
