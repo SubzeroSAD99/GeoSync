@@ -19,6 +19,7 @@ const TitleContainer = styled.div({
   flexWrap: "wrap",
   width: "100%",
   padding: "8px",
+  overflow: "hidden",
 });
 
 const Title = styled.h2({

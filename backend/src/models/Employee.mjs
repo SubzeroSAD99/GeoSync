@@ -1,0 +1,43 @@
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../db/db.mjs";
+
+class Employee extends Model {}
+
+Employee.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    cpf: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+
+    position: {
+      type: DataTypes.ENUM("employee", "admin"),
+      defaultValue: "employee",
+      allowNull: false,
+    },
+
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize, // Passando a conexão do banco de dados
+    modelName: "Employee", // Nome da tabela no banco de dados
+    tableName: "Employees", // Nome da tabela no banco de dados
+    timestamps: true, // Isso adiciona campos `createdAt` e `updatedAt`
+  }
+);
+
+export default Employee;
