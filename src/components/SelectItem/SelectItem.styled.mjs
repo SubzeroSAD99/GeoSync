@@ -13,13 +13,13 @@ const Container = styled.div({
   position: "relative",
   border: "1px solid var(--main-color)",
   borderRadius: "8px",
-  padding: "10px",
-  overflow: "visible",
+  padding: "15px",
+  overflowY: "visible",
 });
 
 const Title = styled.p({
   position: "absolute",
-  top: "-8px",
+  top: "-12px",
   left: "8px",
   fontSize: "1rem",
   backgroundColor: "var(--bg-secundary-color)",
@@ -39,7 +39,7 @@ const StyledCboxButton = styled(ComboboxButton)({
 
 const StyledFontAwesome = styled(FontAwesomeIcon)({
   position: "absolute",
-  right: "15px",
+  right: "20px",
   fontSize: "1.2rem",
 });
 

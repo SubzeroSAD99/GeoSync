@@ -1,19 +1,26 @@
 import styled from "styled-components";
 import { media } from "../../utils/Media.styles.mjs";
 
-const StyledMain = styled.main({
-  display: "flex",
-  flexDirection: "column",
-  gap: "20px",
-  marginLeft: "min(25vw, 250px)",
-  padding: "20px",
-  paddingBottom: "5px",
-  height: "100svh",
-  overflowY: "auto",
+const StyledMain = styled.main(({ $is_menu }) => {
+  const paddingLeft = $is_menu && "calc(min(25vw, 250px) + 30px)";
 
-  ...media({
-    marginLeft: "0px",
-  }),
+  return {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "20px",
+    padding: "20px 40px",
+    paddingLeft,
+    height: "100svh",
+    overflowY: "auto",
+    overflowX: "hidden",
+    flex: 1,
+
+    ...media({
+      marginLeft: "0px",
+    }),
+  };
 });
 
 export { StyledMain };

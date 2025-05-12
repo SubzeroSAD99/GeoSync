@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledHeader = styled.header({
+  justifySelf: "flex-start",
+  alignSelf: "flex-start",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",

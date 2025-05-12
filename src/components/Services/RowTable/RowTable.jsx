@@ -27,10 +27,10 @@ const RowTable = ({
       <StyledTd>{employeeName}</StyledTd>
       <StyledTd>{municipality}</StyledTd>
       <StyledTd>
-        <PriorityContainer priority={priority}>{priority}</PriorityContainer>
+        <PriorityContainer $priority={priority}>{priority}</PriorityContainer>
       </StyledTd>
       <StyledTd>
-        <StatsContainer stats={stats}>{stats}</StatsContainer>
+        <StatsContainer $stats={stats}>{stats}</StatsContainer>
       </StyledTd>
       <StyledTd>{createdDate}</StyledTd>
       <StyledTd>

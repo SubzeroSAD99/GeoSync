@@ -5,7 +5,7 @@ import {
   StyledSection,
   Title,
 } from "./RegisterServices.styled.mjs";
-import axios from "axios";
+import api from "../../utils/api.mjs";
 
 const SERVICE_TYPE = [
   "PLANIMETRIA",
@@ -46,28 +46,26 @@ const STEP = [
 ];
 
 const RegisterServices = () => {
-  const [employee, setEmployee] = useState([]);
+  const [employees, setEmployees] = useState([]);
 
-  const getUser = async () => {
+  const getAllUser = async () => {
     try {
-      const response = await axios.post(
-        "http://192.168.100.16:3000/getAllEmployee"
-      );
+      const response = await api.post("/getAllEmployee");
 
-      console.log(response.data);
+      response.data && setEmployees(response.data.list);
     } catch (err) {}
   };
 
   useEffect(() => {
-    getUser();
+    getAllUser();
   }, []);
 
   return (
     <StyledSection>
       <Title>Cadastrar Ordem Serviço</Title>
-      <StyledForm action="">
+      <StyledForm>
         <SelectItem
-          options={employee.sort()}
+          options={employees.sort()}
           title="Nome do Cliente"
           placeholder="Selecione um Cliente"
         />
@@ -77,7 +75,7 @@ const RegisterServices = () => {
           placeholder="Selecione um Serviço"
         />
         <SelectItem
-          options={employee}
+          options={employees}
           title="Funcionário Encarregado"
           placeholder="Selecione um Funcionário"
         />
@@ -92,12 +90,12 @@ const RegisterServices = () => {
           placeholder="Selecione um Status"
         />
         <SelectItem
-          options={employee.sort()}
+          options={employees.sort()}
           title="Pendências"
           placeholder="Selecione uma Pendência"
         />
         <SelectItem
-          options={employee.sort()}
+          options={employees.sort()}
           title="Município"
           placeholder="Selecione um Município"
         />

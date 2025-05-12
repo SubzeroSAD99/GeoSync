@@ -7,6 +7,7 @@ const db = new Sequelize({
   password: "99",
   dialect: "postgres",
   ssl: false,
+  logging: false,
 });
 
 export default db;

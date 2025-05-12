@@ -7,17 +7,34 @@ import AboutPage from "../../pages/AboutPage.jsx";
 import NotFoundPage from "../../pages/NotFoundPage.jsx";
 import ClosedServicesPage from "../../pages/ClosedServicesPage.jsx";
 import RegisterServicesPage from "../../pages/RegisterServicesPage.jsx";
+import LoginPage from "../../pages/LoginPage.jsx";
+import { RequireAuth } from "../RequireAuth.jsx";
+import { useUI } from "../../contexts/UIContext.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import Loading from "../Loading/Loading.jsx";
 
 const Main = () => {
+  const { isMenu } = useUI();
+  const { employee } = useAuth();
+
   return (
-    <StyledMain>
-      <Header />
+    <StyledMain $is_menu={isMenu && employee}>
+      {employee && <Header />}
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/cadastrar-servicos" element={<RegisterServicesPage />} />
-        <Route path="/servicos-fechados" element={<ClosedServicesPage />} />
-        <Route path="/sobre" element={<AboutPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        <Route element={<RequireAuth />}>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/cadastrar-servicos"
+            element={<RegisterServicesPage />}
+          />
+          <Route path="/servicos-fechados" element={<ClosedServicesPage />} />
+          <Route path="/sobre" element={<AboutPage />} />
+        </Route>
+        <Route path="/teste" element={<Loading />} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </StyledMain>

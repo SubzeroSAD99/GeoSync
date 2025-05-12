@@ -25,7 +25,7 @@ const StyledForm = styled.form({
   flexDirection: "column",
   gap: "20px",
   padding: "10px",
-  width: "95%",
+  width: "100%",
 });
 
 export { StyledSection, Title, StyledForm };

@@ -8,9 +8,9 @@ import {
   faMoon,
   faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext.jsx";
 import { useLocation } from "react-router-dom";
 
 const Menu = () => {

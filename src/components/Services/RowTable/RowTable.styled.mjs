@@ -22,11 +22,11 @@ const StyledTd = styled.td({
   fontSize: "1rem",
 });
 
-const PriorityContainer = styled.div(({ priority }) => {
+const PriorityContainer = styled.div(({ $priority }) => {
   let color = "transparent";
   let alert = false;
 
-  switch (priority) {
+  switch ($priority) {
     case "BAIXA":
       color = "var(--main-color)";
       break;
@@ -54,10 +54,10 @@ const PriorityContainer = styled.div(({ priority }) => {
   `;
 });
 
-const StatsContainer = styled.div(({ stats }) => {
+const StatsContainer = styled.div(({ $stats }) => {
   let color;
 
-  switch (stats) {
+  switch ($stats) {
     case "ABERTA":
       color = "rgb(0, 190, 0)";
       break;
