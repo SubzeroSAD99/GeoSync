@@ -5,6 +5,8 @@ const StyledHeader = styled.header({
   justifySelf: "flex-start",
   alignSelf: "flex-start",
   display: "flex",
+  flexDirection: "row",
+  width: "100%",
   justifyContent: "space-between",
   alignItems: "center",
   userSelect: "none",

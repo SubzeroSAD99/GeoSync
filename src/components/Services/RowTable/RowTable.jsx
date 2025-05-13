@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -12,6 +12,7 @@ import {
 } from "./RowTable.styled.mjs";
 
 const RowTable = ({
+  id,
   clientName,
   serviceType,
   employeeName,
@@ -19,6 +20,7 @@ const RowTable = ({
   priority,
   stats,
   createdDate,
+  onDelete,
 }) => {
   return (
     <tr>
@@ -35,7 +37,11 @@ const RowTable = ({
       <StyledTd>{createdDate}</StyledTd>
       <StyledTd>
         <Actions>
-          <ButtonDelete>
+          <ButtonDelete
+            onClick={() => {
+              onDelete(id);
+            }}
+          >
             <FontAwesomeIcon icon={faTrash} />
             <span>Excluir</span>
           </ButtonDelete>

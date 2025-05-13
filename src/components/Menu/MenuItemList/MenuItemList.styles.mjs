@@ -1,20 +1,37 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
+
+const AnimationShowSubMenu = keyframes`
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+`;
 
 const StyledMenuItemList = styled.li({
   listStyle: "none",
-  backgroundColor: "transparent",
-  borderRadius: "5px",
-  cursor: "pointer",
-  transition: "transform 0.3s ease",
   userSelect: "none",
 
-  "&:not(.selected):hover": {
+  "& div": {
+    cursor: "pointer",
+    transition: "transform 0.3s ease",
+    backgroundColor: "transparent",
+    borderRadius: "5px",
+  },
+
+  "& div:not(.selected):hover": {
     transform: "translateX(10px)",
   },
 
-  "&.selected": {
+  "& div.selected": {
     backgroundColor: "var(--highlight-main-color)",
+  },
+
+  "& a": {
+    backgroundColor: "transparent",
+    boxShadow: "none",
   },
 });
 
@@ -30,4 +47,11 @@ const StyledLink = styled(Link)({
   color: "var(--text-color2)",
 });
 
-export { StyledMenuItemList, StyledLink };
+const SubList = styled.ul`
+  font-size: 0.9rem;
+  padding-left: 10px;
+  transform-origin: top center;
+  animation: ${AnimationShowSubMenu} 0.2s linear forwards;
+`;
+
+export { StyledMenuItemList, StyledLink, SubList };

@@ -18,7 +18,7 @@ const StyledMain = styled.main(({ $is_menu }) => {
     flex: 1,
 
     ...media({
-      marginLeft: "0px",
+      padding: "20px",
     }),
   };
 });

@@ -13,7 +13,10 @@ router.post("/login", EmployeeController.login);
 router.use(authMiddleware);
 
 router.post("/getAllEmployee", EmployeeController.getAll);
+router.post("/deleteOS", ServiceOrderController.delete);
 router.post("/registerOS", ServiceOrderController.register);
 router.post("/gen-pdf", ServiceOrderController.genPdf);
+router.post("/getOpenServices", ServiceOrderController.getAllOpen);
+router.post("/getClosedServices", ServiceOrderController.getAllClosed);
 
 export default router;

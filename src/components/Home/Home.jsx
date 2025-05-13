@@ -1,54 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Services from "../Services/Services.jsx";
+import api from "../../utils/api.mjs";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
 const Section = () => {
-  const allServices = [
-    {
-      clientName: "ANTONIO KAUAN LOPES FREITAS",
-      serviceType: "PLANIMETRIA",
-      employeeName: "ANTONIO KAUAN LOPES FREITAS",
-      municipality: "MARCO",
-      priority: "BAIXA",
-      stats: "ABERTA",
-      createdDate: "17/04/2025 - 07:40:25",
-    },
+  const [allServices, setAllServices] = useState([]);
+  const { setEmployee } = useAuth();
 
-    {
-      clientName: "ANTONIO KAUAN LOPES FREITAS",
-      serviceType: "PLANIMETRIA",
-      employeeName: "ANTONIO KAUAN LOPES FREITAS",
-      municipality: "MARCO",
-      priority: "NORMAL",
-      stats: "ABERTA",
-      createdDate: "17/04/2025 - 07:40:25",
-    },
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await api.post("/getOpenServices");
 
-    {
-      clientName: "ANTONIO KAUAN LOPES FREITAS",
-      serviceType: "PLANIMETRIA",
-      employeeName: "ANTONIO KAUAN LOPES FREITAS",
-      municipality: "MARCO",
-      priority: "ALTA",
-      stats: "ABERTA",
-      createdDate: "17/04/2025 - 07:40:25",
-    },
-    {
-      clientName: "ANTONIO KAUAN LOPES FREITAS",
-      serviceType: "PLANIMETRIA",
-      employeeName: "ANTONIO KAUAN LOPES FREITAS",
-      municipality: "MARCO",
-      priority: "ALTA",
-      stats: "ABERTA",
-      createdDate: "17/04/2025 - 07:40:25",
-    },
-  ];
+        if (response.data) setAllServices(response.data);
+      } catch (err) {
+        if (err.status == 401) return setEmployee(null);
+      }
+    })();
+  }, []);
 
   return (
     <Services
       title="Ordem de Serviço [Abertas]"
-      redirect="/servicos-fechados"
-      label="Serviços Fechados"
       allServices={allServices}
+      setAllServices={setAllServices}
     />
   );
 };

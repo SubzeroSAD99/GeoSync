@@ -3,6 +3,8 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
+import formatDate from "../utils/formatDate.mjs";
+import { generateToken, verifyToken } from "../utils/Token.mjs";
 
 const registerSchema = Joi.object({
   clientName: Joi.string().trim().required(),
@@ -10,10 +12,14 @@ const registerSchema = Joi.object({
   employee: Joi.string().trim().required(),
   priority: Joi.string()
     .lowercase()
-    .valid("low", "normal", "high")
+    .valid("baixa", "normal", "alta")
     .empty("")
     .default("normal"),
-  status: Joi.string().valid("open", "closed").empty("").default("open"),
+  status: Joi.string()
+    .lowercase()
+    .valid("aberta", "fechada")
+    .empty("")
+    .default("aberta"),
   step: Joi.string().trim().required(),
   pending: Joi.string().allow(""),
   municipaly: Joi.string().trim().required(),
@@ -23,8 +29,6 @@ const registerSchema = Joi.object({
 
 class ServiceOrderController {
   static async register(req, res) {
-    console.log(req.body);
-
     const { error, value } = registerSchema.validate(req.body);
 
     if (error) {
@@ -36,16 +40,83 @@ class ServiceOrderController {
     try {
       const order = await ServiceOrder.create(value);
 
-      console.log(order);
+      if (!order) return res.json({ err: true, msg: "Erro ao criar OS" });
 
       return res
-        .status(201)
+        .status(200)
         .json({ err: false, msg: "Ordem de serviço criada!" });
     } catch (err) {
       console.error("Erro ao criar ServiceOrder:", err);
       return res
         .status(500)
         .json({ err: true, msg: "Erro interno do servidor." });
+    }
+  }
+
+  static async delete(req, res) {
+    try {
+      const { id } = req.body;
+
+      if (!id)
+        return res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+
+      const decodedId = verifyToken(id);
+
+      if (!decodedId.id)
+        return res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+
+      const destroy = await ServiceOrder.destroy({
+        where: {
+          id: decodedId.id,
+        },
+      });
+
+      if (destroy)
+        return res.json({ err: false, msg: "OS deletada com sucesso!" });
+
+      res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+    } catch (err) {
+      res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+    }
+  }
+
+  static async getAllOpen(req, res) {
+    try {
+      const data = await ServiceOrder.findAll({
+        where: {
+          status: "aberta",
+        },
+        raw: true,
+      });
+
+      data.map((obj) => {
+        obj.id = generateToken({ id: obj.id });
+        obj.createdAt = formatDate(obj.createdAt).split(",")[0];
+      });
+
+      res.json(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  static async getAllClosed(req, res) {
+    try {
+      const data = await ServiceOrder.findAll({
+        where: {
+          status: "fechada",
+        },
+        raw: true,
+      });
+
+      data.map((obj) => {
+        obj.id = generateToken({ id: obj.id });
+        obj.createdAt = formatDate(obj.createdAt).split(",")[0];
+      });
+
+      res.json(data);
+    } catch (err) {
+      console.log(err);
     }
   }
 

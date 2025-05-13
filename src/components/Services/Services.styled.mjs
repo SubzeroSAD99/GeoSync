@@ -9,10 +9,12 @@ const StyledSection = styled.section({
   gap: "20px",
   height: "100%",
   padding: "20px",
+  flex: 1,
 });
 
 const TitleContainer = styled.div({
   display: "flex",
+  flexDirection: "column",
   justifyContent: "space-between",
   alignItems: "center",
   gap: "20px",
@@ -28,9 +30,13 @@ const Title = styled.h2({
   margin: "0px auto",
 });
 
-const StyledLink = styled(Link)({
-  textDecoration: "none",
-  padding: "5px 10px",
+const FilterContainer = styled.div({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: "10px",
 });
 
 const ServicesContainer = styled.div({
@@ -49,6 +55,7 @@ const StyledTable = styled.table({
 });
 
 const StyledTBody = styled.tbody({
+  textTransform: "uppercase",
   "& > tr": {
     transition: "backdrop-filter 0.2s ease-in-out",
 
@@ -76,7 +83,7 @@ export {
   StyledSection,
   TitleContainer,
   Title,
-  StyledLink,
+  FilterContainer,
   ServicesContainer,
   StyledTable,
   StyledTBody,

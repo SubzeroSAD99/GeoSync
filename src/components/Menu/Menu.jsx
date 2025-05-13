@@ -2,26 +2,36 @@ import React, { useEffect, useRef } from "react";
 import { StyledFontAwesome, StyledMenu } from "./Menu.styles.mjs";
 import MenuItemList from "./MenuItemList/MenuItemList.jsx";
 import {
-  faHouse,
   faCircleInfo,
   faSun,
   faMoon,
   faNewspaper,
+  faTable,
+  faTableCellsRowLock,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
 import { useTheme } from "../../contexts/ThemeContext.jsx";
-import { useLocation } from "react-router-dom";
 
 const Menu = () => {
-  const location = useLocation();
-
   const menuItems = [
-    { label: "Pagina Inicial", icon: faHouse, redirect: "/" },
     {
-      label: "Cadastrar Serviços",
-      icon: faNewspaper,
-      redirect: "/cadastrar-servicos",
+      label: "Serviços",
+      icon: faTable,
+      redirect: "/",
+      submenu: [
+        {
+          label: "Serviços Fechados",
+          icon: faTableCellsRowLock,
+          redirect: "/servicos-fechados",
+        },
+
+        {
+          label: "Cadastrar Serviços",
+          icon: faNewspaper,
+          redirect: "/cadastrar-servicos",
+        },
+      ],
     },
     { label: "Sobre", icon: faCircleInfo, redirect: "/sobre" },
   ];
@@ -67,7 +77,7 @@ const Menu = () => {
             label={it.label}
             icon={it.icon}
             redirect={it.redirect}
-            active={location.pathname === it.redirect}
+            submenu={it.submenu}
           />
         ))}
       </ul>

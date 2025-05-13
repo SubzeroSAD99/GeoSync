@@ -27,15 +27,15 @@ ServiceOrder.init(
     },
 
     priority: {
-      type: DataTypes.ENUM("low", "normal", "high"),
+      type: DataTypes.ENUM("baixa", "normal", "alta"),
       allowNull: false,
       defaultValue: "normal",
     },
 
     status: {
-      type: DataTypes.ENUM("close", "open"),
+      type: DataTypes.ENUM("fechada", "aberta"),
       allowNull: false,
-      defaultValue: "open",
+      defaultValue: "aberta",
     },
 
     step: {

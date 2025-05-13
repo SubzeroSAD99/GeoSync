@@ -8,6 +8,7 @@ import {
 } from "./RegisterServices.styled.mjs";
 import api from "../../utils/api.mjs";
 import Comment from "./Comment/Comment";
+import { useAuth } from "../../contexts/AuthContext";
 
 const SERVICE_TYPE = [
   "PLANIMETRIA",
@@ -31,7 +32,7 @@ const SERVICE_TYPE = [
   "LAUDO TÉCNICO",
 ];
 
-const PRIORITY = ["BAIXA", "MEDIA", "ALTA"];
+const PRIORITY = ["BAIXA", "NORMAL", "ALTA"];
 
 const STATS = ["ABERTA", "FECHADA"];
 
@@ -49,13 +50,16 @@ const STEP = [
 
 const RegisterServices = () => {
   const [employees, setEmployees] = useState([]);
+  const { setEmployee } = useAuth();
 
   const getAllUser = async () => {
     try {
       const response = await api.post("/getAllEmployee");
 
       response.data && setEmployees(response.data.list);
-    } catch (err) {}
+    } catch (err) {
+      if (err.status == 401) return setEmployee(null);
+    }
   };
 
   useEffect(() => {

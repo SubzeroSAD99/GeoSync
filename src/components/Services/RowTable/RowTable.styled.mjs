@@ -26,7 +26,7 @@ const PriorityContainer = styled.div(({ $priority }) => {
   let color = "transparent";
   let alert = false;
 
-  switch ($priority) {
+  switch ($priority.toUpperCase()) {
     case "BAIXA":
       color = "var(--main-color)";
       break;
@@ -57,7 +57,7 @@ const PriorityContainer = styled.div(({ $priority }) => {
 const StatsContainer = styled.div(({ $stats }) => {
   let color;
 
-  switch ($stats) {
+  switch ($stats.toUpperCase()) {
     case "ABERTA":
       color = "rgb(0, 190, 0)";
       break;
