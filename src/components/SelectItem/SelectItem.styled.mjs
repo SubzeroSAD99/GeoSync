@@ -14,7 +14,6 @@ const Container = styled.div({
   border: "1px solid var(--main-color)",
   borderRadius: "8px",
   padding: "15px",
-  overflowY: "visible",
 });
 
 const Title = styled.p({
@@ -35,6 +34,13 @@ const StyledCboxButton = styled(ComboboxButton)({
   borderTopLeftRadius: "5px",
   borderTopRightRadius: "5px",
   color: "var(--main-color)",
+  backgroundColor: "white",
+  transition: "none",
+
+  "&:hover": {
+    filter: "none",
+    boxShadow: "none",
+  },
 });
 
 const StyledFontAwesome = styled(FontAwesomeIcon)({

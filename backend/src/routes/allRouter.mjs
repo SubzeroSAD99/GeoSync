@@ -1,8 +1,7 @@
 import { Router } from "express";
-
-import ServiceOrder from "../controllers/ServiceOrder.mjs";
 import EmployeeController from "../controllers/EmployeeController.mjs";
 import { authMiddleware } from "../middlewares/authorize.mjs";
+import ServiceOrderController from "../controllers/ServiceOrderController.mjs";
 
 const router = Router();
 
@@ -14,6 +13,7 @@ router.post("/login", EmployeeController.login);
 router.use(authMiddleware);
 
 router.post("/getAllEmployee", EmployeeController.getAll);
-router.post("/gen-pdf", ServiceOrder.genPdf);
+router.post("/registerOS", ServiceOrderController.register);
+router.post("/gen-pdf", ServiceOrderController.genPdf);
 
 export default router;

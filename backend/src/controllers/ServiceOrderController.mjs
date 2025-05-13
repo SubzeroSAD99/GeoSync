@@ -1,8 +1,54 @@
 import handlebars from "handlebars";
 import puppeteer from "puppeteer";
 import fs from "fs";
+import Joi from "joi";
+import ServiceOrder from "../models/ServiceOrder.mjs";
 
-class ServiceOrder {
+const registerSchema = Joi.object({
+  clientName: Joi.string().trim().required(),
+  serviceType: Joi.string().trim().required(),
+  employee: Joi.string().trim().required(),
+  priority: Joi.string()
+    .lowercase()
+    .valid("low", "normal", "high")
+    .empty("")
+    .default("normal"),
+  status: Joi.string().valid("open", "closed").empty("").default("open"),
+  step: Joi.string().trim().required(),
+  pending: Joi.string().allow(""),
+  municipaly: Joi.string().trim().required(),
+  internalObs: Joi.string().allow("").max(500).optional(),
+  externalObs: Joi.string().allow("").max(500).optional(),
+});
+
+class ServiceOrderController {
+  static async register(req, res) {
+    console.log(req.body);
+
+    const { error, value } = registerSchema.validate(req.body);
+
+    if (error) {
+      return res
+        .status(400)
+        .json({ err: true, msg: "Preencha todos os campos obrigatórios!" });
+    }
+
+    try {
+      const order = await ServiceOrder.create(value);
+
+      console.log(order);
+
+      return res
+        .status(201)
+        .json({ err: false, msg: "Ordem de serviço criada!" });
+    } catch (err) {
+      console.error("Erro ao criar ServiceOrder:", err);
+      return res
+        .status(500)
+        .json({ err: true, msg: "Erro interno do servidor." });
+    }
+  }
+
   static async genPdf(req, res) {
     const templateHtml = fs.readFileSync(
       "../templates/service-order-template.html",
@@ -56,4 +102,4 @@ class ServiceOrder {
   }
 }
 
-export default ServiceOrder;
+export default ServiceOrderController;

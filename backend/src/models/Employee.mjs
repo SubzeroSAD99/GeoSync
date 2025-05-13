@@ -33,10 +33,8 @@ Employee.init(
     },
   },
   {
-    sequelize, // Passando a conexão do banco de dados
-    modelName: "Employee", // Nome da tabela no banco de dados
-    tableName: "Employees", // Nome da tabela no banco de dados
-    timestamps: true, // Isso adiciona campos `createdAt` e `updatedAt`
+    sequelize,
+    timestamps: true,
   }
 );
 

@@ -28,4 +28,12 @@ const StyledForm = styled.form({
   width: "100%",
 });
 
-export { StyledSection, Title, StyledForm };
+const StyledButton = styled.button({
+  alignSelf: "flex-end",
+  width: "100%",
+  maxWidth: "200px",
+  height: "25px",
+  fontSize: "1rem",
+});
+
+export { StyledSection, Title, StyledForm, StyledButton };

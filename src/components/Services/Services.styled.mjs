@@ -31,16 +31,6 @@ const Title = styled.h2({
 const StyledLink = styled(Link)({
   textDecoration: "none",
   padding: "5px 10px",
-  backgroundColor: "var(--main-color)",
-  color: "var(--text-color2)",
-  borderRadius: "4px",
-  boxShadow: "0px 0px 8px 0px transparent",
-  transition: "filter 0.3s ease, boxShadow 0.3s ease",
-
-  "&:hover": {
-    filter: "brightness(130%)",
-    boxShadow: "0px 0px 8px 0px var(--main-color)",
-  },
 });
 
 const ServicesContainer = styled.div({

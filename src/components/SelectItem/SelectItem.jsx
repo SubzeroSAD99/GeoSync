@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   SearchContainer,
   InputSearch,
@@ -13,21 +13,37 @@ import {
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { Combobox } from "@headlessui/react";
 
-const SelectItem = ({ options, title, placeholder }) => {
+const SelectItem = ({ options, title, placeholder, name, required }) => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState("");
+  const containerRef = useRef();
 
   const filteredOptions =
     query === ""
       ? options
       : options.filter((it) => it.toUpperCase().includes(query.toUpperCase()));
+
   return (
     <>
-      <Container>
-        <Title>{title}</Title>
+      <Container ref={containerRef} data-required={required}>
+        <Title>
+          {title}
+          {required && " * "}
+        </Title>
 
-        <Combobox value={selected} onChange={setSelected}>
-          <StyledCboxButton onClick={() => setQuery("")}>
+        <Combobox
+          value={selected}
+          onChange={(value) => {
+            setSelected(value);
+            containerRef.current.style.border = "";
+          }}
+          name={name}
+        >
+          <StyledCboxButton
+            onClick={() => {
+              setQuery("");
+            }}
+          >
             {selected || placeholder}
             <StyledFontAwesome icon={faCaretDown} />
           </StyledCboxButton>
