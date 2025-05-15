@@ -44,8 +44,8 @@ const EyeUpperlid = styled.path(
         `
   }
     transform-box: view-box;
+    transform: scaleY(-1);
     transform-origin: 40px 45px;
-    transform: scaleY(-1)
     `
 );
 

@@ -10,9 +10,16 @@ Employee.init(
       primaryKey: true,
       autoIncrement: true,
     },
+
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
     },
 
     cpf: {
@@ -22,8 +29,8 @@ Employee.init(
     },
 
     position: {
-      type: DataTypes.ENUM("employee", "admin"),
-      defaultValue: "employee",
+      type: DataTypes.ENUM("funcionario", "administrador"),
+      defaultValue: "funcionario",
       allowNull: false,
     },
 

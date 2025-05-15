@@ -1,5 +1,6 @@
 :root {
   --main-color: rgb(0, 95, 196);
+  --main-color-op05: rgba(0, 95, 196, 0.5);
   --highlight-main-color: rgb(0, 123, 255);
   --bg-color: #fff;
   --bg-secundary-color: #e4e4e4;
@@ -43,6 +44,20 @@ body,
 main,
 section {
   width: 100%;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-secundary-color);
+  box-shadow: 0px 0px 8px 2px var(--bg-secundary-color);
+  border-radius: 8px;
+  flex: 1;
+  height: 100%;
+  gap: 20px;
+  padding: 20px;
 }
 
 #root {

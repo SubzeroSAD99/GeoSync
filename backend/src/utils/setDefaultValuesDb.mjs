@@ -5,13 +5,13 @@ const EMPLOYEES = [
     fullName: "ANTONIO KAUAN LOPES FREITAS",
     cpf: "101.793.663-35",
     password: "99",
-    position: "admin",
+    position: "administrador",
   },
   {
     fullName: "BRUNO FELICIANO DE LIMA ALVES",
     cpf: "069.888.743-30",
     password: "99",
-    position: "admin",
+    position: "administrador",
   },
   {
     fullName: "CAETANO SILVA SOEIRO FILHO",
@@ -22,7 +22,7 @@ const EMPLOYEES = [
     fullName: "FRANCISCO DAS CHAGAS PONTES NETO",
     cpf: "780.182.933-68",
     password: "99",
-    position: "admin",
+    position: "administrador",
   },
   {
     fullName: "FRANCISCO EDSON SOEIRO CARNEIRO",
@@ -49,7 +49,7 @@ const EMPLOYEES = [
     fullName: "JONAS SAULO LEORNE PONTES",
     cpf: "644.579.233-20",
     password: "99",
-    position: "admin",
+    position: "administrador",
   },
   {
     fullName: "KAUAN DE SOUSA VASCONCELOS",

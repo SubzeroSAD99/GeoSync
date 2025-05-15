@@ -17,7 +17,7 @@ const alertAnimation = keyframes`
 
 const StyledTd = styled.td({
   padding: "5px",
-  border: "2px solid darkgray",
+  border: "1px solid darkgray",
   textAlign: "center",
   fontSize: "1rem",
 });

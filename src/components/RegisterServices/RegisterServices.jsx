@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SelectItem from "../SelectItem/SelectItem";
-import {
-  StyledButton,
-  StyledForm,
-  StyledSection,
-  Title,
-} from "./RegisterServices.styled.mjs";
+import { StyledButton, StyledForm, Title } from "./RegisterServices.styled.mjs";
 import api from "../../utils/api.mjs";
 import Comment from "./Comment/Comment";
 import { useAuth } from "../../contexts/AuthContext";
@@ -56,7 +51,12 @@ const RegisterServices = () => {
     try {
       const response = await api.post("/getAllEmployee");
 
-      response.data && setEmployees(response.data.list);
+      response.data &&
+        setEmployees(
+          response.data.employees.map((obj) => {
+            return obj.fullName;
+          })
+        );
     } catch (err) {
       if (err.status == 401) return setEmployee(null);
     }
@@ -96,7 +96,7 @@ const RegisterServices = () => {
   };
 
   return (
-    <StyledSection>
+    <section>
       <Title>Cadastrar Ordem Serviço</Title>
       <StyledForm onSubmit={handleSubmit}>
         <SelectItem
@@ -158,7 +158,7 @@ const RegisterServices = () => {
 
         <StyledButton type="submit">Cadastrar</StyledButton>
       </StyledForm>
-    </StyledSection>
+    </section>
   );
 };
 

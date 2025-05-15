@@ -1,17 +1,5 @@
 import styled from "styled-components";
 
-const StyledSection = styled.section({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "20px",
-  backgroundColor: "var(--bg-secundary-color)",
-  boxShadow: "0px 0px 8px 2px var(--bg-secundary-color)",
-  borderRadius: "8px",
-  padding: "20px",
-});
-
 const Title = styled.h2({
   borderBottom: "2px solid var(--main-color)",
   width: "max-content",
@@ -36,4 +24,4 @@ const StyledButton = styled.button({
   fontSize: "1rem",
 });
 
-export { StyledSection, Title, StyledForm, StyledButton };
+export { Title, StyledForm, StyledButton };

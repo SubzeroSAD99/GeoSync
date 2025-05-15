@@ -1,9 +1,9 @@
 import React from "react";
 import {
   StyledForm,
-  StyledSection,
   Title,
   SubmitInput,
+  StyledSection,
 } from "./Login.styled.mjs";
 import FormInputItem from "../FormInputItem/FormInputItem";
 import api from "../../utils/api.mjs";
@@ -43,7 +43,13 @@ const Login = () => {
         <Title>
           <span>&ndash;</span> Login <span>&ndash;</span>
         </Title>
-        <FormInputItem id="cpf" type="text" label="CPF" />
+        <FormInputItem
+          id="cpf"
+          type="text"
+          label="CPF"
+          placeholder="___.___.___-__"
+          mask="000.000.000-00"
+        />
         <FormInputItem
           id="password"
           type="password"

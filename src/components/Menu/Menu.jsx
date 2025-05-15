@@ -8,6 +8,8 @@ import {
   faNewspaper,
   faTable,
   faTableCellsRowLock,
+  faUsers,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -30,6 +32,18 @@ const Menu = () => {
           label: "Cadastrar Serviços",
           icon: faNewspaper,
           redirect: "/cadastrar-servicos",
+        },
+      ],
+    },
+    {
+      label: "Funcionários",
+      icon: faUsers,
+      redirect: "/funcionarios",
+      submenu: [
+        {
+          label: "Cadastrar Funcionario",
+          icon: faUserPlus,
+          redirect: "/cadastrar-funcionario",
         },
       ],
     },

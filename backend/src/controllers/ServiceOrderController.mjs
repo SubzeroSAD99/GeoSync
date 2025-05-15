@@ -46,7 +46,6 @@ class ServiceOrderController {
         .status(200)
         .json({ err: false, msg: "Ordem de serviço criada!" });
     } catch (err) {
-      console.error("Erro ao criar ServiceOrder:", err);
       return res
         .status(500)
         .json({ err: true, msg: "Erro interno do servidor." });

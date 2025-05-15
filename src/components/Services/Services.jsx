@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import {
   ServicesContainer,
-  StyledSection,
   StyledTable,
   StyledTBody,
   StyledTd,
@@ -47,7 +46,7 @@ const Services = ({ title, allServices, setAllServices }) => {
   };
 
   return (
-    <StyledSection>
+    <section>
       <TitleContainer>
         <Title>{title}</Title>
 
@@ -146,7 +145,7 @@ const Services = ({ title, allServices, setAllServices }) => {
           </tfoot>
         </StyledTable>
       </ServicesContainer>
-    </StyledSection>
+    </section>
   );
 };
 

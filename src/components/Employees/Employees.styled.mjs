@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const TitleContainer = styled.div({
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
   gap: "20px",
@@ -16,27 +16,17 @@ const TitleContainer = styled.div({
 const Title = styled.h2({
   borderBottom: "2px solid var(--main-color)",
   width: "max-content",
-  margin: "0px auto",
-});
-
-const FilterContainer = styled.div({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  flexWrap: "wrap",
-  gap: "10px",
 });
 
 const ServicesContainer = styled.div({
   height: "100%",
-
   padding: "10px",
   overflowX: "auto",
   width: "100%",
 });
 
 const StyledTable = styled.table({
+  border: "1px solid darkgray",
   borderCollapse: "collapse",
   width: "100%",
 });
@@ -44,6 +34,7 @@ const StyledTable = styled.table({
 const StyledTBody = styled.tbody({
   textTransform: "uppercase",
   "& > tr": {
+    borderBottom: "1px solid darkgray",
     transition: "backdrop-filter 0.2s ease-in-out",
 
     "&:hover": {
@@ -57,23 +48,21 @@ const StyledTBody = styled.tbody({
 });
 
 const StyledTh = styled.th({
-  border: "1px solid darkgray",
+  borderBottom: "1px solid darkgray",
   padding: "5px",
   fontSize: "1.1rem",
   flex: "1",
+  textAlign: "left",
 });
 
 const StyledTd = styled.td({
-  padding: "5px",
-  border: "1px solid darkgray",
-  textAlign: "center",
+  padding: "10px 5px",
   fontSize: "1rem",
 });
 
 export {
   TitleContainer,
   Title,
-  FilterContainer,
   ServicesContainer,
   StyledTable,
   StyledTBody,

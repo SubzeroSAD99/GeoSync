@@ -12,6 +12,8 @@ import { RequireAuth } from "../RequireAuth.jsx";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import Loading from "../Loading/Loading.jsx";
+import EmployeesPage from "../../pages/EmployeesPage.jsx";
+import RegisterEmployeesPage from "../../pages/RegisterEmployeesPage.jsx";
 
 const Main = () => {
   const { isMenu } = useUI();
@@ -31,6 +33,11 @@ const Main = () => {
             element={<RegisterServicesPage />}
           />
           <Route path="/servicos-fechados" element={<ClosedServicesPage />} />
+          <Route path="/funcionarios" element={<EmployeesPage />} />
+          <Route
+            path="/cadastrar-funcionario"
+            element={<RegisterEmployeesPage />}
+          />
           <Route path="/sobre" element={<AboutPage />} />
         </Route>
         <Route path="/teste" element={<Loading />} />

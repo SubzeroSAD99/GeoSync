@@ -1,11 +1,8 @@
 import styled from "styled-components";
 
 const StyledSection = styled.section({
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
+  flex: "none",
+  width: "50%",
 });
 
 const Title = styled.h2({

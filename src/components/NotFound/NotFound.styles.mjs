@@ -1,14 +1,6 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const StyledSection = styled.section({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100%",
-});
-
 const StyledFontAwesome = styled(FontAwesomeIcon)({
   fontSize: "2.5rem",
   color: "var(--main-color)",
@@ -22,4 +14,4 @@ const Title = styled.h2({
   },
 });
 
-export { StyledSection, StyledFontAwesome, Title };
+export { StyledFontAwesome, Title };

@@ -7,12 +7,9 @@ const AnimationRotate = keyframes`
 `;
 
 const StyledSection = styled.section({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
   height: "100svh",
   width: "100svw",
+  padding: "0px",
 });
 
 const StyledSvg = styled.svg({
