@@ -13,11 +13,15 @@ router.post("/login", EmployeeController.login);
 router.use(authMiddleware);
 
 router.post("/getAllEmployee", EmployeeController.getAll);
+router.post("/getEmployee", EmployeeController.getById);
 router.post("/registerEmployee", EmployeeController.register);
+router.post("/editEmployee", EmployeeController.update);
 router.post("/deleteEmployee", EmployeeController.delete);
 
 router.post("/deleteOS", ServiceOrderController.delete);
 router.post("/registerOS", ServiceOrderController.register);
+router.post("/editOS", ServiceOrderController.update);
+router.post("/getService", ServiceOrderController.getById);
 router.post("/getOpenServices", ServiceOrderController.getAllOpen);
 router.post("/getClosedServices", ServiceOrderController.getAllClosed);
 router.post("/gen-pdf", ServiceOrderController.genPdf);

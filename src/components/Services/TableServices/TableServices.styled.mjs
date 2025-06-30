@@ -1,0 +1,99 @@
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const TitleContainer = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "20px",
+  flexWrap: "wrap",
+  width: "100%",
+  padding: "8px",
+  overflow: "hidden",
+});
+
+const Title = styled.h2({
+  borderBottom: "2px solid var(--main-color)",
+  width: "max-content",
+  margin: "0px auto",
+});
+
+const FilterContainer = styled.div({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: "10px",
+});
+
+const ServicesContainer = styled.div`
+  height: 100%;
+  padding: 10px;
+  overflow-x: auto;
+  width: 100%;
+`;
+
+const StyledTable = styled.table({
+  borderCollapse: "collapse",
+  width: "100%",
+});
+
+const StyledTBody = styled.tbody({
+  textTransform: "uppercase",
+  "& > tr": {
+    transition: "backdrop-filter 0.2s ease-in-out",
+
+    "&:hover": {
+      backdropFilter: "brightness(85%)",
+    },
+  },
+
+  "& > tr:nth-child(even)": {
+    backgroundColor: "var(--table-even-color)",
+  },
+});
+
+const StyledTh = styled.th({
+  border: "1px solid darkgray",
+  padding: "5px",
+  fontSize: "1.1rem",
+  flex: "1",
+});
+
+const StyledTd = styled.td({
+  padding: "5px",
+  border: "1px solid darkgray",
+  textAlign: "center",
+  fontSize: "1rem",
+});
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-size: 1.1rem;
+  user-select: none;
+`;
+
+const ButtonChangePage = styled.div`
+  background-color: transparent;
+  box-shadow: none;
+  cursor: pointer;
+`;
+
+export {
+  TitleContainer,
+  Title,
+  FilterContainer,
+  ServicesContainer,
+  StyledTable,
+  StyledTBody,
+  StyledTh,
+  StyledTd,
+  PageContainer,
+  ButtonChangePage,
+};

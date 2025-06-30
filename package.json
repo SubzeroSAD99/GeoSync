@@ -16,9 +16,9 @@
     "@headlessui/react": "^2.2.2",
     "axios": "^1.9.0",
     "framer-motion": "^12.7.3",
-    "imask": "^7.6.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-imask": "^7.6.1",
     "react-responsive": "^10.0.1",
     "react-router-dom": "^7.5.0",
     "styled-components": "^6.1.17"

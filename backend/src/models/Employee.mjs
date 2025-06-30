@@ -28,7 +28,7 @@ Employee.init(
       unique: true,
     },
 
-    position: {
+    role: {
       type: DataTypes.ENUM("funcionario", "administrador"),
       defaultValue: "funcionario",
       allowNull: false,

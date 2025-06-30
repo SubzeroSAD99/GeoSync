@@ -6,11 +6,13 @@
   --bg-secundary-color: #e4e4e4;
   --text-color: #000000;
   --text-color2: #ffffff;
+  --table-even-color: rgba(207, 205, 205);
 }
 
 body.dark {
   --bg-color: rgb(30, 30, 30);
   --bg-secundary-color: rgb(50, 50, 50);
+  --table-even-color: rgba(80, 80, 80);
   --text-color: #ffffff;
 }
 

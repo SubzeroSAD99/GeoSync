@@ -1,28 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { InputContainer } from "./FormInputItem.styled.mjs";
-import EyeIcon from "../EyeIcon/EyeIcon";
-import { useEffect, useRef } from "react";
-import IMask from "imask";
-
-const MaskedInput = ({ mask, ...props }) => {
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    let maskInstance;
-
-    if (mask && inputRef.current) {
-      maskInstance = IMask(inputRef.current, { mask });
-    }
-
-    return () => {
-      if (maskInstance) {
-        maskInstance.destroy();
-      }
-    };
-  }, [mask]);
-
-  return <input ref={inputRef} {...props} />;
-};
+import { IMaskInput } from "react-imask";
+import EyeIcon from "./../EyeIcon/EyeIcon";
 
 const FormInputItem = ({
   id,
@@ -32,31 +11,33 @@ const FormInputItem = ({
   mask,
   maxLength,
   placeholder = "",
+  valueInput = "",
 }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(valueInput);
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
+  useEffect(() => {
+    setValue(valueInput ?? "");
+  }, [valueInput]);
 
   return (
     <InputContainer>
-      <MaskedInput
+      <IMaskInput
         mask={mask}
-        placeholder=""
-        type={passwordVisible ? "text" : type}
+        value={value}
+        onAccept={(val) => {
+          setValue(val);
+        }}
+        onChange={(e) => setValue(e.target.value)}
+        unmask={false}
+        overwrite={false}
         id={id}
         name={id}
-        value={value}
-        onChange={handleChange}
-        onFocus={(e) => {
-          e.target.placeholder = placeholder;
-        }}
-        onBlur={(e) => {
-          e.target.placeholder = "";
-        }}
+        type={passwordVisible ? "text" : type}
+        placeholder={""}
         maxLength={maxLength}
+        onFocus={(e) => (e.target.placeholder = placeholder)}
+        onBlur={(e) => (e.target.placeholder = "")}
       />
 
       <label htmlFor={id}>{label}</label>

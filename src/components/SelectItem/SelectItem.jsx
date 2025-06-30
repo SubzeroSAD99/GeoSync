@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   SearchContainer,
   InputSearch,
@@ -13,10 +13,21 @@ import {
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { Combobox } from "@headlessui/react";
 
-const SelectItem = ({ options, title, placeholder, name, required }) => {
+const SelectItem = ({
+  options,
+  title,
+  placeholder,
+  name,
+  required,
+  select,
+}) => {
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(select ?? "");
   const containerRef = useRef();
+
+  useEffect(() => {
+    setSelected(select ?? "");
+  }, [select]);
 
   const filteredOptions =
     query === ""
@@ -44,7 +55,7 @@ const SelectItem = ({ options, title, placeholder, name, required }) => {
               setQuery("");
             }}
           >
-            {selected || placeholder}
+            {selected?.toUpperCase() || placeholder?.toUpperCase()}
             <StyledFontAwesome icon={faCaretDown} />
           </StyledCboxButton>
           <StyledCboxOptions>
@@ -58,7 +69,9 @@ const SelectItem = ({ options, title, placeholder, name, required }) => {
             </SearchContainer>
 
             <OptionsContainer>
-              <StyledCboxOption value="">{placeholder}</StyledCboxOption>
+              <StyledCboxOption value={placeholder?.toUpperCase()}>
+                {placeholder?.toUpperCase()}
+              </StyledCboxOption>
               {/* Opções filtradas */}
               {filteredOptions.length === 0 ? (
                 <div style={{ padding: "20px", textAlign: "center" }}>

@@ -25,13 +25,13 @@ const Menu = () => {
         {
           label: "Serviços Fechados",
           icon: faTableCellsRowLock,
-          redirect: "/servicos-fechados",
+          redirect: "/servicos/servicos-fechados",
         },
 
         {
           label: "Cadastrar Serviços",
           icon: faNewspaper,
-          redirect: "/cadastrar-servicos",
+          redirect: "/servicos/cadastrar-servicos",
         },
       ],
     },
@@ -43,7 +43,7 @@ const Menu = () => {
         {
           label: "Cadastrar Funcionario",
           icon: faUserPlus,
-          redirect: "/cadastrar-funcionario",
+          redirect: "/funcionarios/cadastrar-funcionario",
         },
       ],
     },

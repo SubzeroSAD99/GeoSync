@@ -79,6 +79,52 @@ class ServiceOrderController {
     }
   }
 
+  static async update(req, res) {
+    try {
+      const { id } = req.body;
+
+      delete req.body.id;
+
+      const { error, value } = registerSchema.validate(req.body);
+
+      const decoded = verifyToken(id);
+
+      const row = await ServiceOrder.update(value, {
+        where: {
+          id: decoded.id,
+        },
+      });
+
+      if (row) return res.json({ msg: "Serviço atualizado com sucesso!" });
+      res.status(400).json({ msg: "Erro ao atualizar o serviço!" });
+    } catch (err) {
+      console.log(err);
+
+      res.status(400).json({ msg: "Erro interno no servidor!" });
+    }
+  }
+
+  static async getById(req, res) {
+    const { id } = req.body;
+
+    try {
+      const decoded = verifyToken(id);
+
+      const data = await ServiceOrder.findOne({
+        where: {
+          id: decoded.id,
+        },
+        raw: true,
+      });
+
+      if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
+
+      res.json({ service: data });
+    } catch (err) {
+      res.status(400).json({ msg: "Erro interno no servidor!" });
+    }
+  }
+
   static async getAllOpen(req, res) {
     try {
       const data = await ServiceOrder.findAll({
