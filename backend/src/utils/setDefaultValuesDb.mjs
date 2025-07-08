@@ -56,6 +56,20 @@ const EMPLOYEES = [
     cpf: "07997814361",
     password: "99",
   },
+
+  {
+    fullName: "JOSE ANILO LOPES",
+    cpf: "00000000000",
+    password: "99",
+    role: "medidor",
+  },
+
+  {
+    fullName: "JOSE ARCANJO JUNIOR",
+    cpf: "11111111111",
+    password: "99",
+    role: "medidor",
+  },
 ];
 
 Employee.bulkCreate(EMPLOYEES, { ignoreDuplicates: true });

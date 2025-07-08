@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 
 const db = new Sequelize({
   host: "localhost",
-  database: "toposystem99",
+  database: "geosync",
   username: "postgres",
   password: "99",
   dialect: "postgres",

@@ -29,7 +29,7 @@ Employee.init(
     },
 
     role: {
-      type: DataTypes.ENUM("funcionario", "administrador"),
+      type: DataTypes.ENUM("funcionario", "administrador", "medidor"),
       defaultValue: "funcionario",
       allowNull: false,
     },

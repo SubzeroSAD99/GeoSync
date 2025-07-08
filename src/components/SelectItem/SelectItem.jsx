@@ -16,10 +16,11 @@ import { Combobox } from "@headlessui/react";
 const SelectItem = ({
   options,
   title,
-  placeholder,
+  placeholder = "Selecione",
   name,
   required,
   select,
+  error,
 }) => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(select ?? "");
@@ -36,7 +37,11 @@ const SelectItem = ({
 
   return (
     <>
-      <Container ref={containerRef} data-required={required}>
+      <Container
+        ref={containerRef}
+        data-required={required}
+        style={error ? { border: "1px solid red" } : undefined}
+      >
         <Title>
           {title}
           {required && " * "}

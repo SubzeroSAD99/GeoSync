@@ -13,7 +13,7 @@ import {
 
 const RowTable = ({
   id,
-  clientName,
+  owner,
   serviceType,
   employeeName,
   municipality,
@@ -25,7 +25,7 @@ const RowTable = ({
 }) => {
   return (
     <tr>
-      <StyledTd>{clientName}</StyledTd>
+      <StyledTd>{owner}</StyledTd>
       <StyledTd>{serviceType}</StyledTd>
       <StyledTd>{employeeName}</StyledTd>
       <StyledTd>{municipality}</StyledTd>

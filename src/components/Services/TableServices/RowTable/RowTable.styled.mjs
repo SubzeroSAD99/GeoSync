@@ -31,7 +31,7 @@ const PriorityContainer = styled.div(({ $priority }) => {
       color = "var(--main-color)";
       break;
     case "NORMAL":
-      color = "rgb(175, 175, 0)";
+      color = "rgb(182, 182, 0)";
       break;
     case "ALTA":
       color = "#ff0000";

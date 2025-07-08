@@ -4,6 +4,8 @@ import { StyledButton, StyledForm } from "./FormServices.styled.mjs";
 import SelectItem from "../../SelectItem/SelectItem";
 import Comment from "./../../Comment/Comment";
 import api from "../../../utils/api.mjs";
+import InputDate from "../InputDate/InputDate";
+import { useSearchParams } from "react-router-dom";
 
 const SERVICE_TYPE = [
   "PLANIMETRIA",
@@ -45,7 +47,7 @@ const STEP = [
 
 const FormServices = ({
   handleSubmit,
-  clientName,
+  owner,
   serviceType,
   employee,
   priority,
@@ -53,28 +55,51 @@ const FormServices = ({
   step,
   pending,
   municipaly,
+  meter,
   internalObs,
   externalObs,
   textBtnSubmit,
+  errors,
 }) => {
   const [employees, setEmployees] = useState([]);
+  const [meters, setMeters] = useState([]);
   const { setEmployee } = useAuth();
+  const [values, setValues] = useState({});
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    const measurementDate = searchParams.get("measurementDate");
+
     (async () => {
       try {
-        const response = await api.post("/getAllEmployee");
+        const response = await api.post("/employee/getAll");
 
-        response.data &&
+        const data = response.data;
+
+        if (data) {
           setEmployees(
-            response.data.employees.map((obj) => {
-              return obj.fullName;
-            })
+            data.employees
+              .filter((obj) => obj.role !== "medidor")
+              .map((obj) => obj.fullName)
           );
+
+          setMeters(
+            data.employees
+              .filter((obj) => obj.role === "medidor")
+              .map((obj) => obj.fullName)
+          );
+        }
       } catch (err) {
         if (err.status == 401) return setEmployee(null);
       }
     })();
+
+    if (measurementDate) {
+      setValues((prev) => ({
+        ...prev,
+        measurementDate: measurementDate,
+      }));
+    }
   }, []);
 
   return (
@@ -82,64 +107,71 @@ const FormServices = ({
       <SelectItem
         options={employees.sort()}
         title="Nome do Cliente"
-        placeholder="Selecione um Cliente"
-        name="clientName"
+        name="owner"
         required={true}
-        select={clientName}
+        select={owner}
+        error={errors === "owner"}
       />
       <SelectItem
         options={SERVICE_TYPE.sort()}
         title="Tipo de Serviço"
-        placeholder="Selecione um Serviço"
         name="serviceType"
         required={true}
         select={serviceType}
+        error={errors === "serviceType"}
       />
       <SelectItem
-        options={employees}
+        options={employees.sort()}
         title="Funcionário Encarregado"
-        placeholder="Selecione um Funcionário"
         name="employee"
         required={true}
         select={employee}
+        error={errors === "employee"}
       />
       <SelectItem
         options={PRIORITY.sort()}
         title="Prioridade"
-        placeholder="Selecione uma Prioridade"
         name="priority"
         select={priority}
       />
       <SelectItem
         options={STATS.sort()}
         title="Status"
-        placeholder="Selecione um Status"
         name="status"
         select={status}
       />
       <SelectItem
         options={STEP.sort()}
         title="Etapa"
-        placeholder="Selecione uma Etapa"
         name="step"
         required={true}
         select={step}
+        error={errors === "step"}
       />
       <SelectItem
         options={employees.sort()}
         title="Pendências"
-        placeholder="Selecione uma Pendência"
         name="pending"
         select={pending}
       />
       <SelectItem
         options={employees.sort()}
         title="Município"
-        placeholder="Selecione um Município"
         name="municipaly"
         required={true}
         select={municipaly}
+        error={errors === "municipaly"}
       />
+
+      <SelectItem
+        options={meters.sort()}
+        title="Medidor"
+        name="meter"
+        select={meter}
+        error={errors === "meter"}
+      />
+
+      <InputDate value={values.measurementDate} />
 
       <Comment
         title="Observação Interna"

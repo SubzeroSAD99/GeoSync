@@ -10,6 +10,7 @@ import api from "../../../utils/api.mjs";
 import { useAuth } from "../../../contexts/AuthContext.jsx";
 import RowTable from "./RowTable/RowTable.jsx";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const TableEmployees = () => {
   const [allEmployees, setAllEmployees] = useState([]);
@@ -19,7 +20,7 @@ const TableEmployees = () => {
   useEffect(() => {
     const getAllEmployees = async () => {
       try {
-        const response = await api.post("/getAllEmployee");
+        const response = await api.post("/employee/getAll");
 
         const objList = response.data.employees;
 
@@ -36,20 +37,25 @@ const TableEmployees = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await api.post("/deleteEmployee", { id });
+      const response = await api.post("/employee/delete", { id });
 
       if (response.data && !response.data.err) {
         setAllEmployees((prev) =>
           prev.filter((employee) => employee.id !== id)
         );
+
+        toast.warn(response.data.msg);
       }
     } catch (err) {
+      const msg = err.response?.data?.msg;
+      if (msg) toast.error(msg);
+
       if (err.status == 401) return setEmployee(null);
     }
   };
 
   const handleEdit = (id) => {
-    navigate(`/funcionarios/editar-funcionario/${id}`);
+    navigate(`/funcionarios/editar/${id}`);
   };
 
   return (

@@ -4,12 +4,28 @@ import Menu from "./components/Menu/Menu.jsx";
 import { useUI } from "./contexts/UIContext.jsx";
 import { useEffect } from "react";
 import { useAuth } from "./contexts/AuthContext.jsx";
+import { Bounce, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        rtl={false}
+        transition={Bounce}
+      />
+
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </>
   );
 };
 

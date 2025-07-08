@@ -14,7 +14,7 @@ const Header = () => {
 
   return (
     <StyledHeader>
-      <Title>TopoSystem99</Title>
+      <Title>GeoSync</Title>
 
       {isMediaQuerie && (
         <StyledFontAwesome

@@ -10,7 +10,7 @@ const ClosedServices = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await api.post("/getClosedServices");
+        const response = await api.post("/service/getAllClosed");
 
         if (response.data) setAllServices(response.data);
       } catch (err) {

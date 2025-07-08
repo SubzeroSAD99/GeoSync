@@ -12,12 +12,12 @@ class EmployeeController {
       const employee = await Employee.findOne({ where: { cpf: cpfFormatted } });
 
       if (!employee)
-        return res.json({ err: true, msg: "Funcionario não encontrado!" });
+        return res.status(400).json({ msg: "Funcionario não encontrado!" });
 
       const dbPass = employee.getDataValue("password");
 
       if (dbPass !== password)
-        return res.json({ err: true, msg: "CPF e/ou senha incorretos!" });
+        return res.status(400).json({ msg: "CPF e/ou senha incorretos!" });
 
       const payload = {
         id: employee.id,
@@ -30,7 +30,7 @@ class EmployeeController {
 
       res
         .cookie("authToken", token, {
-          httpOnly: true, // impede acesso via JS
+          httpOnly: true,
           secure: process.env.NODE_ENV === "production", // só em HTTPS
           sameSite: "Strict", // contra CSRF
           maxAge: 60 * 60 * 1000, // 1h em ms
@@ -91,10 +91,31 @@ class EmployeeController {
     }
   }
 
-  static async register(req, res) {
-    const { error, value } = updateSchema.validate(req.body);
+  static async exists(cpf) {
+    return new Promise(async (resolve) => {
+      try {
+        const cpfFormatted = cpf.replace(/[.-]/g, "");
 
-    if (error) return res.status(500).json({ msg: error.details[0] });
+        const employee = await Employee.findOne({
+          raw: true,
+          where: { cpf: cpfFormatted },
+        });
+
+        if (!employee) resolve(false);
+        resolve(true);
+      } catch (error) {
+        resolve(false);
+      }
+    });
+  }
+
+  static async register(req, res) {
+    const { error, value } = registerSchema.validate(req.body);
+
+    if (error) return res.status(400).json({ msg: error.details[0].message });
+
+    value.cpf = value.cpf.replace(/[.-\s]/g, "");
+    value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s]/g, "");
 
     try {
       const employee = await Employee.create(value);
@@ -106,16 +127,13 @@ class EmployeeController {
         .status(200)
         .json({ msg: "Funcionario registrado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       if (err.name !== "SequelizeUniqueConstraintError")
         return res
           .status(500)
           .json({ err: true, msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Employees_cpf_key"
-        ? res.status(500).json({ msg: "CPF ja registrado!" })
-        : res.status(500).json({ msg: "Email ja registrado!" });
+      err.parent.constraint === "Employees_cpf_key" &&
+        res.status(500).json({ msg: "CPF ja registrado!" });
     }
   }
 
@@ -128,8 +146,12 @@ class EmployeeController {
 
     const { error, value } = updateSchema.validate(req.body);
 
+    if (error) {
+      return res.status(400).json({ msg: error.details[0].message });
+    }
+
     value.cpf = value.cpf.replace(/[().-\s]/g, "");
-    value.phoneNumber = value.phoneNumber.replace(/[().-\s]/g, "");
+    value.phoneNumber = value.phoneNumber?.replace(/[().-\s]/g, "");
 
     if (error) return res.status(500).json({ msg: error.details[0] });
 

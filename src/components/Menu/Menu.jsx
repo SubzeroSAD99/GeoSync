@@ -10,6 +10,7 @@ import {
   faTableCellsRowLock,
   faUsers,
   faUserPlus,
+  faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -23,15 +24,21 @@ const Menu = () => {
       redirect: "/",
       submenu: [
         {
-          label: "Serviços Fechados",
+          label: "Fechados",
           icon: faTableCellsRowLock,
-          redirect: "/servicos/servicos-fechados",
+          redirect: "/servicos/fechados",
         },
 
         {
-          label: "Cadastrar Serviços",
+          label: "Cadastrar",
           icon: faNewspaper,
-          redirect: "/servicos/cadastrar-servicos",
+          redirect: "/servicos/cadastrar",
+        },
+
+        {
+          label: "Agendar",
+          icon: faCalendarAlt,
+          redirect: "/servicos/agendar",
         },
       ],
     },
@@ -41,9 +48,9 @@ const Menu = () => {
       redirect: "/funcionarios",
       submenu: [
         {
-          label: "Cadastrar Funcionario",
+          label: "Cadastrar",
           icon: faUserPlus,
-          redirect: "/funcionarios/cadastrar-funcionario",
+          redirect: "/funcionarios/cadastrar",
         },
       ],
     },

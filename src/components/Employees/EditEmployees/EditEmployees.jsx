@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Title } from "../Employees.styled.mjs";
 import FormEmployees from "../FormEmployees/FormEmployees";
 import api from "../../../utils/api.mjs";
+import { toast } from "react-toastify";
 
 const EditEmployees = ({ id }) => {
   const [infoEmployee, setInfoEmployee] = useState({});
@@ -10,7 +11,7 @@ const EditEmployees = ({ id }) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await api.post("/getEmployee", { id });
+        const response = await api.post("/employee/getOne", { id });
 
         if (response.data) {
           setInfoEmployee(response.data);
@@ -32,11 +33,13 @@ const EditEmployees = ({ id }) => {
     }, {});
 
     try {
-      const response = await api.post("/editEmployee", { id, ...values });
+      const response = await api.post("/employee/edit", { id, ...values });
 
-      console.log(response.data);
+      if (response.data) toast.success(response.data.msg);
     } catch (err) {
-      console.log(err);
+      const msg = err.response?.data?.msg;
+
+      if (msg) toast.error(msg);
     }
   };
 

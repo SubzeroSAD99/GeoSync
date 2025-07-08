@@ -10,6 +10,7 @@ const FormInputItem = ({
   eyeIcon,
   mask,
   maxLength,
+  width,
   placeholder = "",
   valueInput = "",
 }) => {
@@ -21,7 +22,7 @@ const FormInputItem = ({
   }, [valueInput]);
 
   return (
-    <InputContainer>
+    <InputContainer style={{ maxWidth: `${width}` }}>
       <IMaskInput
         mask={mask}
         value={value}

@@ -2,13 +2,16 @@ import Joi from "joi";
 
 export const registerSchema = Joi.object({
   role: Joi.string()
-    .empty("")
     .lowercase()
+    .empty("", "selecione")
     .valid("funcionario", "administrador")
     .default("funcionario"),
   cpf: Joi.string()
     .pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
-    .required(),
+    .required()
+    .messages({
+      "string.empty": "O CPF é obrigatorio!",
+    }),
   fullName: Joi.string()
     .trim()
     .pattern(/^[A-Za-zÀ-ÿ\s]+$/)
@@ -21,7 +24,7 @@ export const registerSchema = Joi.object({
       "any.required": "O nome é obrigatório.",
     }),
   phoneNumber: Joi.string()
-    .empty()
+    .empty("")
     .pattern(/^\(\d{2}\) \d{4}-\d{4}$/)
     .messages({
       "string.pattern.base":
@@ -40,6 +43,7 @@ export const registerSchema = Joi.object({
       "string.pattern.base":
         "A senha deve conter pelo menos uma letra e um número.",
       "any.required": "A senha é obrigatória.",
+      "string.empty": "A senha é obrigatoria.",
     }),
 });
 
@@ -53,11 +57,14 @@ export const updateSchema = Joi.object({
     .min(3)
     .required()
     .messages({
-      /* ... */
+      "string.pattern.base": "O nome só pode conter letras e espaços.",
+      "string.min": "O nome deve ter pelo menos 3 caracteres.",
+      "string.empty": "O nome não pode estar vazio.",
+      "any.required": "O nome é obrigatório.",
     }),
 
   role: Joi.string()
-    .empty("")
+    .empty("", "selecione")
     .lowercase()
     .valid("funcionario", "administrador")
     .default("funcionario"),
@@ -67,7 +74,9 @@ export const updateSchema = Joi.object({
     .empty("")
     .pattern(/^\(\d{2}\) \d{4}-\d{4}$/)
     .messages({
-      /* ... */
+      "string.pattern.base":
+        "O número de telefone deve estar no formato (XX) XXXX-XXXX.",
+      "any.required": "O número de telefone é obrigatório.",
     }),
   password: Joi.string()
     .min(8)

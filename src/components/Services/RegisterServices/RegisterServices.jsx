@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Title } from "./RegisterServices.styled.mjs";
 import api from "../../../utils/api.mjs";
 import FormServices from "../FormServices/FormServices";
+import { toast } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const RegisterServices = () => {
+  const [errors, setErrors] = useState("");
+  const [startingMDate, setStartingMDate] = useState("");
+  const [searchParams] = useSearchParams();
+  const { setEmployee } = useAuth();
+
+  useEffect(() => {
+    const measurementDate = searchParams.get("measurementDate");
+
+    if (measurementDate) setStartingMDate(measurementDate);
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -11,31 +25,31 @@ const RegisterServices = () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    const emptyFields = Object.entries(data)
-      .filter(([name, v]) => {
-        if (form.elements[name].parentNode.dataset.required && !v.trim())
-          return !v.trim();
-      })
-      .map(([key]) => key);
+    try {
+      const response = await api.post("/service/register", data);
 
-    emptyFields.forEach((name) => {
-      const field = form.elements[name];
+      if (response.data) toast.success(response.data.msg);
+    } catch (err) {
+      const field = err.response?.data?.field;
+      const msg = err.response?.data?.msg;
 
-      if (field) {
-        field.parentNode.style.border = "1px solid red";
-      }
-    });
+      if (field) setErrors(field);
+      if (msg) toast.error(msg);
 
-    if (emptyFields.length > 0) return;
-
-    const response = await api.post("/registerOS", data);
+      if (err.status === 401) setEmployee(null);
+    }
   };
 
   return (
     <section>
       <Title>Cadastrar Ordem Serviço</Title>
 
-      <FormServices handleSubmit={handleSubmit} textBtnSubmit={"Cadastrar"} />
+      <FormServices
+        handleSubmit={handleSubmit}
+        textBtnSubmit={"Cadastrar"}
+        errors={errors}
+        measurementDate={startingMDate}
+      />
     </section>
   );
 };

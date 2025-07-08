@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StyledForm = styled.form({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
   placeItems: "center",
   gap: "20px",
   width: "100%",
@@ -11,6 +11,7 @@ const StyledForm = styled.form({
   "> div:first-child": {
     gridColumn: "1 / -1",
     width: "100%",
+    maxWidth: "600px",
   },
 });
 

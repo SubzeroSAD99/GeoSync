@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, STRING } from "sequelize";
 import sequelize from "../db/db.mjs";
 
 class ServiceOrder extends Model {}
@@ -11,9 +11,31 @@ ServiceOrder.init(
       autoIncrement: true,
     },
 
-    clientName: {
+    owner: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+
+    ownerNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+
+    contractor: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    contractorNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+
+    contractor: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
 
     serviceType: {
@@ -45,12 +67,78 @@ ServiceOrder.init(
 
     pending: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
 
     municipaly: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+
+    locality: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    meter: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    measurementDate: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+
+    measurementHour: {
+      type: DataTypes.TIME,
+      allowNull: true,
+    },
+
+    serviceValue: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+    },
+
+    paymentSituation: {
+      type: DataTypes.ENUM("pago", "não pago", "parcialmente pago", "isento"),
+      allowNull: true,
+    },
+
+    amountPaid: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+    },
+
+    payer: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    schedulingResp: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    processingResp: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    cadist: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
+
+    location: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
 
     internalObs: {

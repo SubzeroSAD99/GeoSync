@@ -10,7 +10,7 @@ const Section = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await api.post("/getOpenServices");
+        const response = await api.post("/service/getAllOpen");
 
         if (response.data) setAllServices(response.data);
       } catch (err) {

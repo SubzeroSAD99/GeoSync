@@ -3,6 +3,7 @@ import { Title } from "./RegisterEmployees.styled.mjs";
 import { useAuth } from "../../../contexts/AuthContext.jsx";
 import api from "../../../utils/api.mjs";
 import FormEmployees from "../FormEmployees/FormEmployees.jsx";
+import { toast } from "react-toastify";
 
 const RegisterEmployees = () => {
   const { setEmployee } = useAuth();
@@ -17,11 +18,13 @@ const RegisterEmployees = () => {
     }, {});
 
     try {
-      const response = await api.post("/registerEmployee", { ...values });
+      const response = await api.post("/employee/register", { ...values });
 
-      console.log(response.data);
+      if (response.data) toast.success(response.data.msg);
     } catch (err) {
-      console.log(err);
+      const msg = err.response?.data?.msg;
+
+      if (msg) toast.warn(msg);
 
       if (err.status == 401) return setEmployee(null);
     }

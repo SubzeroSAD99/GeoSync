@@ -1,5 +1,8 @@
 import express from "express";
-import allRouter from "./routes/allRouter.mjs";
+import employeeRouter from "./routes/employeeRouter.mjs";
+import serviceRouter from "./routes/serviceRouter.mjs";
+import mainRouter from "./routes/mainRouter.mjs";
+import { authMiddleware } from "./middlewares/authorize.mjs";
 import initAll from "./models/initModels.mjs";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -17,7 +20,11 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/", allRouter);
+app.use("/", mainRouter);
+
+app.use(authMiddleware);
+app.use("/service", serviceRouter);
+app.use("/employee", employeeRouter);
 
 app.listen(PORT, () => {
   initAll().then(() => {

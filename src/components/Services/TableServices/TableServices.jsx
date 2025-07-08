@@ -21,9 +21,10 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const TableServices = ({ title, allServices, setAllServices }) => {
-  const TOTAL_ITEMS_PAGE = 5;
+  const TOTAL_ITEMS_PAGE = 50;
   const { setEmployee } = useAuth();
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
@@ -55,9 +56,10 @@ const TableServices = ({ title, allServices, setAllServices }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await api.post("/deleteOS", { id });
+      const response = await api.post("/service/delete", { id });
 
       if (response.data && !response.data.err) {
+        toast.warn("Serviço deletado com sucesso!");
         setAllServices((prevServices) =>
           prevServices.filter((service) => service.id !== id)
         );
@@ -68,7 +70,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
   };
 
   const handleEdit = async (id) => {
-    navigate(`/servicos/editar-servico/${id}`);
+    navigate(`/servicos/editar/${id}`);
   };
 
   return (
@@ -79,7 +81,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
         <FilterContainer>
           <FilterBar
             label="Cliente"
-            column="clientName"
+            column="owner"
             filters={filters}
             onChange={setFilters}
           />
@@ -133,7 +135,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
                 (
                   {
                     id,
-                    clientName,
+                    owner,
                     serviceType,
                     employee,
                     municipaly,
@@ -146,7 +148,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
                   <RowTable
                     key={index}
                     id={id}
-                    clientName={clientName}
+                    owner={owner}
                     serviceType={serviceType}
                     employeeName={employee}
                     municipality={municipaly}

@@ -9,6 +9,7 @@ import FormInputItem from "../../FormInputItem/FormInputItem";
 import api from "../../../utils/api.mjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const { employee, setEmployee } = useAuth();
@@ -30,14 +31,19 @@ const Login = () => {
         password,
       });
 
-      console.log(response);
-
       if (response.data && !response.data.err) {
+        const name = response.data.employee.split(" ")[1].toLowerCase();
+
+        toast(
+          `Seja Bem Vindo ${name.charAt(0).toUpperCase() + name.slice(1)}!`
+        );
         setEmployee(response.data.employee);
         navigate(from, { replace: true });
       }
     } catch (err) {
-      console.log(err);
+      const msg = err.response?.data?.msg;
+
+      if (msg) toast.error(msg);
     }
   };
 

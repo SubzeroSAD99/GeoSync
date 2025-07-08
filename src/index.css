@@ -1,7 +1,7 @@
 :root {
   --main-color: rgb(0, 95, 196);
   --main-color-op05: rgba(0, 95, 196, 0.5);
-  --highlight-main-color: rgb(0, 123, 255);
+  --highlight-main-color: rgb(0, 132, 255);
   --bg-color: #fff;
   --bg-secundary-color: #e4e4e4;
   --text-color: #000000;
@@ -44,11 +44,11 @@ body,
 }
 
 main,
-section {
+main > section {
   width: 100%;
 }
 
-section {
+main > section {
   display: flex;
   flex-direction: column;
   justify-content: center;
