@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 const InfoContainer = styled.div`
@@ -57,6 +58,20 @@ const StyledTd = styled.td({
   textTransform: "uppercase",
 });
 
+const StyledButton = styled.button`
+  background-color: transparent;
+  box-shadow: none !important;
+
+  & > * {
+    color: var(--highlight-main-color) !important;
+  }
+`;
+
+const StyledFontAwesome = styled(FontAwesomeIcon)`
+  font-size: 1.2rem;
+  color: rgb(0, 223, 0);
+`;
+
 export {
   InfoContainer,
   TableContainer,
@@ -64,4 +79,6 @@ export {
   StyledTBody,
   StyledTh,
   StyledTd,
+  StyledButton,
+  StyledFontAwesome,
 };

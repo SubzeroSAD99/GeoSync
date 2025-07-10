@@ -36,10 +36,16 @@ const EditServices = (id) => {
         const response = await api.post("/service/getOne", id);
 
         if (response.data) setServiceInfo(response.data.service);
+
+        console.log(response.data.service);
       } catch (err) {
+        const msg = err?.response?.data?.msg;
+
         if (err.status == 401) {
           setEmployee(null);
         }
+
+        toast.error(msg);
       }
     })();
   }, []);

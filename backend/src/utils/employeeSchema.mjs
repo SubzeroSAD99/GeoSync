@@ -4,8 +4,8 @@ export const registerSchema = Joi.object({
   role: Joi.string()
     .lowercase()
     .empty("", "selecione")
-    .valid("funcionario", "administrador")
-    .default("funcionario"),
+    .valid("cadista", "administrador")
+    .default("cadista"),
   cpf: Joi.string()
     .pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
     .required()
@@ -16,6 +16,7 @@ export const registerSchema = Joi.object({
     .trim()
     .pattern(/^[A-Za-zÀ-ÿ\s]+$/)
     .min(3)
+    .lowercase()
     .required()
     .messages({
       "string.pattern.base": "O nome só pode conter letras e espaços.",
@@ -53,6 +54,7 @@ export const updateSchema = Joi.object({
     .required(),
   fullName: Joi.string()
     .trim()
+    .lowercase()
     .pattern(/^[A-Za-zÀ-ÿ\s]+$/)
     .min(3)
     .required()
@@ -66,8 +68,8 @@ export const updateSchema = Joi.object({
   role: Joi.string()
     .empty("", "selecione")
     .lowercase()
-    .valid("funcionario", "administrador")
-    .default("funcionario"),
+    .valid("cadista", "administrador")
+    .default("cadista"),
 
   phoneNumber: Joi.string()
     .optional()

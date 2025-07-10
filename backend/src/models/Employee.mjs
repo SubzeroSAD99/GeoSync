@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/db.mjs";
+import ServiceOrder from "./ServiceOrder.mjs";
 
 class Employee extends Model {}
 
@@ -29,8 +30,8 @@ Employee.init(
     },
 
     role: {
-      type: DataTypes.ENUM("funcionario", "administrador", "medidor"),
-      defaultValue: "funcionario",
+      type: DataTypes.ENUM("cadista", "administrador", "topografo"),
+      defaultValue: "cadista",
       allowNull: false,
     },
 

@@ -6,9 +6,12 @@ import { authMiddleware } from "./middlewares/authorize.mjs";
 import initAll from "./models/initModels.mjs";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { startSock } from "./services/whatsappServices.mjs";
 
 const app = express();
 const PORT = 9999;
+
+startSock().catch(console.error);
 
 app.use(
   cors({
@@ -28,7 +31,7 @@ app.use("/employee", employeeRouter);
 
 app.listen(PORT, () => {
   initAll().then(() => {
-    console.log("\x1b[32m✔\x1b[0m Banco de Dados Sincronizado Com Sucesso!");
+    console.log("\x1b[32m✔\x1b[0m Banco de Dados Sincronizado com Sucesso!");
     console.log(`\x1b[32m✔\x1b[0m Servidor Backend Rodando em ${PORT}.`);
   });
 });

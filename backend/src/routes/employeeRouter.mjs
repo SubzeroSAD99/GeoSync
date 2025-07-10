@@ -4,6 +4,7 @@ import EmployeeController from "../controllers/EmployeeController.mjs";
 const router = Router();
 
 router.post("/getAll", EmployeeController.getAll);
+router.post("/getTopographers", EmployeeController.getAllTopographers);
 router.post("/getOne", EmployeeController.getById);
 router.post("/register", EmployeeController.register);
 router.post("/edit", EmployeeController.update);

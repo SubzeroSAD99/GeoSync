@@ -1,20 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "../Calendar/Calendar";
 import {
   InfoContainer,
+  StyledButton,
+  StyledFontAwesome,
   StyledTable,
   StyledTd,
   StyledTh,
   TableContainer,
 } from "./ScheduleService.styled.mjs";
+import { faCheck, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
+import api from "../../../utils/api.mjs";
+import { toast } from "react-toastify";
 
 const ScheduleServices = () => {
-  const [info, setInfo] = useState([]);
+  const [eventsByTopographer, setEventsByTopographer] = useState({});
+  const [selected, setSelected] = useState({ day: "", topographer: "" });
+  const [topographers, setTopographers] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await api.post("/employee/getTopographers");
+
+        if (response.data) setTopographers(response.data.topographers);
+      } catch (err) {
+        const msg = err?.response?.data?.msg;
+
+        toast.error(msg);
+      }
+    })();
+  }, []);
+
+  const setEventsFor = (topographer) => (newEvents) => {
+    setEventsByTopographer((prev) => ({
+      ...prev,
+      [topographer.id]: newEvents,
+    }));
+  };
+
+  const confirmService = async (id) => {
+    try {
+      const response = await api.post("/service/confirm", { id });
+
+      if (response.data) {
+        setEventsByTopographer((prev) => {
+          const { topographer, day } = selected;
+          const dayEvents = prev[topographer]?.[day] || [];
+          const updated = dayEvents.map((item) =>
+            item.id === id ? { ...item, confirmed: true } : item
+          );
+          return {
+            ...prev,
+            [topographer]: {
+              ...prev[topographer],
+              [day]: updated,
+            },
+          };
+        });
+        if (response.data?.warn) toast.warn(response.data.msg);
+        else toast.success(response.data.msg);
+      }
+    } catch (err) {
+      const msg = err?.response?.data?.msg;
+
+      toast.error(msg);
+    }
+  };
 
   return (
     <section style={{ gap: "40px" }}>
-      {info.length ? (
-        <InfoContainer onClick={() => setInfo([])}>
+      {selected.day ? (
+        <InfoContainer
+          onClick={() => setSelected({ day: "", topographer: "" })}
+        >
           <TableContainer onClick={(e) => e.stopPropagation()}>
             <StyledTable>
               <thead>
@@ -26,11 +85,13 @@ const ScheduleServices = () => {
                   <StyledTh>Municipio / Local</StyledTh>
                   <StyledTh>Horario</StyledTh>
                   <StyledTh>Obs</StyledTh>
+                  <StyledTh>Confirmar</StyledTh>
                 </tr>
               </thead>
               <tbody>
-                {info.map(
+                {eventsByTopographer[selected.topographer][selected.day].map(
                   ({
+                    id,
                     serviceType,
                     owner,
                     contractor,
@@ -39,8 +100,9 @@ const ScheduleServices = () => {
                     municipaly,
                     measurementHour,
                     internalObs,
+                    confirmed,
                   }) => (
-                    <tr>
+                    <tr key={id}>
                       <StyledTd>{serviceType}</StyledTd>
                       <StyledTd>{owner}</StyledTd>
                       <StyledTd>{contractor}</StyledTd>
@@ -48,6 +110,19 @@ const ScheduleServices = () => {
                       <StyledTd>{municipaly}</StyledTd>
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>
+                      <StyledTd>
+                        {!confirmed ? (
+                          <StyledButton
+                            onClick={() => {
+                              confirmService(id);
+                            }}
+                          >
+                            <StyledFontAwesome icon={faSquareCheck} />
+                          </StyledButton>
+                        ) : (
+                          <StyledFontAwesome icon={faCheck} />
+                        )}
+                      </StyledTd>
                     </tr>
                   )
                 )}
@@ -58,8 +133,17 @@ const ScheduleServices = () => {
       ) : (
         <></>
       )}
-      <Calendar meter={"Jose Anilo Lopes"} setInfo={setInfo} />
-      <Calendar meter={"Jose Arcanjo Junior"} setInfo={setInfo} />
+      {topographers.map((topographer) => (
+        <Calendar
+          key={topographer.id}
+          topographer={topographer}
+          events={eventsByTopographer[topographer.id] || {}}
+          setEvents={setEventsFor(topographer)}
+          setViewScheduleDay={(day) =>
+            setSelected({ day, topographer: topographer.id })
+          }
+        />
+      ))}
     </section>
   );
 };

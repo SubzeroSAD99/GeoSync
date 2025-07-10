@@ -24,6 +24,7 @@ const FormInputItem = ({
   return (
     <InputContainer style={{ maxWidth: `${width}` }}>
       <IMaskInput
+        style={type !== "password" ? { textTransform: "uppercase" } : undefined}
         mask={mask}
         value={value}
         onAccept={(val) => {

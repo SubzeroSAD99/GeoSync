@@ -1,5 +1,6 @@
-import { DataTypes, Model, STRING } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/db.mjs";
+import Employee from "./Employee.mjs";
 
 class ServiceOrder extends Model {}
 
@@ -43,11 +44,6 @@ ServiceOrder.init(
       allowNull: false,
     },
 
-    employee: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-
     priority: {
       type: DataTypes.ENUM("baixa", "normal", "alta"),
       allowNull: false,
@@ -80,8 +76,8 @@ ServiceOrder.init(
       allowNull: true,
     },
 
-    meter: {
-      type: DataTypes.STRING,
+    topographer: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 
@@ -126,7 +122,7 @@ ServiceOrder.init(
     },
 
     cadist: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 
@@ -149,6 +145,11 @@ ServiceOrder.init(
     externalObs: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+
+    confirmed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {

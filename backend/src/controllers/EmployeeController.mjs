@@ -46,19 +46,45 @@ class EmployeeController {
 
   static async getAll(req, res) {
     try {
-      const employees = await Employee.findAll({ raw: true });
+      const employees = await Employee.findAll({
+        attributes: ["id", "fullName", "role"],
+        raw: true,
+      });
 
-      const allEmployees = employees.map((it) => {
+      const allEmployees = employees.map(({ id, fullName, role }) => {
         return {
-          id: generateToken({ id: it.id }),
-          fullName: it.fullName,
-          role: it.role,
+          id: generateToken({ id }),
+          fullName,
+          role,
         };
       });
 
       res.json({ employees: allEmployees });
     } catch (err) {
-      res.status(400).json({ err: "Erro ao localizar funcionarios!" });
+      res.status(400).json({ err: "Erro ao localizar cadistas!" });
+    }
+  }
+
+  static async getAllTopographers(req, res) {
+    try {
+      const topographers = await Employee.findAll({
+        attributes: ["id", "fullName"],
+        where: {
+          role: "topografo",
+        },
+        raw: true,
+      });
+
+      const allTopographers = topographers.map(({ id, fullName }) => {
+        return {
+          id: generateToken({ id }),
+          fullName,
+        };
+      });
+
+      res.json({ topographers: allTopographers });
+    } catch (err) {
+      res.status(500).json({ msg: "Erro interno no servidor!" });
     }
   }
 
@@ -121,7 +147,7 @@ class EmployeeController {
       const employee = await Employee.create(value);
 
       if (!employee)
-        return res.status(500).json({ msg: "Erro ao registrar funcionario!" });
+        return res.status(500).json({ msg: "Erro ao registrar cadista!" });
 
       return res
         .status(200)
@@ -192,7 +218,7 @@ class EmployeeController {
       if (!id)
         return res.json({
           err: true,
-          msg: "Não foi possivel encontrar funcionario",
+          msg: "Não foi possivel encontrar cadista",
         });
 
       const decodedId = verifyToken(id);
@@ -200,7 +226,7 @@ class EmployeeController {
       if (!decodedId.id)
         return res.json({
           err: true,
-          msg: "Não foi possivel encontrar funcionario",
+          msg: "Não foi possivel encontrar cadista",
         });
 
       const destroy = await Employee.destroy({
@@ -215,9 +241,9 @@ class EmployeeController {
           msg: "Funcionario deletado com sucesso!",
         });
 
-      res.json({ err: true, msg: "Não foi possivel encontrar funcionario" });
+      res.json({ err: true, msg: "Não foi possivel encontrar cadista" });
     } catch (err) {
-      res.json({ err: true, msg: "Não foi possivel encontrar funcionario" });
+      res.json({ err: true, msg: "Não foi possivel encontrar cadista" });
     }
   }
 }

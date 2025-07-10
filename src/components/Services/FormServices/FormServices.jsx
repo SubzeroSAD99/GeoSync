@@ -49,23 +49,34 @@ const FormServices = ({
   handleSubmit,
   owner,
   serviceType,
-  employee,
+  cadist,
   priority,
   status,
   step,
   pending,
   municipaly,
-  meter,
+  topographer,
+  measurementDate,
   internalObs,
   externalObs,
   textBtnSubmit,
   errors,
 }) => {
   const [employees, setEmployees] = useState([]);
-  const [meters, setMeters] = useState([]);
+  const [topographers, setTopographers] = useState([]);
   const { setEmployee } = useAuth();
   const [values, setValues] = useState({});
   const [searchParams] = useSearchParams();
+
+  const toOptions = (arr) =>
+    arr
+      .map((item) => ({ value: item, label: item }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+  const SERVICE_TYPE_OPTS = toOptions(SERVICE_TYPE);
+  const PRIORITY_OPTS = toOptions(PRIORITY);
+  const STATS_OPTS = toOptions(STATS);
+  const STEP_OPTS = toOptions(STEP);
 
   useEffect(() => {
     const measurementDate = searchParams.get("measurementDate");
@@ -79,14 +90,22 @@ const FormServices = ({
         if (data) {
           setEmployees(
             data.employees
-              .filter((obj) => obj.role !== "medidor")
-              .map((obj) => obj.fullName)
+              .filter((obj) => obj.role !== "topografo")
+              .map((obj) => ({
+                value: obj.id,
+                label: obj.fullName,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
           );
 
-          setMeters(
+          setTopographers(
             data.employees
-              .filter((obj) => obj.role === "medidor")
-              .map((obj) => obj.fullName)
+              .filter((obj) => obj.role === "topografo")
+              .map((obj) => ({
+                value: obj.id,
+                label: obj.fullName,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
           );
         }
       } catch (err) {
@@ -105,15 +124,14 @@ const FormServices = ({
   return (
     <StyledForm onSubmit={handleSubmit}>
       <SelectItem
-        options={employees.sort()}
-        title="Nome do Cliente"
+        options={employees}
+        title="Propietario"
         name="owner"
-        required={true}
         select={owner}
         error={errors === "owner"}
       />
       <SelectItem
-        options={SERVICE_TYPE.sort()}
+        options={SERVICE_TYPE_OPTS.sort()}
         title="Tipo de Serviço"
         name="serviceType"
         required={true}
@@ -121,27 +139,26 @@ const FormServices = ({
         error={errors === "serviceType"}
       />
       <SelectItem
-        options={employees.sort()}
-        title="Funcionário Encarregado"
-        name="employee"
-        required={true}
-        select={employee}
-        error={errors === "employee"}
+        options={employees}
+        title="Cadista"
+        name="cadist"
+        select={cadist}
+        error={errors === "cadist"}
       />
       <SelectItem
-        options={PRIORITY.sort()}
+        options={PRIORITY_OPTS.sort()}
         title="Prioridade"
         name="priority"
         select={priority}
       />
       <SelectItem
-        options={STATS.sort()}
+        options={STATS_OPTS.sort()}
         title="Status"
         name="status"
         select={status}
       />
       <SelectItem
-        options={STEP.sort()}
+        options={STEP_OPTS.sort()}
         title="Etapa"
         name="step"
         required={true}
@@ -149,13 +166,13 @@ const FormServices = ({
         error={errors === "step"}
       />
       <SelectItem
-        options={employees.sort()}
+        options={employees}
         title="Pendências"
         name="pending"
         select={pending}
       />
       <SelectItem
-        options={employees.sort()}
+        options={employees}
         title="Município"
         name="municipaly"
         required={true}
@@ -164,14 +181,14 @@ const FormServices = ({
       />
 
       <SelectItem
-        options={meters.sort()}
-        title="Medidor"
-        name="meter"
-        select={meter}
-        error={errors === "meter"}
+        options={topographers}
+        title="Topografo"
+        name="topographer"
+        select={topographer}
+        error={errors === "topographer"}
       />
 
-      <InputDate value={values.measurementDate} />
+      <InputDate value={values.measurementDate || measurementDate} />
 
       <Comment
         title="Observação Interna"

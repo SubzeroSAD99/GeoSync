@@ -83,6 +83,19 @@ const StyledButton = styled.button`
   background-color: transparent;
   box-shadow: none !important;
   color: var(--text-color);
+  transition: text-shadow 0.2s linear;
+
+  &:not(.holiday-or-weekend):hover {
+    text-shadow: 0px 0px 1px var(--text-color);
+  }
+
+  &.holiday-or-weekend:hover {
+    text-shadow: 0px 0px 1px rgb(255, 48, 48);
+  }
+
+  &.holiday-or-weekend {
+    color: rgb(255, 48, 48);
+  }
 `;
 
 export {

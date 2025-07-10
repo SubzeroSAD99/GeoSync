@@ -55,7 +55,7 @@ const TableEmployees = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/funcionarios/editar/${id}`);
+    navigate(`/gerenciamento/funcionarios/editar/${id}`);
   };
 
   return (

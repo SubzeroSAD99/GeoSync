@@ -10,7 +10,7 @@ router.post("/getOne", ServiceOrderController.getById);
 router.post("/getAllOpen", ServiceOrderController.getAllOpen);
 router.post("/getAllClosed", ServiceOrderController.getAllClosed);
 router.post("/getAllOfMonth", ServiceOrderController.getAllOpenByMonth);
-router.post("/getAllByDate", ServiceOrderController.getAllOpenByDate);
+router.post("/confirm", ServiceOrderController.confirm);
 router.post("/genPdf", ServiceOrderController.genPdf);
 
 export default router;

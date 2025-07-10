@@ -9,8 +9,9 @@ import {
   faTable,
   faTableCellsRowLock,
   faUsers,
-  faUserPlus,
   faCalendarAlt,
+  faGears,
+  faTableCellsRowUnlock,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -21,8 +22,13 @@ const Menu = () => {
     {
       label: "Serviços",
       icon: faTable,
-      redirect: "/",
       submenu: [
+        {
+          label: "Abertos",
+          icon: faTableCellsRowUnlock,
+          redirect: "/servicos/abertos",
+        },
+
         {
           label: "Fechados",
           icon: faTableCellsRowLock,
@@ -43,18 +49,16 @@ const Menu = () => {
       ],
     },
     {
-      label: "Funcionários",
-      icon: faUsers,
-      redirect: "/funcionarios",
+      label: "Gerenciamento",
+      icon: faGears,
       submenu: [
         {
-          label: "Cadastrar",
-          icon: faUserPlus,
-          redirect: "/funcionarios/cadastrar",
+          label: "Funcionários",
+          icon: faUsers,
+          redirect: "/gerenciamento/funcionarios",
         },
       ],
     },
-    { label: "Sobre", icon: faCircleInfo, redirect: "/sobre" },
   ];
 
   const { isMenuOpen, setMenuOpen } = useUI();
@@ -97,8 +101,8 @@ const Menu = () => {
             key={index}
             label={it.label}
             icon={it.icon}
-            redirect={it.redirect}
             submenu={it.submenu}
+            active={index === 0}
           />
         ))}
       </ul>

@@ -2,73 +2,83 @@ import Employee from "../models/Employee.mjs";
 
 const EMPLOYEES = [
   {
-    fullName: "ANTONIO KAUAN LOPES FREITAS",
+    fullName: "antonio kauan lopes freitas",
     cpf: "10179366335",
     password: "99",
     role: "administrador",
+    phoneNumber: "558896459091",
   },
   {
-    fullName: "BRUNO FELICIANO DE LIMA ALVES",
+    fullName: "bruno feliciano de lima alves",
     cpf: "06988874330",
     password: "99",
     role: "administrador",
+    phoneNumber: "558899582603",
   },
   {
-    fullName: "CAETANO SILVA SOEIRO FILHO",
+    fullName: "caetano silva soeiro filho",
     cpf: "09583615331",
     password: "99",
+    phoneNumber: "558896092114",
   },
   {
-    fullName: "FRANCISCO DAS CHAGAS PONTES NETO",
+    fullName: "francisco das chagas pontes neto",
     cpf: "78018293368",
     password: "99",
     role: "administrador",
   },
   {
-    fullName: "FRANCISCO EDSON SOEIRO CARNEIRO",
+    fullName: "francisco edson soeiro carneiro",
     cpf: "60618481370",
     password: "99",
+    phoneNumber: "558896370202",
   },
-  { fullName: "HENRIQUE SALES SOEIRO", cpf: "07475196330", password: "99" },
   {
-    fullName: "MARCOS ANTÔNIO SOEIRO FONTELES",
+    fullName: "henrique sales soeiro",
+    cpf: "07475196330",
+    password: "99",
+    phoneNumber: "558898194815",
+  },
+  {
+    fullName: "marcos antonio soeiro fonteles",
     cpf: "05650564337",
     password: "99",
+    phoneNumber: "558899751665",
   },
   {
-    fullName: "RAIMUNDO NONATO NASCIMENTO FILHO",
+    fullName: "raimundo nonato nascimento filho",
     cpf: "60619184370",
     password: "99",
+    phoneNumber: "558897711179",
   },
   {
-    fullName: "JHONATAN DOS SANTOS FREITAS",
+    fullName: "jonathan dos santos freitas",
     cpf: "04256885340",
     password: "99",
+    phoneNumber: "558591159472",
   },
   {
-    fullName: "JONAS SAULO LEORNE PONTES",
+    fullName: "jonas saulo leorne pontes",
     cpf: "64457923320",
     password: "99",
     role: "administrador",
   },
   {
-    fullName: "KAUAN DE SOUSA VASCONCELOS",
+    fullName: "kauan de sousa vasconcelos",
     cpf: "07997814361",
     password: "99",
   },
-
   {
-    fullName: "JOSE ANILO LOPES",
+    fullName: "jose anilo lopes",
     cpf: "00000000000",
     password: "99",
-    role: "medidor",
+    role: "topografo",
   },
-
   {
-    fullName: "JOSE ARCANJO JUNIOR",
+    fullName: "jose arcanjo junior",
     cpf: "11111111111",
     password: "99",
-    role: "medidor",
+    role: "topografo",
   },
 ];
 

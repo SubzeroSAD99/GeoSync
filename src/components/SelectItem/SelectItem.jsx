@@ -30,10 +30,18 @@ const SelectItem = ({
     setSelected(select ?? "");
   }, [select]);
 
+  const selectedOption = options.find((opt) =>
+    opt.value
+      ? opt.value.toUpperCase() === String(selected).toUpperCase()
+      : opt.label.toUpperCase() === String(selected).toUpperCase()
+  );
+
   const filteredOptions =
     query === ""
       ? options
-      : options.filter((it) => it.toUpperCase().includes(query.toUpperCase()));
+      : options.filter((it) =>
+          it.label.toUpperCase().includes(query.toUpperCase())
+        );
 
   return (
     <>
@@ -44,7 +52,7 @@ const SelectItem = ({
       >
         <Title>
           {title}
-          {required && " * "}
+          {required && <span style={{ color: "red" }}> *</span>}
         </Title>
 
         <Combobox
@@ -60,7 +68,7 @@ const SelectItem = ({
               setQuery("");
             }}
           >
-            {selected?.toUpperCase() || placeholder?.toUpperCase()}
+            {selectedOption?.label?.toUpperCase() || placeholder?.toUpperCase()}
             <StyledFontAwesome icon={faCaretDown} />
           </StyledCboxButton>
           <StyledCboxOptions>
@@ -84,8 +92,11 @@ const SelectItem = ({
                 </div>
               ) : (
                 filteredOptions.map((it, index) => (
-                  <StyledCboxOption key={`${it}-${index}`} value={it}>
-                    {it}
+                  <StyledCboxOption
+                    key={`${it}-${index}`}
+                    value={it.value ?? it.label}
+                  >
+                    {it.label.toUpperCase()}
                   </StyledCboxOption>
                 ))
               )}

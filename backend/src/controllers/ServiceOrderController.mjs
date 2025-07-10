@@ -5,17 +5,21 @@ import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
 import formatDate from "../utils/formatDate.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
-import { Op } from "sequelize";
+import { col, Op } from "sequelize";
+import WhatsappController from "./WhatsappController.mjs";
 
 const registerSchema = Joi.object({
+  cadist: Joi.string().trim().empty(["", "selecione", "SELECIONE"]).optional(),
+  topographer: Joi.string()
+    .trim()
+    .empty(["", "selecione", "SELECIONE"])
+    .optional(),
   owner: Joi.string()
     .lowercase()
+    .allow(null)
     .trim()
-    .required()
     .empty(["", "selecione"])
-    .messages({
-      "any.required": "Por favor, selecione um cliente.",
-    }),
+    .optional(),
   serviceType: Joi.string()
     .lowercase()
     .trim()
@@ -23,14 +27,6 @@ const registerSchema = Joi.object({
     .empty(["", "selecione"])
     .messages({
       "any.required": "Por favor, selecione um tipo de serviço.",
-    }),
-  employee: Joi.string()
-    .lowercase()
-    .trim()
-    .required()
-    .empty(["", "selecione"])
-    .messages({
-      "any.required": "Por favor, selecione um funcionario.",
     }),
   priority: Joi.string()
     .lowercase()
@@ -50,7 +46,7 @@ const registerSchema = Joi.object({
     .messages({
       "any.required": "Por favor, selecione uma etapa.",
     }),
-  pending: Joi.string().allow("").empty("selecione"),
+  pending: Joi.string().lowercase().allow("").empty("selecione"),
   municipaly: Joi.string()
     .lowercase()
     .trim()
@@ -66,9 +62,9 @@ const registerSchema = Joi.object({
     .default(null)
     .optional()
     .allow(null),
-  meter: Joi.string().lowercase().optional(),
   internalObs: Joi.string().allow("").max(500).optional(),
   externalObs: Joi.string().allow("").max(500).optional(),
+  confirmed: Joi.bool().default(false),
 });
 
 class ServiceOrderController {
@@ -81,6 +77,9 @@ class ServiceOrderController {
         msg: error.details[0].message,
       });
     }
+
+    value.cadist = verifyToken(value.cadist)?.id ?? null;
+    value.topographer = verifyToken(value.topographer)?.id ?? null;
 
     value.measurementDate = value?.measurementDate?.replace(
       /(\d{2})\/(\d{2})\/(\d{4})/,
@@ -142,6 +141,14 @@ class ServiceOrderController {
         });
       }
 
+      value.cadist = verifyToken(value.cadist)?.id ?? null;
+      value.topographer = verifyToken(value.topographer)?.id ?? null;
+
+      value.measurementDate = value?.measurementDate?.replace(
+        /(\d{2})\/(\d{2})\/(\d{4})/,
+        "$3-$2-$1"
+      );
+
       const decoded = verifyToken(id);
 
       const row = await ServiceOrder.update(value, {
@@ -172,10 +179,20 @@ class ServiceOrderController {
         raw: true,
       });
 
+      data.measurementDate = data?.measurementDate?.replace(
+        /(\d){4}-(\d){2}-(\d){2}/,
+        "$3/$2/$1"
+      );
+
+      data.cadist = generateToken({ id: data.cadist });
+      data.topographer = generateToken({ id: data.topographer });
+
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
       res.json({ service: data });
     } catch (err) {
+      console.log(err);
+
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
   }
@@ -186,6 +203,17 @@ class ServiceOrderController {
         where: {
           status: "aberta",
         },
+        attributes: {
+          exclude: ["cadist", "topographer", "updatedAt"],
+          include: [[col("CadistReader.fullName"), "cadist"]],
+        },
+        include: [
+          {
+            association: "CadistReader",
+            // esvaziar os atributos aqui, senão eles voltam duplicados
+            attributes: [],
+          },
+        ],
         raw: true,
       });
 
@@ -196,7 +224,7 @@ class ServiceOrderController {
 
       res.json(data);
     } catch (err) {
-      console.log(err);
+      res.status(500).json({ msg: "Erro interno do servidor!" });
     }
   }
 
@@ -206,6 +234,17 @@ class ServiceOrderController {
         where: {
           status: "fechada",
         },
+        attributes: {
+          exclude: ["cadist", "topographer", "updatedAt"],
+          include: [[col("CadistReader.fullName"), "cadist"]],
+        },
+        include: [
+          {
+            association: "CadistReader",
+            // esvaziar os atributos aqui, senão eles voltam duplicados
+            attributes: [],
+          },
+        ],
         raw: true,
       });
 
@@ -221,7 +260,7 @@ class ServiceOrderController {
   }
 
   static async getAllOpenByMonth(req, res) {
-    const { month, year, meter } = req.body;
+    const { month, year, topographer } = req.body;
 
     try {
       const mm = String(month).padStart(2, "0");
@@ -234,80 +273,63 @@ class ServiceOrderController {
       const end = `${nextYear}-${mm2}-01`;
 
       const services = await ServiceOrder.findAll({
+        attributes: [
+          "id",
+          "serviceType",
+          "contractor",
+          "contractorNumber",
+          "owner",
+          "municipaly",
+          "locality",
+          "ownerNumber",
+          "measurementHour",
+          "measurementDate",
+          "internalObs",
+          "confirmed",
+        ],
         where: {
           measurementDate: {
             [Op.gte]: start, // >= YYYY-MM-01
             [Op.lt]: end, // < YYYY-MM+1-01
           },
           status: "aberta",
-          meter: meter.toLowerCase(),
+          topographer: verifyToken(topographer)?.id,
         },
         order: [["measurementDate", "ASC"]],
         raw: true,
       });
 
-      const formattedServices = services.map((it) => {
-        return {
-          serviceType: it.serviceType,
-          contractor: it.contractor,
-          contractorNumber: it.contractorNumber,
-          owner: it.owner,
-          municipaly: it.municipaly,
-          locality: it.locality,
-          ownerNumber: it.ownerNumber,
-          measurementHour: it.measurementHour,
-          measurementDate: it.measurementDate,
-          internalObs: it.internalObs,
-        };
-      });
-
-      res.json({ services: formattedServices });
-    } catch (err) {
-      console.log(err);
-
-      res.status(500).json({ msg: "Erro ao acessar agendamento!" });
-    }
-  }
-
-  static async getAllOpenByDate(req, res) {
-    const { day, month, year, meter } = req.body;
-
-    try {
-      const start = `${year}-${String(month).padStart(2, "0")}-${String(
-        day
-      ).padStart(2, "0")}`;
-
-      const end = `${year}-${String(month).padStart(2, "0")}-${String(
-        day + 1
-      ).padStart(2, "0")}`;
-
-      const services = await ServiceOrder.findAll({
-        where: {
-          measurementDate: {
-            [Op.gte]: start,
-            [Op.lt]: end,
-          },
-          status: "aberta",
-          meter: meter.toLowerCase(),
-        },
-        order: [["measurementDate", "ASC"]],
-        raw: true,
-      });
-
-      const formattedServices = services.map((it) => {
-        return {
-          serviceType: it.serviceType,
-          contractor: it.contractor,
-          contractorNumber: it.contractorNumber,
-          owner: it.owner,
-          municipaly: it.municipaly,
-          locality: it.locality,
-          ownerNumber: it.ownerNumber,
-          measurementHour: it.measurementHour,
-          measurementDate: it.measurementDate,
-          internalObs: it.internalObs,
-        };
-      });
+      const formattedServices = services.map(
+        ({
+          id,
+          serviceType,
+          contractor,
+          contractorNumber,
+          owner,
+          municipaly,
+          locality,
+          ownerNumber,
+          measurementHour,
+          measurementDate,
+          internalObs,
+          confirmed,
+        }) => {
+          return {
+            id: generateToken({ id }),
+            serviceType,
+            contractor,
+            contractorNumber,
+            owner,
+            municipaly,
+            locality,
+            ownerNumber,
+            measurementHour,
+            measurementDate,
+            internalObs,
+            confirmed,
+          };
+        }
+      );
 
       res.json({ services: formattedServices });
     } catch (err) {
@@ -336,6 +358,68 @@ class ServiceOrderController {
     });
 
     await browser.close();
+  }
+
+  static async confirm(req, res) {
+    try {
+      const { id } = req.body;
+
+      const decoded = verifyToken(id);
+
+      const order = await ServiceOrder.findOne({
+        where: { id: decoded.id },
+        attributes: [
+          "id",
+          "cadist",
+          "topographer",
+          "contractorNumber",
+          "confirmed",
+        ],
+        include: [
+          {
+            association: "TopographerReader",
+            attributes: ["phoneNumber"],
+          },
+
+          {
+            association: "CadistReader",
+            attributes: ["phoneNumber"],
+          },
+        ],
+      });
+
+      if (!order) {
+        return res.status(404).json({ msg: "Serviço não encontrado!" });
+      }
+
+      order.confirmed = true;
+      await order.save();
+
+      const topographerPhone = order.TopographerReader?.phoneNumber;
+      const cadistPhone = order.CadistReader?.phoneNumber;
+
+      console.log(topographerPhone, cadistPhone);
+
+      try {
+        if (topographerPhone)
+          await WhatsappController.sendMessage(
+            topographerPhone,
+            "Serviço agendado!"
+          );
+        if (cadistPhone)
+          await WhatsappController.sendMessage(
+            cadistPhone,
+            "Serviço agendado!"
+          );
+      } catch (err) {
+        return res.json({ warn: true, msg: "Erro ao enviar mensagens!" });
+      }
+      return res.json({ msg: "Serviço confirmado com sucesso!" });
+    } catch (err) {
+      console.log(err);
+
+      res.status(500).json({ msg: "Erro ao confirmar serviço!" });
+    }
   }
 
   static formatCurrency(value) {

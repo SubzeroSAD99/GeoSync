@@ -1,34 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyledMenuItemList,
   StyledLink,
   SubList,
+  OptionsContainer,
+  StyledButtonTitle,
+  StyledIconCaret,
 } from "./MenuItemList.styles.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-const MenuItemList = ({ label, icon, redirect, submenu, onClick }) => {
+const MenuItemList = ({ label, icon, redirect, submenu, active }) => {
   const location = useLocation();
-
-  const isActive =
-    location.pathname === redirect ||
-    submenu?.some((sub) => location.pathname === sub.redirect);
+  const [isActive, setIsActive] = useState(active);
 
   return (
-    <StyledMenuItemList onClick={onClick}>
-      <div className={location.pathname === redirect ? "selected" : ""}>
-        <StyledLink to={redirect}>
-          <FontAwesomeIcon icon={icon} />
-          <p>{label}</p>
-        </StyledLink>
+    <StyledMenuItemList
+      onClick={(e) => {
+        setIsActive((prev) => !prev);
+      }}
+    >
+      <div className={location.pathname.includes(redirect) ? "selected" : ""}>
+        <StyledButtonTitle>
+          <OptionsContainer>
+            <FontAwesomeIcon icon={icon} />
+            <p>{label}</p>
+          </OptionsContainer>
+          <StyledIconCaret icon={faCaretDown} className={isActive && "open"} />
+        </StyledButtonTitle>
       </div>
 
       {submenu && isActive && (
-        <SubList>
+        <SubList
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           {submenu.map((obj, index) => (
             <StyledMenuItemList key={`${obj.label}-${index}`}>
               <div
-                className={location.pathname === obj.redirect ? "selected" : ""}
+                className={
+                  location.pathname.includes(obj.redirect) ? "selected" : ""
+                }
               >
                 <StyledLink to={obj.redirect}>
                   <FontAwesomeIcon icon={obj.icon} />

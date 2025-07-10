@@ -22,20 +22,20 @@ const privateRoutes = [
         path: "cadastrar",
         element: <RegisterServicesPage />,
       },
+      { path: "abertos", element: <HomePage /> },
       { path: "fechados", element: <ClosedServicesPage /> },
       { path: "editar/:id", element: <EditServicesPage /> },
       { path: "agendar", element: <ScheduleServicesPage /> },
     ],
   },
   {
-    path: "funcionarios",
+    path: "gerenciamento/funcionarios",
     children: [
       { element: <EmployeesPage />, index: true },
       { path: "cadastrar", element: <RegisterEmployeesPage /> },
       { path: "editar/:id", element: <EditEmployeesPage /> },
     ],
   },
-  { path: "sobre", element: <AboutPage /> },
   { path: "teste", element: <Loading /> },
   { path: "*", element: <NotFoundPage /> },
 ];

@@ -14,8 +14,8 @@ import {
 const RowTable = ({
   id,
   owner,
+  cadist,
   serviceType,
-  employeeName,
   municipality,
   priority,
   stats,
@@ -27,7 +27,7 @@ const RowTable = ({
     <tr>
       <StyledTd>{owner}</StyledTd>
       <StyledTd>{serviceType}</StyledTd>
-      <StyledTd>{employeeName}</StyledTd>
+      <StyledTd>{cadist}</StyledTd>
       <StyledTd>{municipality}</StyledTd>
       <StyledTd>
         <PriorityContainer $priority={priority}>{priority}</PriorityContainer>

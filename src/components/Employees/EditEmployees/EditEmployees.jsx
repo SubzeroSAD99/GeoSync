@@ -6,7 +6,12 @@ import { toast } from "react-toastify";
 
 const EditEmployees = ({ id }) => {
   const [infoEmployee, setInfoEmployee] = useState({});
-  const [role, setRole] = useState("FUNCIONARIO");
+  const [role, setRole] = useState("CADISTA");
+  const allRoles = [
+    { label: "CADISTA" },
+    { label: "TOPOGRAFO" },
+    { label: "ADMINISTRADOR" },
+  ];
 
   useEffect(() => {
     (async () => {
@@ -35,7 +40,10 @@ const EditEmployees = ({ id }) => {
     try {
       const response = await api.post("/employee/edit", { id, ...values });
 
-      if (response.data) toast.success(response.data.msg);
+      if (response.data) {
+        setRole(values.role);
+        toast.success(response.data.msg);
+      }
     } catch (err) {
       const msg = err.response?.data?.msg;
 
@@ -46,14 +54,11 @@ const EditEmployees = ({ id }) => {
   return (
     <section>
       <Title>Editar Funcionario</Title>
+
       <FormEmployees
         {...infoEmployee}
         handleSubmit={handleSubmit}
-        options={[
-          role.toUpperCase() === "FUNCIONARIO"
-            ? "ADMINISTRADOR"
-            : "FUNCIONARIO",
-        ]}
+        options={allRoles.filter((it) => it.label !== role.toUpperCase())}
         role={role}
         btnSubmitValue={"Salvar Alterações"}
       />

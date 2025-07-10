@@ -51,6 +51,8 @@ const TableServices = ({ title, allServices, setAllServices }) => {
     const start = TOTAL_ITEMS_PAGE * (tablePage - 1);
     const end = TOTAL_ITEMS_PAGE * tablePage;
 
+    console.log(filteredServices);
+
     return filteredServices.slice(start, end);
   }, [filteredServices, tablePage]);
 
@@ -121,7 +123,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
             <tr style={{ backgroundColor: "var(--main-color-op05)" }}>
               <StyledTh>Nome do Cliente</StyledTh>
               <StyledTh>Tipo de Serviço</StyledTh>
-              <StyledTh>Nome do Funcionário</StyledTh>
+              <StyledTh>Cadista</StyledTh>
               <StyledTh>Município</StyledTh>
               <StyledTh>Prioridade</StyledTh>
               <StyledTh>Status</StyledTh>
@@ -137,7 +139,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
                     id,
                     owner,
                     serviceType,
-                    employee,
+                    cadist,
                     municipaly,
                     priority,
                     status,
@@ -149,8 +151,8 @@ const TableServices = ({ title, allServices, setAllServices }) => {
                     key={index}
                     id={id}
                     owner={owner}
+                    cadist={cadist}
                     serviceType={serviceType}
-                    employeeName={employee}
                     municipality={municipaly}
                     priority={priority}
                     stats={status}

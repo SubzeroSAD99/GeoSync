@@ -32,7 +32,7 @@ const Login = () => {
       });
 
       if (response.data && !response.data.err) {
-        const name = response.data.employee.split(" ")[1].toLowerCase();
+        const name = response.data.employee.split(" ")[0].toLowerCase();
 
         toast(
           `Seja Bem Vindo ${name.charAt(0).toUpperCase() + name.slice(1)}!`

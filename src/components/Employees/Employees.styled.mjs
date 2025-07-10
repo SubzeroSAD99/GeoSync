@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const TitleContainer = styled.div({
   display: "flex",
@@ -17,4 +18,14 @@ const Title = styled.h2({
   width: "max-content",
 });
 
-export { TitleContainer, Title };
+const StyledLink = styled(Link)`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px;
+  height: 25px;
+`;
+
+export { TitleContainer, Title, StyledLink };

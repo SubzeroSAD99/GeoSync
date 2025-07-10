@@ -35,7 +35,7 @@ const RegisterEmployees = () => {
       <Title>Cadastro de Funcionario</Title>
       <FormEmployees
         handleSubmit={handleSubmit}
-        options={["ADMINISTRADOR"]}
+        options={[{ label: "ADMINISTRADOR", value: "ADMINISTRADOR" }]}
         role={"FUNCIONARIO"}
         btnSubmitValue={"Cadastrar"}
       />
