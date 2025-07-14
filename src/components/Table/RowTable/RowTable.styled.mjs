@@ -8,6 +8,7 @@ const StyledTd = styled.td({
 const Actions = styled.div({
   display: "flex",
   flexDirection: "row",
+  justifyContent: "center",
   alignItems: "center",
   flexWrap: "wrap",
   gap: "10px",
@@ -20,6 +21,7 @@ const Actions = styled.div({
     justifyContent: "center",
     alignItems: "center",
     gap: "5px",
+    maxWidth: "150px",
     flex: "1 1 auto",
     flexWrap: "wrap",
     fontSize: "1rem",

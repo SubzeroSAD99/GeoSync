@@ -41,6 +41,7 @@ const StyledButtonTitle = styled.button`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   width: 100%;
   height: 100%;
   color: var(--text-color2);

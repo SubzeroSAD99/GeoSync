@@ -1,4 +1,5 @@
 import Employee from "./Employee.mjs";
+import Municipality from "./Municipality.mjs";
 import ServiceOrder from "./ServiceOrder.mjs";
 
 // Topografo
@@ -27,6 +28,7 @@ const initAll = async () => {
   await Promise.all([
     Employee.sync({ force: false }),
     ServiceOrder.sync({ force: false }),
+    Municipality.sync({ force: false }),
   ]);
 };
 

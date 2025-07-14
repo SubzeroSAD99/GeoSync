@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const TableServices = ({ title, allServices, setAllServices }) => {
-  const TOTAL_ITEMS_PAGE = 50;
+  const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
   const { setEmployee } = useAuth();
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
@@ -50,8 +50,6 @@ const TableServices = ({ title, allServices, setAllServices }) => {
   const pageServices = useMemo(() => {
     const start = TOTAL_ITEMS_PAGE * (tablePage - 1);
     const end = TOTAL_ITEMS_PAGE * tablePage;
-
-    console.log(filteredServices);
 
     return filteredServices.slice(start, end);
   }, [filteredServices, tablePage]);

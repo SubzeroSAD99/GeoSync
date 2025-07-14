@@ -13,25 +13,31 @@ import {
   StyledTd,
 } from "./RowTable.styled.mjs";
 
-const RowTable = ({ id, fullName, role, onDelete, onEdit }) => {
+const RowTable = ({ rows, obj, onDelete, onEdit }) => {
   return (
     <tr>
-      <StyledTd>{fullName}</StyledTd>
-      <StyledTd>
-        <FontAwesomeIcon
-          icon={role === "administrador" ? faUserTie : faUser}
-          style={{
-            paddingRight: "8px",
-          }}
-        />
+      {rows.map((it) => (
+        <>
+          <StyledTd>
+            {it === "role" && (
+              <FontAwesomeIcon
+                icon={it === "administrador" ? faUserTie : faUser}
+                style={{
+                  paddingRight: "8px",
+                }}
+              />
+            )}
 
-        {role}
-      </StyledTd>
+            {obj[it]}
+          </StyledTd>
+        </>
+      ))}
+
       <StyledTd>
         <Actions>
           <ButtonDelete
             onClick={() => {
-              onDelete(id);
+              onDelete(obj.id);
             }}
           >
             <FontAwesomeIcon icon={faTrash} />
@@ -39,7 +45,7 @@ const RowTable = ({ id, fullName, role, onDelete, onEdit }) => {
           </ButtonDelete>
           <ButtonEdit
             onClick={() => {
-              onEdit(id);
+              onEdit(obj.id);
             }}
           >
             <FontAwesomeIcon icon={faEdit} />

@@ -6,10 +6,12 @@ import ScheduleServicesPage from "./pages/Services/ScheduleServicesPage.jsx";
 import EmployeesPage from "./pages/Employees/EmployeesPage.jsx";
 import RegisterEmployeesPage from "./pages/Employees/RegisterEmployeesPage.jsx";
 import EditEmployeesPage from "./pages/Employees/EditEmployeesPage.jsx";
-import AboutPage from "./pages/AboutPage.jsx";
 import LoginPage from "./pages/Employees/LoginPage.jsx";
 import Loading from "./components/Loading/Loading.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import MunicipalitiesPage from "./pages/Municipalities/MunicipalitiesPage.jsx";
+import RegisterMunicipalitiesPage from "./pages/Municipalities/RegisterMunicipalitiesPage.jsx";
+import EditMunicipalitiesPage from "./pages/Municipalities/EditMunicipalitiesPage.jsx";
 
 const publicRoutes = [{ path: "/login", element: <LoginPage /> }];
 
@@ -28,12 +30,17 @@ const privateRoutes = [
       { path: "agendar", element: <ScheduleServicesPage /> },
     ],
   },
+
   {
-    path: "gerenciamento/funcionarios",
+    path: "gerenciamento",
     children: [
-      { element: <EmployeesPage />, index: true },
-      { path: "cadastrar", element: <RegisterEmployeesPage /> },
-      { path: "editar/:id", element: <EditEmployeesPage /> },
+      { path: "funcionarios", element: <EmployeesPage /> },
+      { path: "funcionarios/cadastrar", element: <RegisterEmployeesPage /> },
+      { path: "funcionarios/editar/:id", element: <EditEmployeesPage /> },
+
+      { path: "municipios", element: <MunicipalitiesPage /> },
+      { path: "municipios/cadastrar", element: <RegisterMunicipalitiesPage /> },
+      { path: "municipios/editar/:id", element: <EditMunicipalitiesPage /> },
     ],
   },
   { path: "teste", element: <Loading /> },

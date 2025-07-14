@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const ServicesContainer = styled.div({
+const TableContainer = styled.div({
+  display: "flex",
+  flexDirection: "column",
   height: "100%",
   padding: "10px",
   overflowX: "auto",
   width: "100%",
+  gap: "20px",
 });
 
 const StyledTable = styled.table({
@@ -43,4 +45,28 @@ const StyledTd = styled.td({
   fontSize: "1rem",
 });
 
-export { ServicesContainer, StyledTable, StyledTBody, StyledTh, StyledTd };
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-size: 1.1rem;
+  user-select: none;
+`;
+
+const ButtonChangePage = styled.div`
+  background-color: transparent;
+  box-shadow: none;
+  cursor: pointer;
+`;
+
+export {
+  TableContainer,
+  StyledTable,
+  StyledTBody,
+  StyledTh,
+  StyledTd,
+  PageContainer,
+  ButtonChangePage,
+};

@@ -12,6 +12,7 @@ import {
   faCalendarAlt,
   faGears,
   faTableCellsRowUnlock,
+  faEarthAmerica,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -56,6 +57,12 @@ const Menu = () => {
           label: "Funcionários",
           icon: faUsers,
           redirect: "/gerenciamento/funcionarios",
+        },
+
+        {
+          label: "Municipios",
+          icon: faEarthAmerica,
+          redirect: "/gerenciamento/municipios",
         },
       ],
     },

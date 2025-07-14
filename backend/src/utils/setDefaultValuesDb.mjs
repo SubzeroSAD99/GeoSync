@@ -1,4 +1,5 @@
 import Employee from "../models/Employee.mjs";
+import Municipality from "../models/Municipality.mjs";
 
 const EMPLOYEES = [
   {
@@ -8,6 +9,14 @@ const EMPLOYEES = [
     role: "administrador",
     phoneNumber: "558896459091",
   },
+
+  {
+    fullName: "antonio ermeson braga rios",
+    cpf: "11036835359",
+    password: "99",
+    phoneNumber: "558899381123",
+  },
+
   {
     fullName: "bruno feliciano de lima alves",
     cpf: "06988874330",
@@ -82,4 +91,560 @@ const EMPLOYEES = [
   },
 ];
 
+const MUNICIPALITIES = [
+  {
+    name: "abaiara",
+  },
+  {
+    name: "acarape",
+  },
+  {
+    name: "acaraú",
+  },
+  {
+    name: "acopiara",
+  },
+  {
+    name: "aiuaba",
+  },
+  {
+    name: "alcântaras",
+  },
+  {
+    name: "altaneira",
+  },
+  {
+    name: "alto santo",
+  },
+  {
+    name: "amontada",
+  },
+  {
+    name: "antonina do norte",
+  },
+  {
+    name: "apuiarés",
+  },
+  {
+    name: "aquiraz",
+  },
+  {
+    name: "aracati",
+  },
+  {
+    name: "aracoiaba",
+  },
+  {
+    name: "ararendá",
+  },
+  {
+    name: "araripe",
+  },
+  {
+    name: "aratuba",
+  },
+  {
+    name: "arneiroz",
+  },
+  {
+    name: "assaré",
+  },
+  {
+    name: "aurora",
+  },
+  {
+    name: "baixio",
+  },
+  {
+    name: "banabuiú",
+  },
+  {
+    name: "barbalha",
+  },
+  {
+    name: "barreira",
+  },
+  {
+    name: "barro",
+  },
+  {
+    name: "barroquinha",
+  },
+  {
+    name: "baturité",
+  },
+  {
+    name: "beberibe",
+  },
+  {
+    name: "bela cruz",
+  },
+  {
+    name: "boa viagem",
+  },
+  {
+    name: "brejo santo",
+  },
+  {
+    name: "camocim",
+  },
+  {
+    name: "campos sales",
+  },
+  {
+    name: "canindé",
+  },
+  {
+    name: "capistrano",
+  },
+  {
+    name: "caridade",
+  },
+  {
+    name: "cariré",
+  },
+  {
+    name: "caririaçu",
+  },
+  {
+    name: "cariús",
+  },
+  {
+    name: "carnaubal",
+  },
+  {
+    name: "cascavel",
+  },
+  {
+    name: "catarina",
+  },
+  {
+    name: "catunda",
+  },
+  {
+    name: "caucaia",
+  },
+  {
+    name: "cedro",
+  },
+  {
+    name: "chaval",
+  },
+  {
+    name: "choró",
+  },
+  {
+    name: "chorozinho",
+  },
+  {
+    name: "coreaú",
+  },
+  {
+    name: "crateús",
+  },
+  {
+    name: "crato",
+  },
+  {
+    name: "croatá",
+  },
+  {
+    name: "cruz",
+  },
+  {
+    name: "deputado irapuan pinheiro",
+  },
+  {
+    name: "ereré",
+  },
+  {
+    name: "eusébio",
+  },
+  {
+    name: "farias brito",
+  },
+  {
+    name: "forquilha",
+  },
+  {
+    name: "fortaleza",
+  },
+  {
+    name: "fortim",
+  },
+  {
+    name: "frecheirinha",
+  },
+  {
+    name: "general sampaio",
+  },
+  {
+    name: "graça",
+  },
+  {
+    name: "granja",
+  },
+  {
+    name: "granjeiro",
+  },
+  {
+    name: "groaíras",
+  },
+  {
+    name: "guaiúba",
+  },
+  {
+    name: "guaraciaba do norte",
+  },
+  {
+    name: "guaramiranga",
+  },
+  {
+    name: "hidrolândia",
+  },
+  {
+    name: "horizonte",
+  },
+  {
+    name: "ibaretama",
+  },
+  {
+    name: "ibiapina",
+  },
+  {
+    name: "ibicuitinga",
+  },
+  {
+    name: "icapuí",
+  },
+  {
+    name: "icó",
+  },
+  {
+    name: "iguatu",
+  },
+  {
+    name: "independência",
+  },
+  {
+    name: "ipaporanga",
+  },
+  {
+    name: "ipaumirim",
+  },
+  {
+    name: "ipu",
+  },
+  {
+    name: "ipueiras",
+  },
+  {
+    name: "iracema",
+  },
+  {
+    name: "irauçuba",
+  },
+  {
+    name: "itaiçaba",
+  },
+  {
+    name: "itaitinga",
+  },
+  {
+    name: "itapajé",
+  },
+  {
+    name: "itapipoca",
+  },
+  {
+    name: "itapiúna",
+  },
+  {
+    name: "itarema",
+  },
+  {
+    name: "itatira",
+  },
+  {
+    name: "jaguaretama",
+  },
+  {
+    name: "jaguaribara",
+  },
+  {
+    name: "jaguaribe",
+  },
+  {
+    name: "jaguaruana",
+  },
+  {
+    name: "jardim",
+  },
+  {
+    name: "jati",
+  },
+  {
+    name: "jijoca de jericoacoara",
+  },
+  {
+    name: "juazeiro do norte",
+  },
+  {
+    name: "jucás",
+  },
+  {
+    name: "lavras da mangabeira",
+  },
+  {
+    name: "limoeiro do norte",
+  },
+  {
+    name: "madalena",
+  },
+  {
+    name: "maracanaú",
+  },
+  {
+    name: "maranguape",
+  },
+  {
+    name: "marco",
+  },
+  {
+    name: "martinópole",
+  },
+  {
+    name: "massapê",
+  },
+  {
+    name: "mauriti",
+  },
+  {
+    name: "meruoca",
+  },
+  {
+    name: "milagres",
+  },
+  {
+    name: "milhã",
+  },
+  {
+    name: "miraíma",
+  },
+  {
+    name: "missão velha",
+  },
+  {
+    name: "mombaça",
+  },
+  {
+    name: "monsenhor tabosa",
+  },
+  {
+    name: "morada nova",
+  },
+  {
+    name: "moraújo",
+  },
+  {
+    name: "morrinhos",
+  },
+  {
+    name: "mucambo",
+  },
+  {
+    name: "mulungu",
+  },
+  {
+    name: "nova olinda",
+  },
+  {
+    name: "nova russas",
+  },
+  {
+    name: "novo oriente",
+  },
+  {
+    name: "ocara",
+  },
+  {
+    name: "orós",
+  },
+  {
+    name: "pacajus",
+  },
+  {
+    name: "pacatuba",
+  },
+  {
+    name: "pacoti",
+  },
+  {
+    name: "pacujá",
+  },
+  {
+    name: "palhano",
+  },
+  {
+    name: "palmácia",
+  },
+  {
+    name: "paracuru",
+  },
+  {
+    name: "paraipaba",
+  },
+  {
+    name: "parambu",
+  },
+  {
+    name: "paramoti",
+  },
+  {
+    name: "pedra branca",
+  },
+  {
+    name: "penaforte",
+  },
+  {
+    name: "pentecoste",
+  },
+  {
+    name: "pereiro",
+  },
+  {
+    name: "pindoretama",
+  },
+  {
+    name: "piquet carneiro",
+  },
+  {
+    name: "pires ferreira",
+  },
+  {
+    name: "poranga",
+  },
+  {
+    name: "porteiras",
+  },
+  {
+    name: "potengi",
+  },
+  {
+    name: "potiretama",
+  },
+  {
+    name: "quiterianópolis",
+  },
+  {
+    name: "quixadá",
+  },
+  {
+    name: "quixelô",
+  },
+  {
+    name: "quixeramobim",
+  },
+  {
+    name: "quixeré",
+  },
+  {
+    name: "redenção",
+  },
+  {
+    name: "reriutaba",
+  },
+  {
+    name: "russas",
+  },
+  {
+    name: "saboeiro",
+  },
+  {
+    name: "salitre",
+  },
+  {
+    name: "santa quitéria",
+  },
+  {
+    name: "santana do acaraú",
+  },
+  {
+    name: "santana do cariri",
+  },
+  {
+    name: "são benedito",
+  },
+  {
+    name: "são gonçalo do amarante",
+  },
+  {
+    name: "são joão do jaguaribe",
+  },
+  {
+    name: "são luís do curu",
+  },
+  {
+    name: "senador pompeu",
+  },
+  {
+    name: "senador sá",
+  },
+  {
+    name: "sobral",
+  },
+  {
+    name: "solonópole",
+  },
+  {
+    name: "tabuleiro do norte",
+  },
+  {
+    name: "tamboril",
+  },
+  {
+    name: "tarrafas",
+  },
+  {
+    name: "tauá",
+  },
+  {
+    name: "tejuçuoca",
+  },
+  {
+    name: "tianguá",
+  },
+  {
+    name: "trairi",
+  },
+  {
+    name: "tururu",
+  },
+  {
+    name: "ubajara",
+  },
+  {
+    name: "umari",
+  },
+  {
+    name: "umirim",
+  },
+  {
+    name: "uruburetama",
+  },
+  {
+    name: "uruoca",
+  },
+  {
+    name: "varjota",
+  },
+  {
+    name: "várzea alegre",
+  },
+  {
+    name: "viçosa do ceará",
+  },
+];
+
 Employee.bulkCreate(EMPLOYEES, { ignoreDuplicates: true });
+Municipality.bulkCreate(MUNICIPALITIES, { ignoreDuplicates: true });
