@@ -10,15 +10,13 @@ const StyledHeader = styled.header({
   justifyContent: "space-between",
   alignItems: "center",
   userSelect: "none",
-  overflow: "hidden",
-  flexShrink: "0",
+  paddingLeft: "3em",
+  backgroundColor: "var(--main-color)",
 });
 
-const Title = styled.h1({
-  borderLeft: "6px solid var(--main-color)",
-  paddingLeft: "8px",
-  borderRadius: "5px",
-});
+const Title = styled.h1`
+  color: var(--text-color2);
+`;
 
 const StyledFontAwesome = styled(FontAwesomeIcon)({
   fontSize: "1.8rem",

@@ -2,20 +2,13 @@ import styled from "styled-components";
 import { media } from "../../utils/Media.styles.mjs";
 
 const StyledMain = styled.main(({ $is_menu }) => {
-  const paddingLeft = $is_menu && "calc(min(25vw, 250px) + 30px)";
-
   return {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "20px",
-    padding: "20px 40px",
-    paddingLeft,
-    height: "100svh",
-    overflowY: "auto",
-    overflowX: "hidden",
-    flex: 1,
+    display: "grid",
+    gridTemplateColumns: $is_menu ? "auto minmax(0, 1fr)" : "1fr",
+    justifyItems: "stretch",
+    alignItems: "stretch",
+    height: "100%",
+    flex: "1",
 
     ...media({
       padding: "20px",
@@ -23,4 +16,12 @@ const StyledMain = styled.main(({ $is_menu }) => {
   };
 });
 
-export { StyledMain };
+const Content = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+`;
+
+export { StyledMain, Content };

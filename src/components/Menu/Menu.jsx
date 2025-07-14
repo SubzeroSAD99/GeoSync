@@ -1,5 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import { StyledFontAwesome, StyledMenu } from "./Menu.styles.mjs";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  BtnTheme,
+  ItemShowHide,
+  StyledFontAwesome,
+  StyledList,
+  StyledMenu,
+} from "./Menu.styles.mjs";
 import MenuItemList from "./MenuItemList/MenuItemList.jsx";
 import {
   faCircleInfo,
@@ -13,6 +19,7 @@ import {
   faGears,
   faTableCellsRowUnlock,
   faEarthAmerica,
+  faBackward,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -70,6 +77,8 @@ const Menu = () => {
 
   const { isMenuOpen, setMenuOpen } = useUI();
   const { theme, toggleTheme } = useTheme();
+  const [expandMenu, setExpandMenu] = useState(true);
+  const [isActive, setIsActive] = useState([0]);
 
   const isMedia = useMediaQuery({ query: "(max-width: 768px)" });
 
@@ -98,28 +107,43 @@ const Menu = () => {
     <StyledMenu
       key={`menu-${isMedia ? "mobile" : "desktop"}`}
       initial={false}
-      animate={{ scaleY: isMedia ? (isMenuOpen ? 1 : 0) : 1 }}
-      transition={isMedia ? { duration: 0.2, ease: "easeInOut" } : {}}
+      style={!expandMenu ? { width: "40px" } : {}}
       ref={menuRef}
     >
-      <ul>
+      <StyledList>
+        <ItemShowHide>
+          <button
+            onClick={() => {
+              setExpandMenu((prev) => !prev);
+            }}
+          >
+            <StyledFontAwesome
+              style={!expandMenu ? { transform: "rotateZ(180deg)" } : {}}
+              icon={faBackward}
+            />
+          </button>
+        </ItemShowHide>
         {menuItems.map((it, index) => (
           <MenuItemList
             key={index}
             label={it.label}
             icon={it.icon}
             submenu={it.submenu}
-            active={index === 0}
+            isActive={isActive}
+            index={index}
+            setIsActive={setIsActive}
+            expandMenu={expandMenu}
+            setExpandMenu={setExpandMenu}
           />
         ))}
-      </ul>
+      </StyledList>
 
-      <div>
+      <BtnTheme>
         <StyledFontAwesome
           icon={theme === "light" ? faSun : faMoon}
           onClick={toggleTheme}
         />
-      </div>
+      </BtnTheme>
     </StyledMenu>
   );
 };

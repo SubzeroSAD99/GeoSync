@@ -6,52 +6,71 @@ import {
   OptionsContainer,
   StyledButtonTitle,
   StyledIconCaret,
+  SubmenuContainer,
 } from "./MenuItemList.styles.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-const MenuItemList = ({ label, icon, redirect, submenu, active }) => {
+const MenuItemList = ({
+  label,
+  icon,
+  redirect,
+  submenu,
+  isActive,
+  setIsActive,
+  expandMenu,
+  setExpandMenu,
+  index,
+}) => {
   const location = useLocation();
-  const [isActive, setIsActive] = useState(active);
+  const isOpen = isActive.includes(index) && expandMenu;
 
   return (
     <StyledMenuItemList
-      onClick={(e) => {
-        setIsActive((prev) => !prev);
+      onClick={() => {
+        !expandMenu && setExpandMenu(true);
+
+        setIsActive((prev) => {
+          return prev.includes(index)
+            ? prev.filter((it) => it !== index)
+            : [...prev, index];
+        });
       }}
     >
       <div className={location.pathname.includes(redirect) ? "selected" : ""}>
         <StyledButtonTitle>
           <OptionsContainer>
-            <FontAwesomeIcon icon={icon} />
+            <FontAwesomeIcon style={{ width: "26px" }} icon={icon} />
             <p>{label}</p>
           </OptionsContainer>
-          <StyledIconCaret icon={faCaretDown} className={isActive && "open"} />
+          <StyledIconCaret open={isOpen} icon={faCaretDown} />
         </StyledButtonTitle>
       </div>
 
-      {submenu && isActive && (
-        <SubList
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          {submenu.map((obj, index) => (
-            <StyledMenuItemList key={`${obj.label}-${index}`}>
-              <div
-                className={
-                  location.pathname.includes(obj.redirect) ? "selected" : ""
-                }
-              >
-                <StyledLink to={obj.redirect}>
-                  <FontAwesomeIcon icon={obj.icon} />
-                  <p>{obj.label}</p>
-                </StyledLink>
-              </div>
-            </StyledMenuItemList>
-          ))}
-        </SubList>
+      {submenu && (
+        <SubmenuContainer className="submenu" open={isOpen}>
+          <SubList
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            {submenu.map((obj, index) => (
+              <StyledMenuItemList key={`${obj.label}-${index}`}>
+                <div
+                  className={
+                    location.pathname.includes(obj.redirect) ? "selected" : ""
+                  }
+                >
+                  <StyledLink to={obj.redirect}>
+                    <FontAwesomeIcon icon={obj.icon} />
+                    <p>{obj.label}</p>
+                  </StyledLink>
+                </div>
+              </StyledMenuItemList>
+            ))}
+          </SubList>
+        </SubmenuContainer>
       )}
     </StyledMenuItemList>
   );

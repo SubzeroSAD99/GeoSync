@@ -75,9 +75,8 @@ const TableServices = ({ title, allServices, setAllServices }) => {
 
   return (
     <section>
+      <Title>{title}</Title>
       <TitleContainer>
-        <Title>{title}</Title>
-
         <FilterContainer>
           <FilterBar
             label="Cliente"

@@ -15,15 +15,16 @@ const StyledMenuItemList = styled.li({
   listStyle: "none",
   userSelect: "none",
 
-  "& div": {
+  "& div:not(.submenu)": {
     cursor: "pointer",
     transition: "transform 0.3s ease",
+    transformOrigin: "center",
     backgroundColor: "transparent",
     borderRadius: "5px",
   },
 
-  "& div:not(.selected):hover": {
-    transform: "translateX(10px)",
+  "& div:not(.selected):not(.submenu):hover": {
+    transform: "scale(0.95)",
   },
 
   "& div.selected": {
@@ -53,9 +54,6 @@ const StyledButtonTitle = styled.button`
 
 const OptionsContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   gap: 10px;
 `;
 
@@ -73,23 +71,26 @@ const StyledLink = styled(Link)({
 
 const StyledIconCaret = styled(FontAwesomeIcon)`
   transition: transform 0.3s ease;
+  transform: ${({ open }) => (open ? "rotateZ(-180deg)" : "none")};
+`;
 
-  &.open {
-    transform: rotateZ(-180deg);
-  }
+const SubmenuContainer = styled.div`
+  display: grid;
+  grid-template-rows: ${({ open }) => (open ? "1fr" : "0fr")};
+  transition: grid-template-rows 0.2s ease;
 `;
 
 const SubList = styled.ul`
   font-size: 0.9rem;
-  padding-left: 10px;
-  transform-origin: top center;
-  animation: ${AnimationShowSubMenu} 0.2s linear forwards;
+  padding-left: 20px;
+  overflow: hidden;
 `;
 
 export {
   StyledMenuItemList,
   StyledButtonTitle,
   StyledLink,
+  SubmenuContainer,
   SubList,
   OptionsContainer,
   StyledIconCaret,
