@@ -12,21 +12,18 @@ class MunicipalityController {
   static async getAll(req, res) {
     try {
       const municipalities = await Municipality.findAll({
-        attributes: ["id", "name"],
+        attributes: ["name"],
         raw: true,
       });
 
       const formattedMunicipalities = municipalities.map((it) => {
         return {
-          id: generateToken({ id: it.id }),
           name: it.name,
         };
       });
 
       res.json({ municipalities: formattedMunicipalities });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao localizar municipios!" });
     }
   }

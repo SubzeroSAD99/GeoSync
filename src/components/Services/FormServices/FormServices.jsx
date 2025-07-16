@@ -48,6 +48,8 @@ const STEP = [
 const FormServices = ({
   handleSubmit,
   owner,
+  contractor,
+  guide,
   serviceType,
   cadist,
   priority,
@@ -64,6 +66,8 @@ const FormServices = ({
 }) => {
   const [employees, setEmployees] = useState([]);
   const [topographers, setTopographers] = useState([]);
+  const [municipalities, setMunicipalities] = useState([]);
+  const [owners, setOwners] = useState([]);
   const { setEmployee } = useAuth();
   const [values, setValues] = useState({});
   const [searchParams] = useSearchParams();
@@ -81,6 +85,14 @@ const FormServices = ({
   useEffect(() => {
     const measurementDate = searchParams.get("measurementDate");
 
+    if (measurementDate) {
+      setValues((prev) => ({
+        ...prev,
+        measurementDate: measurementDate,
+      }));
+    }
+
+    // Employees
     (async () => {
       try {
         const response = await api.post("/employee/getAll");
@@ -113,22 +125,74 @@ const FormServices = ({
       }
     })();
 
-    if (measurementDate) {
-      setValues((prev) => ({
-        ...prev,
-        measurementDate: measurementDate,
-      }));
-    }
+    // Municipalities
+    (async () => {
+      try {
+        const response = await api.post("/municipality/getAll");
+
+        const data = response.data;
+
+        if (data) {
+          setMunicipalities(
+            data.municipalities
+              .map((obj) => ({
+                label: obj.name,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
+          );
+        }
+      } catch (err) {
+        if (err.status == 401) return setEmployee(null);
+      }
+    })();
+
+    // Owners
+    (async () => {
+      try {
+        const response = await api.post("/client/getAll");
+
+        const data = response.data;
+
+        if (data) {
+          setOwners(
+            data.clients
+              .map((obj) => ({
+                label: obj.fullName,
+                value: obj.id,
+              }))
+              .sort((a, b) => a.label.localeCompare(b.label))
+          );
+        }
+      } catch (err) {
+        if (err.status == 401) return setEmployee(null);
+      }
+    })();
   }, []);
 
   return (
     <StyledForm onSubmit={handleSubmit}>
       <SelectItem
-        options={employees}
+        options={owners}
         title="Propietario"
         name="owner"
         select={owner}
         error={errors === "owner"}
+      />
+
+      <SelectItem
+        options={owners}
+        title="Contratante"
+        name="contractor"
+        select={contractor}
+        error={errors === "contractor"}
+      />
+
+      <SelectItem
+        options={owners}
+        title="Guia"
+        name="guide"
+        select={guide}
+        error={errors === "guide"}
       />
       <SelectItem
         options={SERVICE_TYPE_OPTS.sort()}
@@ -172,7 +236,7 @@ const FormServices = ({
         select={pending}
       />
       <SelectItem
-        options={employees}
+        options={municipalities}
         title="Município"
         name="municipaly"
         required={true}

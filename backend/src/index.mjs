@@ -3,6 +3,7 @@ import employeeRouter from "./routes/employeeRouter.mjs";
 import serviceRouter from "./routes/serviceRouter.mjs";
 import mainRouter from "./routes/mainRouter.mjs";
 import municipalityRouter from "./routes/municipalityRouter.mjs";
+import clientRouter from "./routes/clientRouter.mjs";
 import { authMiddleware } from "./middlewares/authorize.mjs";
 import initAll from "./models/initModels.mjs";
 import cors from "cors";
@@ -30,6 +31,7 @@ app.use(authMiddleware);
 app.use("/service", serviceRouter);
 app.use("/employee", employeeRouter);
 app.use("/municipality", municipalityRouter);
+app.use("/client", clientRouter);
 
 app.listen(PORT, () => {
   initAll().then(() => {

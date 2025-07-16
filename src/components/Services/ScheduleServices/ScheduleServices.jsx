@@ -40,6 +40,8 @@ const ScheduleServices = () => {
   };
 
   const confirmService = async (id) => {
+    const toastId = toast.loading("Confirmando agendamento...");
+
     try {
       const response = await api.post("/service/confirm", { id });
 
@@ -58,13 +60,30 @@ const ScheduleServices = () => {
             },
           };
         });
-        if (response.data?.warn) toast.warn(response.data.msg);
-        else toast.success(response.data.msg);
+        if (response.data?.warn)
+          toast.update(toastId, {
+            render: response.data.msg,
+            type: "warn",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        else
+          toast.update(toastId, {
+            render: response.data.msg,
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+          });
       }
     } catch (err) {
       const msg = err?.response?.data?.msg;
 
-      toast.error(msg);
+      toast.update(toastId, {
+        render: msg,
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
@@ -81,7 +100,7 @@ const ScheduleServices = () => {
                   <StyledTh>Tipo de Serviço</StyledTh>
                   <StyledTh>Propietário</StyledTh>
                   <StyledTh>Contratante</StyledTh>
-                  <StyledTh>Telefone</StyledTh>
+                  <StyledTh>Guia</StyledTh>
                   <StyledTh>Municipio / Local</StyledTh>
                   <StyledTh>Horario</StyledTh>
                   <StyledTh>Obs</StyledTh>
@@ -95,8 +114,7 @@ const ScheduleServices = () => {
                     serviceType,
                     owner,
                     contractor,
-                    contractorNumber,
-                    ownerNumber,
+                    guide,
                     municipaly,
                     measurementHour,
                     internalObs,
@@ -106,7 +124,7 @@ const ScheduleServices = () => {
                       <StyledTd>{serviceType}</StyledTd>
                       <StyledTd>{owner}</StyledTd>
                       <StyledTd>{contractor}</StyledTd>
-                      <StyledTd>{contractorNumber || ownerNumber}</StyledTd>
+                      <StyledTd>{guide}</StyledTd>
                       <StyledTd>{municipaly}</StyledTd>
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>

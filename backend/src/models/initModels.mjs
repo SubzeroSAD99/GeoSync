@@ -1,3 +1,4 @@
+import Client from "./Client.mjs";
 import Employee from "./Employee.mjs";
 import Municipality from "./Municipality.mjs";
 import ServiceOrder from "./ServiceOrder.mjs";
@@ -24,11 +25,45 @@ ServiceOrder.belongsTo(Employee, {
   as: "CadistReader",
 });
 
+// Propietario
+ServiceOrder.belongsTo(Client, {
+  foreignKey: "owner",
+  as: "OwnerReader",
+});
+
+Client.hasMany(ServiceOrder, {
+  foreignKey: "owner",
+  as: "OwnerOrders",
+});
+
+// Contratante
+ServiceOrder.belongsTo(Client, {
+  foreignKey: "contractor",
+  as: "ContractorReader",
+});
+
+Client.hasMany(ServiceOrder, {
+  foreignKey: "contractor",
+  as: "ContractorOrders",
+});
+
+// Guia
+ServiceOrder.belongsTo(Client, {
+  foreignKey: "guide",
+  as: "GuideReader",
+});
+
+Client.hasMany(ServiceOrder, {
+  foreignKey: "guide",
+  as: "GuideOrders",
+});
+
 const initAll = async () => {
   await Promise.all([
     Employee.sync({ force: false }),
     ServiceOrder.sync({ force: false }),
     Municipality.sync({ force: false }),
+    Client.sync({ force: false }),
   ]);
 };
 

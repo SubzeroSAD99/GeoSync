@@ -12,6 +12,9 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import MunicipalitiesPage from "./pages/Municipalities/MunicipalitiesPage.jsx";
 import RegisterMunicipalitiesPage from "./pages/Municipalities/RegisterMunicipalitiesPage.jsx";
 import EditMunicipalitiesPage from "./pages/Municipalities/EditMunicipalitiesPage.jsx";
+import ClientsPage from "./pages/Clients/ClientsPage.jsx";
+import RegisterClients from "./components/Clients/RegisterClients/RegisterClients.jsx";
+import EditClientsPage from "./pages/Clients/EditClientsPage.jsx";
 
 const publicRoutes = [{ path: "/login", element: <LoginPage /> }];
 
@@ -27,7 +30,6 @@ const privateRoutes = [
       { path: "abertos", element: <HomePage /> },
       { path: "fechados", element: <ClosedServicesPage /> },
       { path: "editar/:id", element: <EditServicesPage /> },
-      { path: "agendar", element: <ScheduleServicesPage /> },
     ],
   },
 
@@ -41,6 +43,12 @@ const privateRoutes = [
       { path: "municipios", element: <MunicipalitiesPage /> },
       { path: "municipios/cadastrar", element: <RegisterMunicipalitiesPage /> },
       { path: "municipios/editar/:id", element: <EditMunicipalitiesPage /> },
+
+      { path: "clientes", element: <ClientsPage /> },
+      { path: "clientes/editar/:id", element: <EditClientsPage /> },
+      { path: "clientes/cadastrar", element: <RegisterClients /> },
+
+      { path: "agendamento", element: <ScheduleServicesPage /> },
     ],
   },
   { path: "teste", element: <Loading /> },

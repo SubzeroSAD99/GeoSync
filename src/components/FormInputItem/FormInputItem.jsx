@@ -21,15 +21,22 @@ const FormInputItem = ({
     setValue(valueInput ?? "");
   }, [valueInput]);
 
+  const dispatch = (appended, dynamicMasked) => {
+    const num = (dynamicMasked.value + appended).replace(/\D/g, "");
+    const m = dynamicMasked.compiledMasks.find((m) =>
+      num.startsWith(m.startsWith)
+    );
+    return m || dynamicMasked.compiledMasks.slice(-1)[0];
+  };
+
   return (
     <InputContainer style={{ maxWidth: `${width}` }}>
       <IMaskInput
         style={type !== "password" ? { textTransform: "uppercase" } : undefined}
         mask={mask}
+        dispatch={Array.isArray(mask) && dispatch}
         value={value}
-        onAccept={(val) => {
-          setValue(val);
-        }}
+        onAccept={(val) => setValue(val)}
         onChange={(e) => setValue(e.target.value)}
         unmask={false}
         overwrite={false}

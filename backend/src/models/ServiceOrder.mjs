@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/db.mjs";
-import Employee from "./Employee.mjs";
 
 class ServiceOrder extends Model {}
 
@@ -13,29 +12,17 @@ ServiceOrder.init(
     },
 
     owner: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
-    },
-
-    ownerNumber: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: true,
     },
 
     contractor: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 
-    contractorNumber: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: true,
-    },
-
-    contractor: {
-      type: DataTypes.STRING,
+    guide: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 

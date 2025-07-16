@@ -79,7 +79,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
       <TitleContainer>
         <FilterContainer>
           <FilterBar
-            label="Cliente"
+            label="Propietário"
             column="owner"
             filters={filters}
             onChange={setFilters}
@@ -118,7 +118,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
         <StyledTable>
           <thead>
             <tr style={{ backgroundColor: "var(--main-color-op05)" }}>
-              <StyledTh>Nome do Cliente</StyledTh>
+              <StyledTh>Propietário</StyledTh>
               <StyledTh>Tipo de Serviço</StyledTh>
               <StyledTh>Cadista</StyledTh>
               <StyledTh>Município</StyledTh>
@@ -131,21 +131,18 @@ const TableServices = ({ title, allServices, setAllServices }) => {
           <StyledTBody>
             {filteredServices.length > 0 ? (
               pageServices.map(
-                (
-                  {
-                    id,
-                    owner,
-                    serviceType,
-                    cadist,
-                    municipaly,
-                    priority,
-                    status,
-                    createdAt,
-                  },
-                  index
-                ) => (
+                ({
+                  id,
+                  owner,
+                  serviceType,
+                  cadist,
+                  municipaly,
+                  priority,
+                  status,
+                  createdAt,
+                }) => (
                   <RowTable
-                    key={index}
+                    key={id}
                     id={id}
                     owner={owner}
                     cadist={cadist}

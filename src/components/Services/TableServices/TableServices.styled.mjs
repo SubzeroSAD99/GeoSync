@@ -1,32 +1,32 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const TitleContainer = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "20px",
-  flexWrap: "wrap",
-  width: "100%",
-  padding: "8px",
-  overflow: "hidden",
-});
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 8px;
+  overflow: hidden;
+`;
 
-const Title = styled.h2({
-  borderBottom: "2px solid var(--main-color)",
-  width: "max-content",
-  margin: "0px auto",
-});
+const Title = styled.h2`
+  border-bottom: 2px solid var(--main-color);
+  width: max-content;
+  margin: 0px auto;
+`;
 
-const FilterContainer = styled.div({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  flexWrap: "wrap",
-  gap: "10px",
-});
+const FilterContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
 
 const ServicesContainer = styled.div`
   height: 100%;
@@ -35,39 +35,39 @@ const ServicesContainer = styled.div`
   width: 100%;
 `;
 
-const StyledTable = styled.table({
-  borderCollapse: "collapse",
-  width: "100%",
-});
+const StyledTable = styled.table`
+  border-collapse: collapse;
+  width: 100%;
+`;
 
-const StyledTBody = styled.tbody({
-  textTransform: "uppercase",
-  "& > tr": {
-    transition: "backdrop-filter 0.2s ease-in-out",
+const StyledTBody = styled.tbody`
+  text-transform: uppercase;
+  & > tr {
+    transition: backdrop-filter 0.2s ease-in-out;
 
-    "&:hover": {
-      backdropFilter: "brightness(85%)",
-    },
-  },
+    &:hover {
+      backdrop-filter: brightness(85%);
+    }
+  }
 
-  "& > tr:nth-child(even)": {
-    backgroundColor: "var(--table-even-color)",
-  },
-});
+  & > tr:nth-child(even) {
+    background-color: var(--table-even-color);
+  }
+`;
 
-const StyledTh = styled.th({
-  border: "1px solid darkgray",
-  padding: "5px",
-  fontSize: "1.1rem",
-  flex: "1",
-});
+const StyledTh = styled.th`
+  border: 1px solid darkgray;
+  padding: 5px;
+  font-size: 1.1rem;
+  flex: 1;
+`;
 
-const StyledTd = styled.td({
-  padding: "5px",
-  border: "1px solid darkgray",
-  textAlign: "center",
-  fontSize: "1rem",
-});
+const StyledTd = styled.td`
+  padding: 5px;
+  border: 1px solid darkgray;
+  text-align: center;
+  font-size: 1rem;
+`;
 
 const PageContainer = styled.div`
   display: flex;

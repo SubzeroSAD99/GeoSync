@@ -6,16 +6,16 @@ const AnimationRotate = keyframes`
     }
 `;
 
-const StyledSection = styled.section({
-  height: "100svh",
-  width: "100svw",
-  padding: "0px",
-});
+const StyledSection = styled.section`
+  height: 100svh;
+  width: 100svw;
+  padding: 0px;
+`;
 
-const StyledSvg = styled.svg({
-  fill: "var(--text-color)",
-  stroke: "var(--text-color)",
-});
+const StyledSvg = styled.svg`
+  fill: var(--text-color);
+  stroke: var(--text-color);
+`;
 
 const WhitePointer = styled.path`
   transform-box: view-box;
@@ -29,8 +29,8 @@ const GreenPointer = styled.path`
   animation: ${AnimationRotate} 1s infinite linear;
 `;
 
-const Title = styled.h1({
-  fontSize: "1.1rem",
-});
+const Title = styled.h1`
+  font-size: 1.1rem;
+`;
 
 export { StyledSection, StyledSvg, WhitePointer, GreenPointer, Title };

@@ -12,12 +12,12 @@ class EmployeeController {
       const employee = await Employee.findOne({ where: { cpf: cpfFormatted } });
 
       if (!employee)
-        return res.status(400).json({ msg: "Funcionario não encontrado!" });
+        return res.status(500).json({ msg: "Funcionario não encontrado!" });
 
       const dbPass = employee.getDataValue("password");
 
       if (dbPass !== password)
-        return res.status(400).json({ msg: "CPF e/ou senha incorretos!" });
+        return res.status(500).json({ msg: "CPF e/ou senha incorretos!" });
 
       const payload = {
         id: employee.id,
@@ -40,7 +40,7 @@ class EmployeeController {
           employee: employee.fullName,
         });
     } catch (err) {
-      res.status(400).json({ err: "Erro interno do servidor!" });
+      res.status(500).json({ err: "Erro interno do servidor!" });
     }
   }
 
@@ -61,7 +61,7 @@ class EmployeeController {
 
       res.json({ employees: allEmployees });
     } catch (err) {
-      res.status(400).json({ err: "Erro ao localizar cadistas!" });
+      res.status(500).json({ err: "Erro ao localizar cadistas!" });
     }
   }
 
@@ -95,7 +95,7 @@ class EmployeeController {
       const decoded = verifyToken(id);
 
       if (!decoded)
-        res.status(400).json({ msg: "Funcionario não encontrado!" });
+        res.status(500).json({ msg: "Funcionario não encontrado!" });
 
       const employee = await Employee.findOne({
         raw: true,
@@ -103,7 +103,7 @@ class EmployeeController {
       });
 
       if (!employee)
-        return res.status(400).json({ msg: "Funcionario não encontrado!" });
+        return res.status(500).json({ msg: "Funcionario não encontrado!" });
 
       delete employee.id;
       delete employee.password;
@@ -112,7 +112,6 @@ class EmployeeController {
 
       res.status(200).json({ ...employee });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ msg: "Erro interno no servidor" });
     }
   }
@@ -138,7 +137,7 @@ class EmployeeController {
   static async register(req, res) {
     const { error, value } = registerSchema.validate(req.body);
 
-    if (error) return res.status(400).json({ msg: error.details[0].message });
+    if (error) return res.status(500).json({ msg: error.details[0].message });
 
     value.cpf = value.cpf.replace(/[.-\s]/g, "");
     value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s]/g, "");
@@ -154,9 +153,7 @@ class EmployeeController {
         .json({ msg: "Funcionario registrado com sucesso!" });
     } catch (err) {
       if (err.name !== "SequelizeUniqueConstraintError")
-        return res
-          .status(500)
-          .json({ err: true, msg: "Erro interno do servidor." });
+        return res.status(500).json({ msg: "Erro interno do servidor." });
 
       err.parent.constraint === "Employees_cpf_key" &&
         res.status(500).json({ msg: "CPF ja registrado!" });
@@ -173,7 +170,7 @@ class EmployeeController {
     const { error, value } = updateSchema.validate(req.body);
 
     if (error) {
-      return res.status(400).json({ msg: error.details[0].message });
+      return res.status(500).json({ msg: error.details[0].message });
     }
 
     value.cpf = value.cpf.replace(/[().-\s]/g, "");
@@ -198,12 +195,8 @@ class EmployeeController {
         .status(200)
         .json({ msg: "Informações alteradas com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       if (err.name !== "SequelizeUniqueConstraintError")
-        return res
-          .status(500)
-          .json({ err: true, msg: "Erro interno do servidor." });
+        return res.status(500).json({ msg: "Erro interno do servidor." });
 
       err.parent.constraint === "Employees_cpf_key"
         ? res.status(500).json({ msg: "CPF ja registrado!" })
@@ -216,17 +209,15 @@ class EmployeeController {
       const { id } = req.body;
 
       if (!id)
-        return res.json({
-          err: true,
-          msg: "Não foi possivel encontrar cadista",
+        return res.status(500).json({
+          msg: "Não foi possivel encontrar funcionario",
         });
 
       const decodedId = verifyToken(id);
 
       if (!decodedId.id)
-        return res.json({
-          err: true,
-          msg: "Não foi possivel encontrar cadista",
+        return res.status(500).json({
+          msg: "Não foi possivel encontrar funcionario",
         });
 
       const destroy = await Employee.destroy({
@@ -237,13 +228,12 @@ class EmployeeController {
 
       if (destroy)
         return res.json({
-          err: false,
           msg: "Funcionario deletado com sucesso!",
         });
 
-      res.json({ err: true, msg: "Não foi possivel encontrar cadista" });
+      res.status(500).json({ msg: "Não foi possivel encontrar funcionario" });
     } catch (err) {
-      res.json({ err: true, msg: "Não foi possivel encontrar cadista" });
+      res.status(500).json({ msg: "Não foi possivel encontrar funcionario" });
     }
   }
 }

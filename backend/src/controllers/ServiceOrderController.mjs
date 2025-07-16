@@ -14,12 +14,12 @@ const registerSchema = Joi.object({
     .trim()
     .empty(["", "selecione", "SELECIONE"])
     .optional(),
-  owner: Joi.string()
-    .lowercase()
-    .allow(null)
+  owner: Joi.string().trim().empty(["", "selecione", "SELECIONE"]).optional(),
+  contractor: Joi.string()
     .trim()
-    .empty(["", "selecione"])
+    .empty(["", "selecione", "SELECIONE"])
     .optional(),
+  guide: Joi.string().trim().empty(["", "selecione", "SELECIONE"]).optional(),
   serviceType: Joi.string()
     .lowercase()
     .trim()
@@ -78,6 +78,9 @@ class ServiceOrderController {
       });
     }
 
+    value.owner = verifyToken(value.owner)?.id ?? null;
+    value.contractor = verifyToken(value.contractor)?.id ?? null;
+    value.guide = verifyToken(value.guide)?.id ?? null;
     value.cadist = verifyToken(value.cadist)?.id ?? null;
     value.topographer = verifyToken(value.topographer)?.id ?? null;
 
@@ -141,6 +144,9 @@ class ServiceOrderController {
         });
       }
 
+      value.owner = verifyToken(value.owner)?.id ?? null;
+      value.contractor = verifyToken(value.contractor)?.id ?? null;
+      value.guide = verifyToken(value.guide)?.id ?? null;
       value.cadist = verifyToken(value.cadist)?.id ?? null;
       value.topographer = verifyToken(value.topographer)?.id ?? null;
 
@@ -176,6 +182,9 @@ class ServiceOrderController {
         where: {
           id: decoded.id,
         },
+        attributes: {
+          exclude: ["confirmed", "id"],
+        },
         raw: true,
       });
 
@@ -186,6 +195,7 @@ class ServiceOrderController {
 
       data.cadist = generateToken({ id: data.cadist });
       data.topographer = generateToken({ id: data.topographer });
+      data.owner = generateToken({ id: data.owner });
 
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
@@ -205,12 +215,19 @@ class ServiceOrderController {
         },
         attributes: {
           exclude: ["cadist", "topographer", "updatedAt"],
-          include: [[col("CadistReader.fullName"), "cadist"]],
+          include: [
+            [col("CadistReader.fullName"), "cadist"],
+            [col("OwnerReader.fullName"), "owner"],
+          ],
         },
         include: [
           {
             association: "CadistReader",
             // esvaziar os atributos aqui, senão eles voltam duplicados
+            attributes: [],
+          },
+          {
+            association: "OwnerReader",
             attributes: [],
           },
         ],
@@ -236,12 +253,19 @@ class ServiceOrderController {
         },
         attributes: {
           exclude: ["cadist", "topographer", "updatedAt"],
-          include: [[col("CadistReader.fullName"), "cadist"]],
+          include: [
+            [col("CadistReader.fullName"), "cadist"],
+            [col("OwnerReader.fullName"), "owner"],
+          ],
         },
         include: [
           {
             association: "CadistReader",
             // esvaziar os atributos aqui, senão eles voltam duplicados
+            attributes: [],
+          },
+          {
+            association: "OwnerReader",
             attributes: [],
           },
         ],
@@ -273,19 +297,34 @@ class ServiceOrderController {
       const end = `${nextYear}-${mm2}-01`;
 
       const services = await ServiceOrder.findAll({
-        attributes: [
-          "id",
-          "serviceType",
-          "contractor",
-          "contractorNumber",
-          "owner",
-          "municipaly",
-          "locality",
-          "ownerNumber",
-          "measurementHour",
-          "measurementDate",
-          "internalObs",
-          "confirmed",
+        attributes: {
+          include: [
+            "id",
+            "serviceType",
+            "municipaly",
+            "locality",
+            "measurementHour",
+            "measurementDate",
+            "internalObs",
+            "confirmed",
+            [col("OwnerReader.fullName"), "owner"],
+            [col("ContractorReader.fullName"), "contractor"],
+            [col("GuideReader.fullName"), "guide"],
+          ],
+        },
+        include: [
+          {
+            association: "OwnerReader",
+            attributes: [],
+          },
+          {
+            association: "ContractorReader",
+            attributes: [],
+          },
+          {
+            association: "GuideReader",
+            attributes: [],
+          },
         ],
         where: {
           measurementDate: {
@@ -295,6 +334,7 @@ class ServiceOrderController {
           status: "aberta",
           topographer: verifyToken(topographer)?.id,
         },
+
         order: [["measurementDate", "ASC"]],
         raw: true,
       });
@@ -303,9 +343,9 @@ class ServiceOrderController {
         ({
           id,
           serviceType,
-          contractor,
-          contractorNumber,
           owner,
+          contractor,
+          guide,
           municipaly,
           locality,
           ownerNumber,
@@ -317,9 +357,9 @@ class ServiceOrderController {
           return {
             id: generateToken({ id }),
             serviceType,
-            contractor,
-            contractorNumber,
             owner,
+            contractor,
+            guide,
             municipaly,
             locality,
             ownerNumber,
@@ -372,7 +412,9 @@ class ServiceOrderController {
           "id",
           "cadist",
           "topographer",
-          "contractorNumber",
+          "owner",
+          "contractor",
+          "guide",
           "confirmed",
         ],
         include: [
@@ -383,6 +425,19 @@ class ServiceOrderController {
 
           {
             association: "CadistReader",
+            attributes: ["phoneNumber"],
+          },
+
+          {
+            association: "OwnerReader",
+            attributes: ["phoneNumber"],
+          },
+          {
+            association: "ContractorReader",
+            attributes: ["phoneNumber"],
+          },
+          {
+            association: "GuideReader",
             attributes: ["phoneNumber"],
           },
         ],
@@ -397,8 +452,9 @@ class ServiceOrderController {
 
       const topographerPhone = order.TopographerReader?.phoneNumber;
       const cadistPhone = order.CadistReader?.phoneNumber;
-
-      console.log(topographerPhone, cadistPhone);
+      const ownerPhone = order.OwnerReader?.phoneNumber;
+      const contractorPhone = order.ContractorReader?.phoneNumber;
+      const guidePhone = order.GuideReader?.phoneNumber;
 
       try {
         if (topographerPhone)
@@ -406,11 +462,24 @@ class ServiceOrderController {
             topographerPhone,
             "Serviço agendado!"
           );
+
         if (cadistPhone)
           await WhatsappController.sendMessage(
             cadistPhone,
             "Serviço agendado!"
           );
+
+        if (ownerPhone)
+          await WhatsappController.sendMessage(ownerPhone, "Serviço agendado!");
+
+        if (contractorPhone)
+          await WhatsappController.sendMessage(
+            contractorPhone,
+            "Serviço agendado!"
+          );
+
+        if (guidePhone)
+          await WhatsappController.sendMessage(guidePhone, "Serviço agendado!");
       } catch (err) {
         return res.json({ warn: true, msg: "Erro ao enviar mensagens!" });
       }

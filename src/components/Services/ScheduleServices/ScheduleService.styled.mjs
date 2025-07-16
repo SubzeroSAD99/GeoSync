@@ -23,40 +23,40 @@ const TableContainer = styled.div`
   max-height: 80%;
 `;
 
-const StyledTable = styled.table({
-  borderCollapse: "collapse",
-  width: "100%",
-});
+const StyledTable = styled.table`
+  border-collapse: collapse;
+  width: 100%;
+`;
 
-const StyledTBody = styled.tbody({
-  textTransform: "uppercase",
-  "& > tr": {
-    transition: "backdrop-filter 0.2s ease-in-out",
+const StyledTBody = styled.tbody`
+  text-transform: uppercase;
+  & > tr {
+    transition: backdrop-filter 0.2s ease-in-out;
 
-    "&:hover": {
-      backdropFilter: "brightness(85%)",
-    },
-  },
+    &:hover {
+      backdrop-filter: brightness(85%);
+    }
+  }
 
-  "& > tr:nth-child(even)": {
-    backgroundColor: "var(--table-even-color)",
-  },
-});
+  & > tr:nth-child(even) {
+    background-color: var(--table-even-color);
+  }
+`;
 
-const StyledTh = styled.th({
-  border: "1px solid darkgray",
-  padding: "5px",
-  fontSize: "1.1rem",
-  flex: "1",
-});
+const StyledTh = styled.th`
+  border: 1px solid darkgray;
+  padding: 5px;
+  font-size: 1.1rem;
+  flex: 1;
+`;
 
-const StyledTd = styled.td({
-  padding: "5px",
-  border: "1px solid darkgray",
-  textAlign: "center",
-  fontSize: "1rem",
-  textTransform: "uppercase",
-});
+const StyledTd = styled.td`
+  padding: 5px;
+  border: 1px solid darkgray;
+  text-align: center;
+  font-size: 1rem;
+  text-transform: uppercase;
+`;
 
 const StyledButton = styled.button`
   background-color: transparent;

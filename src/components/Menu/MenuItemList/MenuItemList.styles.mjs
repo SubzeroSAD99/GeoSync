@@ -11,31 +11,31 @@ const AnimationShowSubMenu = keyframes`
   }
 `;
 
-const StyledMenuItemList = styled.li({
-  listStyle: "none",
-  userSelect: "none",
+const StyledMenuItemList = styled.li`
+  list-style: none;
+  user-select: none;
 
-  "& div:not(.submenu)": {
-    cursor: "pointer",
-    transition: "transform 0.3s ease",
-    transformOrigin: "center",
-    backgroundColor: "transparent",
-    borderRadius: "5px",
-  },
+  & div:not(.submenu) {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+    background-color: transparent;
+    border-radius: 5px;
+  }
 
-  "& div:not(.selected):not(.submenu):hover": {
-    transform: "scale(0.95)",
-  },
+  & div:not(.selected):not(.submenu):hover {
+    transform: scale(0.95);
+  }
 
-  "& div.selected": {
-    backgroundColor: "var(--highlight-main-color)",
-  },
+  & div.selected {
+    background-color: var(--highlight-main-color);
+  }
 
-  "& a": {
-    backgroundColor: "transparent",
-    boxShadow: "none",
-  },
-});
+  & a {
+    background-color: transparent;
+    box-shadow: none;
+  }
+`;
 
 const StyledButtonTitle = styled.button`
   display: flex;
@@ -57,17 +57,17 @@ const OptionsContainer = styled.div`
   gap: 10px;
 `;
 
-const StyledLink = styled(Link)({
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  width: "100%",
-  height: "100%",
-  textDecoration: "none",
-  padding: "10px",
-  color: "var(--text-color2)",
-  gap: "10px",
-});
+const StyledLink = styled(Link)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  padding: 10px;
+  color: var(--text-color2);
+  gap: 10px;
+`;
 
 const StyledIconCaret = styled(FontAwesomeIcon)`
   transition: transform 0.3s ease;

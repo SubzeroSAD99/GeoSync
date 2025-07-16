@@ -8,7 +8,6 @@ import {
 } from "./Menu.styles.mjs";
 import MenuItemList from "./MenuItemList/MenuItemList.jsx";
 import {
-  faCircleInfo,
   faSun,
   faMoon,
   faNewspaper,
@@ -20,6 +19,7 @@ import {
   faTableCellsRowUnlock,
   faEarthAmerica,
   faBackward,
+  faPersonCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "../../contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -48,12 +48,6 @@ const Menu = () => {
           icon: faNewspaper,
           redirect: "/servicos/cadastrar",
         },
-
-        {
-          label: "Agendar",
-          icon: faCalendarAlt,
-          redirect: "/servicos/agendar",
-        },
       ],
     },
     {
@@ -70,6 +64,18 @@ const Menu = () => {
           label: "Municipios",
           icon: faEarthAmerica,
           redirect: "/gerenciamento/municipios",
+        },
+
+        {
+          label: "Clientes",
+          icon: faPersonCirclePlus,
+          redirect: "/gerenciamento/clientes",
+        },
+
+        {
+          label: "Agendamento",
+          icon: faCalendarAlt,
+          redirect: "/gerenciamento/agendamento",
         },
       ],
     },
@@ -106,7 +112,6 @@ const Menu = () => {
   return (
     <StyledMenu
       key={`menu-${isMedia ? "mobile" : "desktop"}`}
-      initial={false}
       style={!expandMenu ? { width: "40px" } : {}}
       ref={menuRef}
     >

@@ -29,13 +29,13 @@ const MenuItemList = ({
   return (
     <StyledMenuItemList
       onClick={() => {
-        !expandMenu && setExpandMenu(true);
-
         setIsActive((prev) => {
           return prev.includes(index)
-            ? prev.filter((it) => it !== index)
+            ? prev.filter((it) => it !== index || !expandMenu)
             : [...prev, index];
         });
+
+        !expandMenu && setExpandMenu(true);
       }}
     >
       <div className={location.pathname.includes(redirect) ? "selected" : ""}>

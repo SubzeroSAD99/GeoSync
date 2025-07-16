@@ -15,12 +15,12 @@ const alertAnimation = keyframes`
   }
 `;
 
-const StyledTd = styled.td({
-  padding: "5px",
-  border: "1px solid darkgray",
-  textAlign: "center",
-  fontSize: "1rem",
-});
+const StyledTd = styled.td`
+  padding: 5px;
+  border: 1px solid darkgray;
+  text-align: center;
+  font-size: 1rem;
+`;
 
 const PriorityContainer = styled.div(({ $priority }) => {
   let color = "transparent";
@@ -76,61 +76,62 @@ const StatsContainer = styled.div(({ $stats }) => {
   };
 });
 
-const Actions = styled.div({
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  flexWrap: "wrap",
-  padding: "10px",
-  gap: "10px",
+const Actions = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px;
+  gap: 10px;
 
-  "--_button-delete-color": "#ff0000",
-  "--_button-edit-color": "#e48900",
+  --_button-delete-color: #ff0000;
+  --_button-edit-color: #e48900;
 
-  "& button": {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "5px",
-    flex: "1 1 auto",
-    flexWrap: "wrap",
-    fontSize: "1rem",
-    padding: "8px",
-    cursor: "pointer",
-    border: "none",
-    borderRadius: "2px",
-    color: "var(--text-color2)",
-    transition: "filter 0.5s ease, box-shadow 0.4s linear",
-    boxShadow: "0px 0px 6px 0px transparent",
+  & button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    font-size: 1rem;
+    padding: 8px;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    color: var(--text-color2);
+    transition: filter 0.5s ease, box-shadow 0.4s linear;
+    box-shadow: 0px 0px 6px 0px transparent;
 
-    "&:hover": {
-      filter: "brightness(130%)",
-    },
-  },
-});
+    &:hover {
+      filter: brightness(130%);
+    }
+  }
+`;
 
-const ButtonDelete = styled.button({
-  backgroundColor: "var(--_button-delete-color)",
+const ButtonDelete = styled.button`
+  background-color: var(--_button-delete-color);
 
-  "&:hover": {
-    boxShadow: "0px 0px 6px 0px var(--_button-delete-color)",
-  },
-});
+  &:hover {
+    box-shadow: 0px 0px 6px 0px var(--_button-delete-color);
+  }
+`;
 
-const ButtonEdit = styled.button({
-  backgroundColor: "var(--_button-edit-color)",
+const ButtonEdit = styled.button`
+  background-color: var(--_button-edit-color);
 
-  "&:hover": {
-    boxShadow: "0px 0px 6px 0px var(--_button-edit-color)",
-  },
-});
+  &:hover {
+    box-shadow: 0px 0px 6px 0px var(--_button-edit-color);
+  }
+`;
 
-const ButtonView = styled.button({
-  backgroundColor: "var(--main-color)",
-  "&:hover": {
-    boxShadow: "0px 0px 6px 0px var(--main-color)",
-  },
-});
+const ButtonView = styled.button`
+  background-color: var(--main-color);
+
+  &:hover {
+    box-shadow: 0px 0px 6px 0px var(--main-color);
+  }
+`;
 
 export {
   StyledTd,
