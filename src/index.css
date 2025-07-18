@@ -27,6 +27,7 @@ body.dark {
 html {
   /* Evita o problema com o Combobox */
   overflow-y: auto !important;
+  padding: 0px !important;
 }
 
 html,

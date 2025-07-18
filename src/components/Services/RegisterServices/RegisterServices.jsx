@@ -10,7 +10,7 @@ const RegisterServices = () => {
   const [errors, setErrors] = useState("");
   const [startingMDate, setStartingMDate] = useState("");
   const [searchParams] = useSearchParams();
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   useEffect(() => {
     const measurementDate = searchParams.get("measurementDate");
@@ -36,7 +36,7 @@ const RegisterServices = () => {
       if (field) setErrors(field);
       if (msg) toast.error(msg);
 
-      if (err.status === 401) setEmployee(null);
+      if (err.status === 401) setUserLogged(null);
     }
   };
 

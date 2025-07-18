@@ -10,7 +10,7 @@ import api from "../../utils/api.mjs";
 const Clients = () => {
   const [allClients, setAllClients] = useState();
   const [loading, setLoading] = useState(true);
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
   const handleDelete = async (id) => {
@@ -26,7 +26,7 @@ const Clients = () => {
       const msg = err.response?.data?.msg;
       if (msg) toast.error(msg);
 
-      if (err.status == 401) return setEmployee(null);
+      if (err.status == 401) return setUserLogged(null);
     }
   };
 
@@ -48,7 +48,7 @@ const Clients = () => {
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
 
         toast.error(msg);
       }

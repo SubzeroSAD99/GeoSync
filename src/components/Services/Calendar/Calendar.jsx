@@ -25,7 +25,7 @@ const Calendar = ({ topographer, events, setEvents, setViewScheduleDay }) => {
   const [holidays, setHolidays] = useState([]);
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
   const goToPrevMonth = () => {
@@ -113,7 +113,7 @@ const Calendar = ({ topographer, events, setEvents, setViewScheduleDay }) => {
 
         if (msg) toast.error(msg);
 
-        if (err.status === 401) setEmployee(null);
+        if (err.status === 401) setUserLogged(null);
       }
     })();
   }, [month, year, topographer]);

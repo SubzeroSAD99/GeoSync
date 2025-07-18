@@ -12,11 +12,13 @@ import {
 import { faCheck, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 import api from "../../../utils/api.mjs";
 import { toast } from "react-toastify";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const ScheduleServices = () => {
   const [eventsByTopographer, setEventsByTopographer] = useState({});
   const [selected, setSelected] = useState({ day: "", topographer: "" });
   const [topographers, setTopographers] = useState([]);
+  const { setUserLogged } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -26,6 +28,8 @@ const ScheduleServices = () => {
         if (response.data) setTopographers(response.data.topographers);
       } catch (err) {
         const msg = err?.response?.data?.msg;
+
+        if (err.status === 401) setUserLogged(null);
 
         toast.error(msg);
       }
@@ -78,6 +82,8 @@ const ScheduleServices = () => {
     } catch (err) {
       const msg = err?.response?.data?.msg;
 
+      if (err.status === 401) setUserLogged(null);
+
       toast.update(toastId, {
         render: msg,
         type: "error",
@@ -115,7 +121,7 @@ const ScheduleServices = () => {
                     owner,
                     contractor,
                     guide,
-                    municipaly,
+                    municipality,
                     measurementHour,
                     internalObs,
                     confirmed,
@@ -125,7 +131,7 @@ const ScheduleServices = () => {
                       <StyledTd>{owner}</StyledTd>
                       <StyledTd>{contractor}</StyledTd>
                       <StyledTd>{guide}</StyledTd>
-                      <StyledTd>{municipaly}</StyledTd>
+                      <StyledTd>{municipality}</StyledTd>
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>
                       <StyledTd>

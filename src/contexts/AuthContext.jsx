@@ -5,18 +5,18 @@ import api from "../utils/api.mjs";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [employee, setEmployee] = useState(null);
+  const [userLogged, setUserLogged] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api
       .post("/validate")
       .then((res) => {
-        if (res.data) return setEmployee(res.data.employee);
+        if (res.data) return setUserLogged(res.data.employee);
         throw new Error("Não autenticado");
       })
       .catch(() => {
-        setEmployee(null);
+        setUserLogged(null);
       })
       .finally(() => {
         setLoading(false);
@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ employee, setEmployee, loading, setLoading }}
+      value={{ userLogged, setUserLogged, loading, setLoading }}
     >
       {children}
     </AuthContext.Provider>

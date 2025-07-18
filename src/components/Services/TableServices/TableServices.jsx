@@ -25,7 +25,7 @@ import { toast } from "react-toastify";
 
 const TableServices = ({ title, allServices, setAllServices }) => {
   const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
   const navigate = useNavigate();
@@ -65,12 +65,16 @@ const TableServices = ({ title, allServices, setAllServices }) => {
         );
       }
     } catch (err) {
-      if (err.status == 401) return setEmployee(null);
+      if (err.status == 401) return setUserLogged(null);
     }
   };
 
   const handleEdit = async (id) => {
     navigate(`/servicos/editar/${id}`);
+  };
+
+  const handleView = async (id) => {
+    window.open(`/servicos/rastreamento/${id}`, "_blank");
   };
 
   return (
@@ -100,7 +104,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
 
           <FilterBar
             label="Municipio"
-            column="municipaly"
+            column="municipality"
             filters={filters}
             onChange={setFilters}
           />
@@ -136,7 +140,7 @@ const TableServices = ({ title, allServices, setAllServices }) => {
                   owner,
                   serviceType,
                   cadist,
-                  municipaly,
+                  municipality,
                   priority,
                   status,
                   createdAt,
@@ -147,12 +151,13 @@ const TableServices = ({ title, allServices, setAllServices }) => {
                     owner={owner}
                     cadist={cadist}
                     serviceType={serviceType}
-                    municipality={municipaly}
+                    municipality={municipality}
                     priority={priority}
                     stats={status}
                     createdDate={createdAt}
                     onDelete={handleDelete}
                     onEdit={handleEdit}
+                    onView={handleView}
                   />
                 )
               )

@@ -5,7 +5,7 @@ import { useAuth } from "../../../contexts/AuthContext.jsx";
 
 const Section = () => {
   const [allServices, setAllServices] = useState([]);
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -14,7 +14,7 @@ const Section = () => {
 
         if (response.data) setAllServices(response.data);
       } catch (err) {
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
       }
     })();
   }, []);

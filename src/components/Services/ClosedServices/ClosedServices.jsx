@@ -5,7 +5,7 @@ import { useAuth } from "../../../contexts/AuthContext.jsx";
 
 const ClosedServices = () => {
   const [allServices, setAllServices] = useState([]);
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -14,7 +14,7 @@ const ClosedServices = () => {
 
         if (response.data) setAllServices(response.data);
       } catch (err) {
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
       }
     })();
   }, []);

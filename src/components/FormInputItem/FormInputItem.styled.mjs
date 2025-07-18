@@ -27,9 +27,10 @@ const InputContainer = styled.div`
   & > input {
     border-radius: 5px;
     border: none;
-    height: 22px;
+    height: 28px;
     outline: none;
     padding: 5px;
+    font-size: 0.9rem;
   }
 
   & > input:focus + label,
@@ -37,7 +38,7 @@ const InputContainer = styled.div`
     left: 20px;
     transition: left 0.2s linear, transform 0.3s ease-in-out,
       color 0.3s ease-in-out, background-color 0.3s ease 0.2s;
-    transform: translateY(-30px);
+    transform: translateY(-36px);
     background-color: var(--bg-secundary-color);
     color: var(--text-color);
   }

@@ -11,9 +11,10 @@ const Container = styled.div`
   flex-direction: column;
   gap: 5px;
   position: relative;
+  overflow: visible;
   border: 1px solid var(--main-color);
   border-radius: 8px;
-  padding: 10px;
+  padding: 15px;
   width: 100%;
 `;
 
@@ -51,6 +52,11 @@ const StyledFontAwesome = styled(FontAwesomeIcon)`
 `;
 
 const StyledCboxOptions = styled(ComboboxOptions)`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   background-color: lightgray;
   color: black;
   border-bottom-left-radius: 5px;

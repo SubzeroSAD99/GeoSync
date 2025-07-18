@@ -31,23 +31,16 @@ const registerSchema = Joi.object({
   priority: Joi.string()
     .lowercase()
     .valid("baixa", "normal", "alta")
-    .empty(["", "selecione"])
+    .empty([""])
     .default("normal"),
   status: Joi.string()
     .lowercase()
     .valid("aberta", "fechada")
-    .empty(["", "selecione"])
+    .empty([""])
     .default("aberta"),
-  step: Joi.string()
-    .lowercase()
-    .trim()
-    .required()
-    .empty(["", "selecione"])
-    .messages({
-      "any.required": "Por favor, selecione uma etapa.",
-    }),
+  step: Joi.string().lowercase().trim().empty([""]).default("agendado"),
   pending: Joi.string().lowercase().allow("").empty("selecione"),
-  municipaly: Joi.string()
+  municipality: Joi.string()
     .lowercase()
     .trim()
     .required()
@@ -55,6 +48,21 @@ const registerSchema = Joi.object({
     .messages({
       "any.required": "Por favor, selecione um municipio!.",
     }),
+  serviceValue: Joi.string()
+    .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
+    .optional()
+    .empty([""])
+    .allow(null)
+    .default(null)
+    .messages({
+      "string.pattern.currency":
+        "O valor deve estar no formato monetário correto!",
+    }),
+  paymentSituation: Joi.string()
+    .lowercase()
+    .valid("não pago", "pago", "parcialmente pago", "isento")
+    .empty([""])
+    .default("não pago"),
   measurementDate: Joi.string()
     .pattern(/^\d{2}\/\d{2}\/\d{4}$/)
     .trim()
@@ -83,6 +91,10 @@ class ServiceOrderController {
     value.guide = verifyToken(value.guide)?.id ?? null;
     value.cadist = verifyToken(value.cadist)?.id ?? null;
     value.topographer = verifyToken(value.topographer)?.id ?? null;
+
+    value.serviceValue = ServiceOrderController.parseCurrency(
+      value.serviceValue
+    );
 
     value.measurementDate = value?.measurementDate?.replace(
       /(\d{2})\/(\d{2})\/(\d{4})/,
@@ -150,6 +162,10 @@ class ServiceOrderController {
       value.cadist = verifyToken(value.cadist)?.id ?? null;
       value.topographer = verifyToken(value.topographer)?.id ?? null;
 
+      value.serviceValue = ServiceOrderController.parseCurrency(
+        value.serviceValue
+      );
+
       value.measurementDate = value?.measurementDate?.replace(
         /(\d{2})\/(\d{2})\/(\d{4})/,
         "$3-$2-$1"
@@ -159,7 +175,7 @@ class ServiceOrderController {
 
       const row = await ServiceOrder.update(value, {
         where: {
-          id: decoded.id,
+          id,
         },
       });
 
@@ -175,13 +191,11 @@ class ServiceOrderController {
   static async getById(req, res) {
     const { id } = req.body;
 
-    try {
-      const decoded = verifyToken(id);
+    if (isNaN(id))
+      return res.status(500).json({ msg: "Serviço não encontrado!" });
 
-      const data = await ServiceOrder.findOne({
-        where: {
-          id: decoded.id,
-        },
+    try {
+      const data = await ServiceOrder.findByPk(id, {
         attributes: {
           exclude: ["confirmed", "id"],
         },
@@ -235,7 +249,6 @@ class ServiceOrderController {
       });
 
       data.map((obj) => {
-        obj.id = generateToken({ id: obj.id });
         obj.createdAt = formatDate(obj.createdAt).split(",")[0];
       });
 
@@ -273,7 +286,6 @@ class ServiceOrderController {
       });
 
       data.map((obj) => {
-        obj.id = generateToken({ id: obj.id });
         obj.createdAt = formatDate(obj.createdAt).split(",")[0];
       });
 
@@ -301,7 +313,7 @@ class ServiceOrderController {
           include: [
             "id",
             "serviceType",
-            "municipaly",
+            "municipality",
             "locality",
             "measurementHour",
             "measurementDate",
@@ -346,7 +358,7 @@ class ServiceOrderController {
           owner,
           contractor,
           guide,
-          municipaly,
+          municipality,
           locality,
           ownerNumber,
           measurementHour,
@@ -360,7 +372,7 @@ class ServiceOrderController {
             owner,
             contractor,
             guide,
-            municipaly,
+            municipality,
             locality,
             ownerNumber,
             measurementHour,
@@ -376,6 +388,33 @@ class ServiceOrderController {
       console.log(err);
 
       res.status(500).json({ msg: "Erro ao acessar agendamento!" });
+    }
+  }
+
+  static async getStep(req, res) {
+    try {
+      const { id } = req.body;
+
+      if (isNaN(id))
+        return res.status(500).json({ msg: "Serviço não encontrado!" });
+
+      const data = await ServiceOrder.findByPk(id, {
+        attributes: ["step", [col("OwnerReader.fullName"), "owner"]],
+
+        include: [
+          {
+            association: "OwnerReader",
+            attributes: [],
+          },
+        ],
+        raw: true,
+      });
+
+      if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
+
+      res.json({ service: data });
+    } catch (err) {
+      res.status(400).json({ msg: "Erro interno no servidor!" });
     }
   }
 
@@ -496,6 +535,17 @@ class ServiceOrderController {
       style: "currency",
       currency: "BRL",
     });
+  }
+
+  static parseCurrency(value) {
+    const cleaned = value
+      ?.replace(/[^0-9\-,]+/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".");
+    const num = Number.parseFloat(cleaned);
+    if (Number.isNaN(num)) return null;
+
+    return String(num).length > 13 ? null : num;
   }
 
   static prepareDataToFront(input) {

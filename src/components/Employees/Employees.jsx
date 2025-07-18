@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 const Employees = () => {
   const [allEmployees, setAllEmployees] = useState({});
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const Employees = () => {
 
         response.data && setAllEmployees(objList);
       } catch (err) {
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
       }
     };
 
@@ -44,7 +44,7 @@ const Employees = () => {
       const msg = err.response?.data?.msg;
       if (msg) toast.error(msg);
 
-      if (err.status == 401) return setEmployee(null);
+      if (err.status == 401) return setUserLogged(null);
     }
   };
 

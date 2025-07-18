@@ -12,7 +12,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const { employee, setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ const Login = () => {
         toast(
           `Seja Bem Vindo ${name.charAt(0).toUpperCase() + name.slice(1)}!`
         );
-        setEmployee(response.data.employee);
+        setUserLogged(response.data.employee);
         navigate(from, { replace: true });
       }
     } catch (err) {

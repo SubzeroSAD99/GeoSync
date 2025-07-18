@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import api from "../../../utils/api.mjs";
 
 const RegisterClients = () => {
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ const RegisterClients = () => {
 
       if (msg) toast.error(msg);
 
-      if (err.status == 401) return setEmployee(null);
+      if (err.status == 401) return setUserLogged(null);
     }
   };
 

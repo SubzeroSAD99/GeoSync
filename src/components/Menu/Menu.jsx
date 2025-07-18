@@ -48,6 +48,12 @@ const Menu = () => {
           icon: faNewspaper,
           redirect: "/servicos/cadastrar",
         },
+
+        {
+          label: "Agendamento",
+          icon: faCalendarAlt,
+          redirect: "/servicos/agendamento",
+        },
       ],
     },
     {
@@ -70,12 +76,6 @@ const Menu = () => {
           label: "Clientes",
           icon: faPersonCirclePlus,
           redirect: "/gerenciamento/clientes",
-        },
-
-        {
-          label: "Agendamento",
-          icon: faCalendarAlt,
-          redirect: "/gerenciamento/agendamento",
         },
       ],
     },

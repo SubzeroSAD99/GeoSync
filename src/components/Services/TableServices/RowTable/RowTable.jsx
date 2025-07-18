@@ -22,6 +22,7 @@ const RowTable = ({
   createdDate,
   onDelete,
   onEdit,
+  onView,
 }) => {
   return (
     <tr>
@@ -54,7 +55,11 @@ const RowTable = ({
             <FontAwesomeIcon icon={faEdit} />
             <span>Editar</span>
           </ButtonEdit>
-          <ButtonView>
+          <ButtonView
+            onClick={() => {
+              onView(id);
+            }}
+          >
             <FontAwesomeIcon icon={faEye} />
             <span>Visualizar</span>
           </ButtonView>

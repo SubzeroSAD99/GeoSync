@@ -7,7 +7,7 @@ import FormClients from "./../FormClients/FormClients";
 
 const EditClients = ({ id }) => {
   const [infoClient, setInfoClient] = useState({});
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -20,7 +20,7 @@ const EditClients = ({ id }) => {
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
-        if (err.status === 401) setEmployee(null);
+        if (err.status === 401) setUserLogged(null);
 
         toast.error(msg);
       }
@@ -45,7 +45,7 @@ const EditClients = ({ id }) => {
     } catch (err) {
       const msg = err.response?.data?.msg;
 
-      if (err.status === 401) setEmployee(null);
+      if (err.status === 401) setUserLogged(null);
 
       if (msg) toast.error(msg);
     }

@@ -53,7 +53,7 @@ ServiceOrder.init(
       allowNull: true,
     },
 
-    municipaly: {
+    municipality: {
       type: DataTypes.STRING,
       allowNull: false,
     },

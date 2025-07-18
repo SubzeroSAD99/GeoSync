@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const Municipalities = () => {
   const [allMunicipalities, setAllMunicipalities] = useState({});
   const [loading, setLoading] = useState(true);
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
   const handleDelete = async (id) => {
@@ -28,7 +28,7 @@ const Municipalities = () => {
       const msg = err.response?.data?.msg;
       if (msg) toast.error(msg);
 
-      if (err.status == 401) return setEmployee(null);
+      if (err.status == 401) return setUserLogged(null);
     }
   };
 
@@ -50,7 +50,7 @@ const Municipalities = () => {
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
 
         toast.error(msg);
       }

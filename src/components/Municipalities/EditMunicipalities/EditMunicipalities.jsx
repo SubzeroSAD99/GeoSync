@@ -7,7 +7,7 @@ import api from "../../../utils/api.mjs";
 
 const EditMunicipalities = ({ id }) => {
   const [name, setName] = useState("");
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -20,7 +20,7 @@ const EditMunicipalities = ({ id }) => {
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
-        if (err.status === 401) setEmployee(null);
+        if (err.status === 401) setUserLogged(null);
 
         toast.error(msg);
       }
@@ -45,7 +45,7 @@ const EditMunicipalities = ({ id }) => {
     } catch (err) {
       const msg = err.response?.data?.msg;
 
-      if (err.status === 401) setEmployee(null);
+      if (err.status === 401) setUserLogged(null);
 
       if (msg) toast.error(msg);
     }

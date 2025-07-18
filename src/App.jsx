@@ -1,11 +1,7 @@
-import { BrowserRouter, useLocation } from "react-router-dom";
-import Main from "./components/Main/Main.jsx";
-import { useUI } from "./contexts/UIContext.jsx";
-import { useEffect } from "react";
-import { useAuth } from "./contexts/AuthContext.jsx";
+import { BrowserRouter } from "react-router-dom";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Header from "./components/Header/Header.jsx";
+import Main from "./components/Main/Main";
 
 const App = () => {
   return (
@@ -23,25 +19,8 @@ const App = () => {
       />
 
       <BrowserRouter>
-        <AppContent />
+        <Main />
       </BrowserRouter>
-    </>
-  );
-};
-
-const AppContent = () => {
-  const { setIsMenu } = useUI();
-  const location = useLocation();
-  const { employee } = useAuth();
-
-  useEffect(() => {
-    setIsMenu(location.pathname !== "/login");
-  }, [location.pathname, setIsMenu]);
-
-  return (
-    <>
-      {employee && <Header />}
-      <Main />
     </>
   );
 };

@@ -6,7 +6,7 @@ import FormEmployees from "../FormEmployees/FormEmployees.jsx";
 import { toast } from "react-toastify";
 
 const RegisterEmployees = () => {
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ const RegisterEmployees = () => {
 
       if (msg) toast.warn(msg);
 
-      if (err.status == 401) return setEmployee(null);
+      if (err.status == 401) return setUserLogged(null);
     }
   };
 

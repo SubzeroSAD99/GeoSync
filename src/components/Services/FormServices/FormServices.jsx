@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { StyledButton, StyledForm } from "./FormServices.styled.mjs";
-import SelectItem from "../../SelectItem/SelectItem";
-import Comment from "./../../Comment/Comment";
 import api from "../../../utils/api.mjs";
-import InputDate from "../InputDate/InputDate";
 import { useSearchParams } from "react-router-dom";
+import ServiceSector from "./Sectors/ServiceSector/ServiceSector";
+import OwnershipSector from "./Sectors/OwnershipSector/OwnershipSector";
+import MeasurementSector from "./Sectors/MeasurementSector/MeasurementSector";
+import LocationSector from "./Sectors/LocationSector/LocationSector";
+import ResponsibilitiesSector from "./Sectors/ResponsibilitiesSector/ResponsibilitiesSector";
+import ExtrasSector from "./Sectors/ExtrasSector/ExtrasSector";
+import FinancialSector from "./Sectors/FinancialSector/FinancialSector";
 
 const SERVICE_TYPE = [
   "PLANIMETRIA",
@@ -29,12 +33,13 @@ const SERVICE_TYPE = [
   "LAUDO TÉCNICO",
 ];
 
-const PRIORITY = ["BAIXA", "NORMAL", "ALTA"];
+const PRIORITY = ["BAIXA", "ALTA"];
 
-const STATS = ["ABERTA", "FECHADA"];
+const STATS = ["FECHADA"];
+
+const PAYMENT_SITUATION = ["PAGO", "PARCIALMENTE PAGO", "ISENTO"];
 
 const STEP = [
-  "AGENDADO",
   "MEDIDO",
   "PROCESSADO",
   "CONFECÇÃO",
@@ -56,9 +61,10 @@ const FormServices = ({
   status,
   step,
   pending,
-  municipaly,
+  municipality,
   topographer,
   measurementDate,
+  paymentSituation,
   internalObs,
   externalObs,
   textBtnSubmit,
@@ -68,7 +74,7 @@ const FormServices = ({
   const [topographers, setTopographers] = useState([]);
   const [municipalities, setMunicipalities] = useState([]);
   const [owners, setOwners] = useState([]);
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const [values, setValues] = useState({});
   const [searchParams] = useSearchParams();
 
@@ -81,6 +87,7 @@ const FormServices = ({
   const PRIORITY_OPTS = toOptions(PRIORITY);
   const STATS_OPTS = toOptions(STATS);
   const STEP_OPTS = toOptions(STEP);
+  const PAYMENT_SITUATION_OPTS = toOptions(PAYMENT_SITUATION);
 
   useEffect(() => {
     const measurementDate = searchParams.get("measurementDate");
@@ -121,7 +128,7 @@ const FormServices = ({
           );
         }
       } catch (err) {
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
       }
     })();
 
@@ -142,7 +149,7 @@ const FormServices = ({
           );
         }
       } catch (err) {
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
       }
     })();
 
@@ -164,106 +171,59 @@ const FormServices = ({
           );
         }
       } catch (err) {
-        if (err.status == 401) return setEmployee(null);
+        if (err.status == 401) return setUserLogged(null);
       }
     })();
   }, []);
 
   return (
     <StyledForm onSubmit={handleSubmit}>
-      <SelectItem
-        options={owners}
-        title="Propietario"
-        name="owner"
-        select={owner}
-        error={errors === "owner"}
+      <ServiceSector
+        serviceTypeOpts={SERVICE_TYPE_OPTS}
+        serviceType={serviceType}
+        priorityOpts={PRIORITY_OPTS}
+        priority={priority}
+        statsOpts={STATS_OPTS}
+        stats={status}
+        stepOpts={STEP_OPTS}
+        step={step}
+        errors={errors}
       />
 
-      <SelectItem
-        options={owners}
-        title="Contratante"
-        name="contractor"
-        select={contractor}
-        error={errors === "contractor"}
+      <OwnershipSector
+        owners={owners}
+        owner={owner}
+        contractor={contractor}
+        guide={guide}
+        errors={errors}
       />
 
-      <SelectItem
-        options={owners}
-        title="Guia"
-        name="guide"
-        select={guide}
-        error={errors === "guide"}
-      />
-      <SelectItem
-        options={SERVICE_TYPE_OPTS.sort()}
-        title="Tipo de Serviço"
-        name="serviceType"
-        required={true}
-        select={serviceType}
-        error={errors === "serviceType"}
-      />
-      <SelectItem
-        options={employees}
-        title="Cadista"
-        name="cadist"
-        select={cadist}
-        error={errors === "cadist"}
-      />
-      <SelectItem
-        options={PRIORITY_OPTS.sort()}
-        title="Prioridade"
-        name="priority"
-        select={priority}
-      />
-      <SelectItem
-        options={STATS_OPTS.sort()}
-        title="Status"
-        name="status"
-        select={status}
-      />
-      <SelectItem
-        options={STEP_OPTS.sort()}
-        title="Etapa"
-        name="step"
-        required={true}
-        select={step}
-        error={errors === "step"}
-      />
-      <SelectItem
-        options={employees}
-        title="Pendências"
-        name="pending"
-        select={pending}
-      />
-      <SelectItem
-        options={municipalities}
-        title="Município"
-        name="municipaly"
-        required={true}
-        select={municipaly}
-        error={errors === "municipaly"}
+      <MeasurementSector
+        topographers={topographers}
+        topographer={topographer}
+        values={values}
+        measurementDate={measurementDate}
+        errors={errors}
       />
 
-      <SelectItem
-        options={topographers}
-        title="Topografo"
-        name="topographer"
-        select={topographer}
-        error={errors === "topographer"}
+      <LocationSector
+        municipalities={municipalities}
+        municipality={municipality}
+        errors={errors}
       />
 
-      <InputDate value={values.measurementDate || measurementDate} />
+      <ResponsibilitiesSector
+        cadists={employees}
+        cadist={cadist}
+        errors={errors}
+      />
 
-      <Comment
-        title="Observação Interna"
-        name="internalObs"
-        value={internalObs}
+      <FinancialSector
+        paymentSituationOpts={PAYMENT_SITUATION_OPTS}
+        paymentSituation={paymentSituation}
       />
-      <Comment
-        title="Observação Para o Cliente"
-        name="externalObs"
-        value={externalObs}
-      />
+
+      <ExtrasSector internalObs={internalObs} externalObs={externalObs} />
 
       <StyledButton type="submit">{textBtnSubmit}</StyledButton>
     </StyledForm>

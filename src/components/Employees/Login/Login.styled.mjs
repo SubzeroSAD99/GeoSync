@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
 const StyledSection = styled.section`
-  flex: none;
-  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding: 20px;
 `;
 
 const Title = styled.h2`
@@ -25,6 +29,7 @@ const StyledForm = styled.form`
   width: 100%;
   max-width: 600px;
   padding: 20px;
+  font-size: 1.1rem;
 `;
 
 const SubmitInput = styled.input`
@@ -37,6 +42,7 @@ const SubmitInput = styled.input`
   background-color: var(--main-color);
   box-shadow: 0px 0px 5px 0px var(--main-color);
   transition: filter 0.3s ease-in-out;
+  font-size: 1.1rem;
 
   &:hover {
     filter: brightness(130%);

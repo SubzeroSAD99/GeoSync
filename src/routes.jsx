@@ -15,8 +15,15 @@ import EditMunicipalitiesPage from "./pages/Municipalities/EditMunicipalitiesPag
 import ClientsPage from "./pages/Clients/ClientsPage.jsx";
 import RegisterClients from "./components/Clients/RegisterClients/RegisterClients.jsx";
 import EditClientsPage from "./pages/Clients/EditClientsPage.jsx";
+import TrackingServicePage from "./pages/Services/TrackingServicePage";
 
-const publicRoutes = [{ path: "/login", element: <LoginPage /> }];
+const publicRoutes = [
+  { path: "/login", element: <LoginPage /> },
+  {
+    path: "/servicos",
+    children: [{ path: "rastreamento/:id", element: <TrackingServicePage /> }],
+  },
+];
 
 const privateRoutes = [
   { element: <HomePage />, index: true },
@@ -30,6 +37,7 @@ const privateRoutes = [
       { path: "abertos", element: <HomePage /> },
       { path: "fechados", element: <ClosedServicesPage /> },
       { path: "editar/:id", element: <EditServicesPage /> },
+      { path: "agendamento", element: <ScheduleServicesPage /> },
     ],
   },
 
@@ -47,8 +55,6 @@ const privateRoutes = [
       { path: "clientes", element: <ClientsPage /> },
       { path: "clientes/editar/:id", element: <EditClientsPage /> },
       { path: "clientes/cadastrar", element: <RegisterClients /> },
-
-      { path: "agendamento", element: <ScheduleServicesPage /> },
     ],
   },
   { path: "teste", element: <Loading /> },

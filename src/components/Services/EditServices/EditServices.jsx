@@ -6,7 +6,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const EditServices = (id) => {
-  const { setEmployee } = useAuth();
+  const { setUserLogged } = useAuth();
   const [serviceInfo, setServiceInfo] = useState({});
   const [errors, setErrors] = useState("");
 
@@ -40,7 +40,7 @@ const EditServices = (id) => {
         const msg = err?.response?.data?.msg;
 
         if (err.status == 401) {
-          setEmployee(null);
+          setUserLogged(null);
         }
 
         toast.error(msg);

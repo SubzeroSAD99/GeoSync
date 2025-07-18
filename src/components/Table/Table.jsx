@@ -20,6 +20,7 @@ const Table = ({ array = [], columns, rows, handleEdit, handleDelete }) => {
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
   const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
+
   useEffect(() => {
     setTablePage(1);
   }, [filters]);
