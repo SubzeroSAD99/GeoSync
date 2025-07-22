@@ -16,7 +16,7 @@ Client.init(
       allowNull: false,
     },
 
-    cpf: {
+    cpfCnpj: {
       type: DataTypes.STRING,
       allowNull: true,
       unique: true,
@@ -26,6 +26,11 @@ Client.init(
       type: DataTypes.STRING,
       allowNull: true,
       unique: true,
+    },
+
+    personType: {
+      type: DataTypes.ENUM("natural", "legal"),
+      defaultValue: "natural",
     },
   },
   {

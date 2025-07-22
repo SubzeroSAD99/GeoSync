@@ -436,7 +436,7 @@ class ServiceOrderController {
             municipality,
             locality,
             ownerNumber,
-            measurementHour,
+            measurementHour: measurementHour?.slice(0, -3),
             measurementDate,
             internalObs,
             confirmed,

@@ -4,13 +4,31 @@ import { generateToken, verifyToken } from "../utils/Token.mjs";
 import Joi from "joi";
 
 const schema = Joi.object({
-  cpf: Joi.string()
-    .pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
-    .required()
+  personType: Joi.string()
+    .valid("natural", "legal")
+    .default("natural")
     .messages({
-      "string.empty": "O CPF é obrigatorio!",
-      "string.pattern.base": "O cpf deve estar no formato 000.000.000-00.",
+      "any.only": "O tipo de pessoa deve ser 'Fisica' ou 'Juridica'.",
     }),
+
+  cpfCnpj: Joi.string().when("personType", {
+    is: "natural",
+    then: Joi.string()
+      .trim()
+      .pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
+      .empty("")
+      .messages({
+        "string.pattern.base": "O CPF deve estar no formato 000.000.000-00.",
+      }),
+    otherwise: Joi.string()
+      .trim()
+      .empty("")
+      .pattern(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)
+      .messages({
+        "string.pattern.base":
+          "O CNPJ deve estar no formato 00.000.000/0000-00.",
+      }),
+  }),
   fullName: Joi.string()
     .trim()
     .pattern(/^[A-Za-zÀ-ÿ\s]+$/)
@@ -44,7 +62,7 @@ class ClientController {
 
       const formattedClients = clients.map((it) => {
         return {
-          id: generateToken({ id: it.id }),
+          id: it.id,
           fullName: it.fullName,
           phoneNumber: formatPhone(it.phoneNumber),
         };
@@ -62,15 +80,10 @@ class ClientController {
     const { id } = req.body;
 
     try {
-      const decoded = verifyToken(id);
-
-      if (!decoded)
-        return res.status(500).json({ msg: "Cliente não encontrado!" });
-
       const clients = await Client.findOne({
         raw: true,
-        where: { id: decoded.id },
-        attributes: ["fullName", "cpf", "phoneNumber"],
+        where: { id },
+        attributes: ["fullName", "cpfCnpj", "personType", "phoneNumber"],
       });
 
       if (!clients)
@@ -78,6 +91,8 @@ class ClientController {
 
       res.status(200).json({ ...clients });
     } catch (error) {
+      console.log(error);
+
       res.status(500).json({ msg: "Erro interno no servidor" });
     }
   }
@@ -92,7 +107,7 @@ class ClientController {
       });
     }
 
-    value.cpf = value.cpf.replace(/[.-\s]/g, "");
+    value.cpfCnpj = value.cpfCnpj?.replace(/[.-\s\/]/g, "");
     value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s]/g, "");
 
     try {
@@ -106,8 +121,10 @@ class ClientController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Clients_cpf_key" &&
-        res.status(500).json({ msg: "Cliente ja registrado!" });
+      err.parent.constraint === "Clients_cpfCnpj_key"
+        ? res.status(500).json({ msg: "Cliente ja registrado!" })
+        : err.parent.constraint === "Clients_phoneNumber_key" &&
+          res.status(500).json({ msg: "Numero de telefone ja registrado!" });
     }
   }
 

@@ -32,8 +32,8 @@ const SelectItem = ({
 
   const selectedOption = options.find((opt) =>
     opt.value
-      ? opt.value.toUpperCase() === String(selected).toUpperCase()
-      : opt.label.toUpperCase() === String(selected).toUpperCase()
+      ? String(opt.value).toUpperCase() === String(selected).toUpperCase()
+      : String(opt.label).toUpperCase() === String(selected).toUpperCase()
   );
 
   const filteredOptions =

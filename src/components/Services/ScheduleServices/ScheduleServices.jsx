@@ -122,6 +122,7 @@ const ScheduleServices = () => {
                     contractor,
                     guide,
                     municipality,
+                    locality,
                     measurementHour,
                     internalObs,
                     confirmed,
@@ -131,7 +132,10 @@ const ScheduleServices = () => {
                       <StyledTd>{owner}</StyledTd>
                       <StyledTd>{contractor}</StyledTd>
                       <StyledTd>{guide}</StyledTd>
-                      <StyledTd>{municipality}</StyledTd>
+                      <StyledTd>
+                        {municipality}
+                        {locality && ` / ${locality}`}
+                      </StyledTd>
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>
                       <StyledTd>

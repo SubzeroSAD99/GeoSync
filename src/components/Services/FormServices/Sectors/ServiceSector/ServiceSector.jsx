@@ -65,7 +65,7 @@ const ServiceSector = ({
           id="quantity"
           type="number"
           label="Quantidade"
-          defaultValue={quantity}
+          defaultValue={quantity || 1}
           min={1}
         />
       </Container>
