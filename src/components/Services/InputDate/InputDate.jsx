@@ -40,7 +40,7 @@ const InputDate = ({ value }) => {
 
   return (
     <DateContainer>
-      <label htmlFor="measurementDate">Data Medição</label>
+      <label htmlFor="measurementDate">Data</label>
       <Flatpickr
         value={date}
         onChange={(selectedDates) => {

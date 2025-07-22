@@ -1,8 +1,15 @@
 import React from "react";
 import SelectItem from "../../../../SelectItem/SelectItem";
 import { Container } from "../Sectors.styled.mjs";
+import InputSector from "./../InputSector/InputSector";
 
-const LocationSector = ({ municipalities, municipality, errors }) => {
+const LocationSector = ({
+  municipalities,
+  municipality,
+  locality,
+  location,
+  errors,
+}) => {
   return (
     <>
       <h3>Localização</h3>
@@ -15,6 +22,23 @@ const LocationSector = ({ municipalities, municipality, errors }) => {
           required={true}
           select={municipality}
           error={errors === "municipality"}
+        />
+
+        <InputSector
+          id="locality"
+          type="text"
+          label="Localidade"
+          placeholder="DIGITE A LOCALIDADE"
+          defaultValue={locality}
+          uppercase={true}
+        />
+
+        <InputSector
+          id="location"
+          type="url"
+          label="Link"
+          defaultValue={location}
+          placeholder="COLE A URL DE LOCALIZAÇÃO"
         />
       </Container>
     </>

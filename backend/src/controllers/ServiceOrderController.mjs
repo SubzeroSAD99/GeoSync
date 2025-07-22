@@ -40,6 +40,10 @@ const registerSchema = Joi.object({
     .default("aberta"),
   step: Joi.string().lowercase().trim().empty([""]).default("agendado"),
   pending: Joi.string().lowercase().allow("").empty("selecione"),
+  quantity: Joi.number().min(1).default(1).empty(["", null]).messages({
+    "number.min": "A quantidade deve ser maior ou igual a 1",
+    "number.base": "A quantidade deve ser um número válido",
+  }),
   municipality: Joi.string()
     .lowercase()
     .trim()
@@ -48,7 +52,31 @@ const registerSchema = Joi.object({
     .messages({
       "any.required": "Por favor, selecione um municipio!.",
     }),
+  locality: Joi.string()
+    .lowercase()
+    .trim()
+    .optional()
+    .empty([""])
+    .allow(null)
+    .default(null),
+  location: Joi.string()
+    .trim()
+    .optional()
+    .empty([""])
+    .allow(null)
+    .default(null),
+
   serviceValue: Joi.string()
+    .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
+    .optional()
+    .empty([""])
+    .allow(null)
+    .default(null)
+    .messages({
+      "string.pattern.currency":
+        "O valor deve estar no formato monetário correto!",
+    }),
+  amountPaid: Joi.string()
     .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
     .optional()
     .empty([""])
@@ -70,6 +98,28 @@ const registerSchema = Joi.object({
     .default(null)
     .optional()
     .allow(null),
+  measurementHour: Joi.string()
+    .pattern(/^(?:[01]?[0-9]|2[0-3]):([0-5]?[0-9])$/)
+    .trim()
+    .empty("")
+    .default(null)
+    .optional()
+    .allow(null),
+  schedulingResp: Joi.string()
+    .trim()
+    .empty(["", "selecione", "SELECIONE"])
+    .optional(),
+  processingResp: Joi.string()
+    .trim()
+    .empty(["", "selecione", "SELECIONE"])
+    .optional(),
+  payer: Joi.string()
+    .lowercase()
+    .trim()
+    .optional()
+    .empty([""])
+    .allow(null)
+    .default(null),
   internalObs: Joi.string().allow("").max(500).optional(),
   externalObs: Joi.string().allow("").max(500).optional(),
   confirmed: Joi.bool().default(false),
@@ -89,12 +139,17 @@ class ServiceOrderController {
     value.owner = verifyToken(value.owner)?.id ?? null;
     value.contractor = verifyToken(value.contractor)?.id ?? null;
     value.guide = verifyToken(value.guide)?.id ?? null;
+
     value.cadist = verifyToken(value.cadist)?.id ?? null;
+    value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
+    value.processingResp = verifyToken(value.processingResp)?.id ?? null;
+
     value.topographer = verifyToken(value.topographer)?.id ?? null;
 
     value.serviceValue = ServiceOrderController.parseCurrency(
       value.serviceValue
     );
+    value.amountPaid = ServiceOrderController.parseCurrency(value.amountPaid);
 
     value.measurementDate = value?.measurementDate?.replace(
       /(\d{2})\/(\d{2})\/(\d{4})/,
@@ -121,14 +176,9 @@ class ServiceOrderController {
       if (!id)
         return res.json({ err: true, msg: "Não foi possivel encontrar OS" });
 
-      const decodedId = verifyToken(id);
-
-      if (!decodedId.id)
-        return res.json({ err: true, msg: "Não foi possivel encontrar OS" });
-
       const destroy = await ServiceOrder.destroy({
         where: {
-          id: decodedId.id,
+          id,
         },
       });
 
@@ -159,19 +209,22 @@ class ServiceOrderController {
       value.owner = verifyToken(value.owner)?.id ?? null;
       value.contractor = verifyToken(value.contractor)?.id ?? null;
       value.guide = verifyToken(value.guide)?.id ?? null;
+
       value.cadist = verifyToken(value.cadist)?.id ?? null;
-      value.topographer = verifyToken(value.topographer)?.id ?? null;
+      value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
+      value.processingResp = verifyToken(value.processingResp)?.id ?? null;
 
       value.serviceValue = ServiceOrderController.parseCurrency(
         value.serviceValue
       );
 
+      value.amountPaid = ServiceOrderController.parseCurrency(value.amountPaid);
+
+      value.topographer = verifyToken(value.topographer)?.id ?? null;
       value.measurementDate = value?.measurementDate?.replace(
         /(\d{2})\/(\d{2})\/(\d{4})/,
         "$3-$2-$1"
       );
-
-      const decoded = verifyToken(id);
 
       const row = await ServiceOrder.update(value, {
         where: {
@@ -207,9 +260,17 @@ class ServiceOrderController {
         "$3/$2/$1"
       );
 
+      data.measurementHour = data?.measurementHour?.slice(0, -3);
+
       data.cadist = generateToken({ id: data.cadist });
+      data.schedulingResp = generateToken({ id: data.schedulingResp });
+      data.processingResp = generateToken({ id: data.processingResp });
+
       data.topographer = generateToken({ id: data.topographer });
+
       data.owner = generateToken({ id: data.owner });
+      data.contractor = generateToken({ id: data.contractor });
+      data.guide = generateToken({ id: data.guide });
 
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 

@@ -51,22 +51,38 @@ const STEP = [
 ];
 
 const FormServices = ({
-  handleSubmit,
+  serviceType,
+  status,
+  priority,
+  step,
+  pending,
+  quantity,
+
   owner,
   contractor,
   guide,
-  serviceType,
-  cadist,
-  priority,
-  status,
-  step,
-  pending,
-  municipality,
+
   topographer,
   measurementDate,
+  measurementHour,
+
+  municipality,
+  locality,
+  location,
+
+  cadist,
+  schedulingResp,
+  processingResp,
+
+  serviceValue,
   paymentSituation,
+  amountPaid,
+  payer,
+
   internalObs,
   externalObs,
+
+  handleSubmit,
   textBtnSubmit,
   errors,
 }) => {
@@ -109,7 +125,6 @@ const FormServices = ({
         if (data) {
           setEmployees(
             data.employees
-              .filter((obj) => obj.role !== "topografo")
               .map((obj) => ({
                 value: obj.id,
                 label: obj.fullName,
@@ -187,6 +202,7 @@ const FormServices = ({
         stats={status}
         stepOpts={STEP_OPTS}
         step={step}
+        quantity={quantity}
         errors={errors}
       />
 
@@ -203,24 +219,32 @@ const FormServices = ({
         topographer={topographer}
         values={values}
         measurementDate={measurementDate}
+        measurementHour={measurementHour}
         errors={errors}
       />
 
       <LocationSector
         municipalities={municipalities}
         municipality={municipality}
+        locality={locality}
+        location={location}
         errors={errors}
       />
 
       <ResponsibilitiesSector
-        cadists={employees}
+        employees={employees}
         cadist={cadist}
+        schedulingResp={schedulingResp}
+        processingResp={processingResp}
         errors={errors}
       />
 
       <FinancialSector
         paymentSituationOpts={PAYMENT_SITUATION_OPTS}
         paymentSituation={paymentSituation}
+        serviceValue={serviceValue}
+        amountPaid={amountPaid}
+        payer={payer}
       />
 
       <ExtrasSector internalObs={internalObs} externalObs={externalObs} />

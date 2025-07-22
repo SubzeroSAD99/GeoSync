@@ -58,6 +58,28 @@ Client.hasMany(ServiceOrder, {
   as: "GuideOrders",
 });
 
+// Responsavel Agendamento
+ServiceOrder.belongsTo(Client, {
+  foreignKey: "schedulingResp",
+  as: "SchedulingReader",
+});
+
+Client.hasMany(ServiceOrder, {
+  foreignKey: "schedulingResp",
+  as: "SchedulingOrders",
+});
+
+// Guia
+ServiceOrder.belongsTo(Client, {
+  foreignKey: "processingResp",
+  as: "ProcessingReader",
+});
+
+Client.hasMany(ServiceOrder, {
+  foreignKey: "processingResp",
+  as: "ProcessingOrders",
+});
+
 const initAll = async () => {
   await Promise.all([
     Employee.sync({ force: false }),

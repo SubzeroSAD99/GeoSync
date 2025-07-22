@@ -68,6 +68,10 @@ const StyledMain = styled.main`
   width: 100%;
   padding: 20px;
   gap: 2rem;
+
+  & h2 {
+    text-transform: capitalize;
+  }
 `;
 
 const StyledSection = styled.section`

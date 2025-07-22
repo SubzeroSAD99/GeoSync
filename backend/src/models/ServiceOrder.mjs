@@ -99,12 +99,12 @@ ServiceOrder.init(
     },
 
     schedulingResp: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 
     processingResp: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
 

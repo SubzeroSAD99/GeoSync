@@ -1,16 +1,26 @@
 import React from "react";
 import { Container } from "../Sectors.styled.mjs";
-import FormInputItem from "./../../../../FormInputItem/FormInputItem";
 import InputText from "../../../InputText/InputText";
 import SelectItem from "../../../../SelectItem/SelectItem";
+import InputSector from "../InputSector/InputSector";
 
-const FinancialSector = ({ paymentSituationOpts, paymentSituation }) => {
+const FinancialSector = ({
+  paymentSituationOpts,
+  paymentSituation,
+  serviceValue,
+  amountPaid,
+  payer,
+}) => {
   return (
     <>
       <h3>Financeiro</h3>
 
       <Container>
-        <InputText />
+        <InputText
+          label="Valor do Serviço"
+          id="serviceValue"
+          defaultValue={serviceValue}
+        />
 
         <SelectItem
           options={paymentSituationOpts}
@@ -18,6 +28,21 @@ const FinancialSector = ({ paymentSituationOpts, paymentSituation }) => {
           name="paymentSituation"
           select={paymentSituation}
           placeholder="NÃO PAGO"
+        />
+
+        <InputText
+          label="Valor Pago"
+          id="amountPaid"
+          defaultValue={amountPaid}
+        />
+
+        <InputSector
+          type="text"
+          label="Pagador"
+          id="payer"
+          placeholder="DIGITE O NOME DO PAGADOR"
+          defaultValue={payer}
+          uppercase={true}
         />
       </Container>
     </>

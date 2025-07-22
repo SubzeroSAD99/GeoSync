@@ -1,6 +1,7 @@
 import React from "react";
 import SelectItem from "../../../../SelectItem/SelectItem";
 import { Container } from "../Sectors.styled.mjs";
+import InputSector from "../InputSector/InputSector";
 
 const ServiceSector = ({
   serviceTypeOpts,
@@ -11,6 +12,7 @@ const ServiceSector = ({
   priority,
   stepOpts,
   step,
+  quantity,
   pending,
   errors,
 }) => {
@@ -57,6 +59,14 @@ const ServiceSector = ({
           title="Pendências"
           name="pending"
           select={pending}
+        />
+
+        <InputSector
+          id="quantity"
+          type="number"
+          label="Quantidade"
+          defaultValue={quantity}
+          min={1}
         />
       </Container>
     </>
