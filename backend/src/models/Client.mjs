@@ -32,6 +32,36 @@ Client.init(
       type: DataTypes.ENUM("natural", "legal"),
       defaultValue: "natural",
     },
+
+    city: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    neighborhood: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    road: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    complement: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    number: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
+    cep: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+    },
   },
   {
     sequelize,

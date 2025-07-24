@@ -50,6 +50,28 @@ const schema = Joi.object({
       "string.pattern.base": "O número de telefone não esta no formato correto",
       "any.required": "O número de telefone é obrigatório.",
     }),
+
+  city: Joi.string().lowercase().optional().empty(""),
+  neighborhood: Joi.string().lowercase().optional().empty(""),
+  road: Joi.string().lowercase().optional().empty(""),
+  complement: Joi.string().lowercase().optional().empty(""),
+  number: Joi.number()
+    .optional()
+    .empty("")
+    .custom((value, _helpers) => {
+      // Se o valor for 0, retorna null
+      if (value === 0) {
+        return null;
+      }
+      return value;
+    }),
+  cep: Joi.string()
+    .optional()
+    .empty("")
+    .pattern(/^\d{5}-\d{3}$/)
+    .messages({
+      "string.pattern.base": "O CEP deve estar no formato 00000-000",
+    }),
 });
 
 class ClientController {
@@ -70,8 +92,6 @@ class ClientController {
 
       res.json({ clients: formattedClients });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao localizar clientes!" });
     }
   }
@@ -83,7 +103,9 @@ class ClientController {
       const clients = await Client.findOne({
         raw: true,
         where: { id },
-        attributes: ["fullName", "cpfCnpj", "personType", "phoneNumber"],
+        attributes: {
+          exclude: ["id", "createdAt", "updateAt"],
+        },
       });
 
       if (!clients)
@@ -91,8 +113,6 @@ class ClientController {
 
       res.status(200).json({ ...clients });
     } catch (error) {
-      console.log(error);
-
       res.status(500).json({ msg: "Erro interno no servidor" });
     }
   }
@@ -108,7 +128,7 @@ class ClientController {
     }
 
     value.cpfCnpj = value.cpfCnpj?.replace(/[.-\s\/]/g, "");
-    value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s]/g, "");
+    value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s+]/g, "");
 
     try {
       const clients = await Client.create({ ...value });
@@ -118,6 +138,8 @@ class ClientController {
 
       return res.status(200).json({ msg: "Cliente registrado com sucesso!" });
     } catch (err) {
+      console.log(err);
+
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
@@ -129,7 +151,7 @@ class ClientController {
   }
 
   static async update(req, res) {
-    let { id } = req.body;
+    const { id } = req.body;
 
     delete req.body.id;
 
@@ -140,12 +162,8 @@ class ClientController {
     }
 
     try {
-      const decoded = verifyToken(id);
-
-      if (!decoded) res.status(500).json({ msg: "Cliente não encontrado!" });
-
       const clients = await Client.update(value, {
-        where: { id: decoded.id },
+        where: { id },
       });
 
       if (!clients)
@@ -158,8 +176,10 @@ class ClientController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Clients_cpf_key" &&
-        res.status(500).json({ msg: "Cliente ja registrado!" });
+      err.parent.constraint === "Clients_cpfCnpj_key"
+        ? res.status(500).json({ msg: "Cliente ja registrado!" })
+        : err.parent.constraint === "Clients_phoneNumber_key" &&
+          res.status(500).json({ msg: "Numero de telefone ja registrado!" });
     }
   }
 
@@ -172,16 +192,9 @@ class ClientController {
           msg: "Não foi possivel encontrar cliente",
         });
 
-      const decodedId = verifyToken(id);
-
-      if (!decodedId.id)
-        return res.status(500).json({
-          msg: "Não foi possivel encontrar cliente",
-        });
-
       const destroy = await Client.destroy({
         where: {
-          id: decodedId.id,
+          id,
         },
       });
 

@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/db.mjs";
-import ServiceOrder from "./ServiceOrder.mjs";
 
 class Employee extends Model {}
 

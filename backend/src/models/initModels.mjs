@@ -13,6 +13,7 @@ Employee.hasMany(ServiceOrder, {
   foreignKey: "topographer", // coluna do ServiceOrder
   as: "TopographerOrders",
 });
+// ------------------------------------
 
 // Cadista
 Employee.hasMany(ServiceOrder, {
@@ -24,6 +25,7 @@ ServiceOrder.belongsTo(Employee, {
   foreignKey: "cadist",
   as: "CadistReader",
 });
+// ------------------------------------
 
 // Propietario
 ServiceOrder.belongsTo(Client, {
@@ -35,6 +37,7 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "owner",
   as: "OwnerOrders",
 });
+// ------------------------------------
 
 // Contratante
 ServiceOrder.belongsTo(Client, {
@@ -46,6 +49,7 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "contractor",
   as: "ContractorOrders",
 });
+// ------------------------------------
 
 // Guia
 ServiceOrder.belongsTo(Client, {
@@ -57,6 +61,7 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "guide",
   as: "GuideOrders",
 });
+// ------------------------------------
 
 // Responsavel Agendamento
 ServiceOrder.belongsTo(Client, {
@@ -68,8 +73,9 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "schedulingResp",
   as: "SchedulingOrders",
 });
+// ------------------------------------
 
-// Guia
+// Responsavel Processamento
 ServiceOrder.belongsTo(Client, {
   foreignKey: "processingResp",
   as: "ProcessingReader",
@@ -79,6 +85,7 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "processingResp",
   as: "ProcessingOrders",
 });
+// ------------------------------------
 
 const initAll = async () => {
   await Promise.all([

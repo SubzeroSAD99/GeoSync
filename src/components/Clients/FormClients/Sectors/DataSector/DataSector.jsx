@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FormInputItem from "../../../../FormInputItem/FormInputItem";
 import { Container } from "../Sector.styled.mjs";
-import { InputContainer } from "../../Input/Input.styled.mjs";
+import { RadioContainer } from "./DataSector.styled.mjs";
 
 const DataSector = ({ fullName, cpfCnpj, personType }) => {
   const [defaultPersonType, setDefaultPersonType] = useState("natural");
@@ -11,7 +11,7 @@ const DataSector = ({ fullName, cpfCnpj, personType }) => {
   }, [personType]);
 
   return (
-    <>
+    <div>
       <h3>Dados</h3>
 
       <Container>
@@ -22,7 +22,7 @@ const DataSector = ({ fullName, cpfCnpj, personType }) => {
           valueInput={fullName}
         />
 
-        <InputContainer>
+        <RadioContainer>
           <span>Tipo de Pessoa</span>
 
           <div>
@@ -48,7 +48,7 @@ const DataSector = ({ fullName, cpfCnpj, personType }) => {
             />
             <label htmlFor="legal">Juridica</label>
           </div>
-        </InputContainer>
+        </RadioContainer>
 
         {defaultPersonType === "natural" ? (
           <FormInputItem
@@ -70,7 +70,7 @@ const DataSector = ({ fullName, cpfCnpj, personType }) => {
           />
         )}
       </Container>
-    </>
+    </div>
   );
 };
 

@@ -17,7 +17,7 @@ startSock().catch(console.error);
 
 app.use(
   cors({
-    origin: "http://192.168.100.32:5173",
+    origin: "http://192.168.100.141:5173",
     credentials: true,
   })
 );

@@ -8,7 +8,7 @@ const InputContainer = styled.div`
   width: 100%;
   max-width: 600px;
 
-  & label {
+  & > label {
     position: absolute;
     top: -12px;
     background-color: var(--bg-secundary-color);
