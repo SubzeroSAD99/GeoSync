@@ -26,10 +26,11 @@ export const registerSchema = Joi.object({
     }),
   phoneNumber: Joi.string()
     .empty("")
-    .pattern(/^\(\d{2}\) \d{4}-\d{4}$/)
+    .pattern(
+      /^(?:\+\d{2} \(\d{2}\) \d{4}-\d{4}|\+\d \(\d{3}\) \d{3}-\d{4})|\+\d{2} \d{3} \d{3} \d{3}|\+\d{2} \d{4} \d{6}$/
+    )
     .messages({
-      "string.pattern.base":
-        "O número de telefone deve estar no formato (XX) XXXX-XXXX.",
+      "string.pattern.base": "O número de telefone não esta no formato correto",
       "any.required": "O número de telefone é obrigatório.",
     }),
   password: Joi.string()
@@ -72,12 +73,12 @@ export const updateSchema = Joi.object({
     .default("cadista"),
 
   phoneNumber: Joi.string()
-    .optional()
     .empty("")
-    .pattern(/^\(\d{2}\) \d{4}-\d{4}$/)
+    .pattern(
+      /^(?:\+\d{2} \(\d{2}\) \d{4}-\d{4}|\+\d \(\d{3}\) \d{3}-\d{4})|\+\d{2} \d{3} \d{3} \d{3}|\+\d{2} \d{4} \d{6}$/
+    )
     .messages({
-      "string.pattern.base":
-        "O número de telefone deve estar no formato (XX) XXXX-XXXX.",
+      "string.pattern.base": "O número de telefone não esta no formato correto",
       "any.required": "O número de telefone é obrigatório.",
     }),
   password: Joi.string()

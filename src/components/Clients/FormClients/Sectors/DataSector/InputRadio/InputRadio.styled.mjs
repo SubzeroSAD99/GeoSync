@@ -9,6 +9,8 @@ const RadioContainer = styled.div`
   padding: 15px 10px;
   width: 100%;
   max-width: 600px;
+  flex-wrap: wrap;
+  gap: 10px;
 
   & > span {
     position: absolute;

@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
 import FormInputItem from "../../../../FormInputItem/FormInputItem";
 import { Container } from "../Sector.styled.mjs";
-import { RadioContainer } from "./DataSector.styled.mjs";
+import InputRadio from "./InputRadio/InputRadio";
 
-const DataSector = ({ fullName, cpfCnpj, personType }) => {
+const DataSector = ({
+  fullName,
+  cpfCnpj,
+  personType,
+  dateOfBirth,
+  rg,
+  profession,
+}) => {
   const [defaultPersonType, setDefaultPersonType] = useState("natural");
+  const [maritalStatus, setMaritalStatus] = useState("single");
 
   useEffect(() => {
     setDefaultPersonType(personType ?? "natural");
@@ -22,43 +30,74 @@ const DataSector = ({ fullName, cpfCnpj, personType }) => {
           valueInput={fullName}
         />
 
-        <RadioContainer>
-          <span>Tipo de Pessoa</span>
-
-          <div>
-            <input
-              type="radio"
-              id="natural"
-              name="personType"
-              value="natural"
-              checked={defaultPersonType === "natural"}
-              onClick={() => setDefaultPersonType("natural")}
-            />
-            <label htmlFor="natural">Fisica</label>
-          </div>
-
-          <div>
-            <input
-              type="radio"
-              id="legal"
-              value="legal"
-              name="personType"
-              checked={defaultPersonType === "legal"}
-              onClick={() => setDefaultPersonType("legal")}
-            />
-            <label htmlFor="legal">Juridica</label>
-          </div>
-        </RadioContainer>
+        <InputRadio
+          title="Tipo de Pessoa"
+          value={defaultPersonType}
+          setValue={setDefaultPersonType}
+          options={[
+            { id: "natural", label: "Fisica", name: "personType" },
+            { id: "legal", label: "Juridica", name: "personType" },
+          ]}
+        />
 
         {defaultPersonType === "natural" ? (
-          <FormInputItem
-            id="cpfCnpj"
-            type="text"
-            label="CPF"
-            placeholder="___.___.___-__"
-            mask="000.000.000-00"
-            valueInput={cpfCnpj}
-          />
+          <>
+            <FormInputItem
+              id="cpfCnpj"
+              type="text"
+              label="CPF"
+              placeholder="___.___.___-__"
+              mask="000.000.000-00"
+              valueInput={cpfCnpj}
+            />
+
+            <FormInputItem
+              id="dateOfBirth"
+              type="date"
+              label="Data de nascimento"
+              valueInput={
+                dateOfBirth &&
+                dateOfBirth.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")
+              }
+            />
+
+            <FormInputItem
+              id="rg"
+              type="text"
+              label="RG"
+              mask="00.000.000-0"
+              placeholder="__.__.___-__"
+              valueInput={rg}
+            />
+
+            <FormInputItem
+              id="profession"
+              type="text"
+              label="Profissão"
+              valueInput={profession}
+            />
+
+            <InputRadio
+              title="Estado Civil"
+              value={maritalStatus}
+              setValue={setMaritalStatus}
+              options={[
+                { id: "single", label: "Solteiro(a)", name: "maritalStatus" },
+                { id: "married", label: "Casado(a)", name: "maritalStatus" },
+                { id: "separate", label: "Separado(a)", name: "maritalStatus" },
+                {
+                  id: "divorced",
+                  label: "Divorciado(a)",
+                  name: "maritalStatus",
+                },
+                {
+                  id: "stableUnion",
+                  label: "União Estável",
+                  name: "maritalStatus",
+                },
+              ]}
+            />
+          </>
         ) : (
           <FormInputItem
             id="cpfCnpj"

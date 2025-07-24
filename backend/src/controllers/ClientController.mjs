@@ -29,6 +29,52 @@ const schema = Joi.object({
           "O CNPJ deve estar no formato 00.000.000/0000-00.",
       }),
   }),
+
+  maritalStatus: Joi.string().when("personType", {
+    is: "natural",
+    then: Joi.string()
+      .valid("single", "married", "separate", "divorced", "stableUnion")
+      .empty("")
+      .default(null)
+      .messages({
+        "any.only": "O estado civil não é válido!'.",
+      }),
+    otherwise: Joi.forbidden().messages({
+      "any.unknown":
+        "O estado civil não deve ser preenchido para pessoa jurídica.",
+    }),
+  }),
+
+  rg: Joi.string().when("personType", {
+    is: "natural",
+    then: Joi.string()
+      .trim()
+      .pattern(/^\d{2}\.\d{3}\.\d{3}-\d{1}$/)
+      .empty("")
+      .messages({
+        "string.pattern.base": "O RG deve estar no formato 00.000.000-0.",
+      }),
+    otherwise: Joi.forbidden().messages({
+      "any.unknown": "O campo RG não deve ser preenchido para pessoa jurídica.",
+    }),
+  }),
+
+  dateOfBirth: Joi.string().when("personType", {
+    is: "natural",
+    then: Joi.string()
+      .trim()
+      .pattern(/^\d{4}-\d{2}-\d{2}$/)
+      .empty("")
+      .messages({
+        "string.pattern.base":
+          "A data de nascimento deve estar no formato 00/00/0000",
+      }),
+    otherwise: Joi.forbidden().messages({
+      "any.unknown":
+        "A data de nascimento não deve ser preenchida para pessoa jurídica.",
+    }),
+  }),
+
   fullName: Joi.string()
     .trim()
     .pattern(/^[A-Za-zÀ-ÿ\s]+$/)
@@ -50,7 +96,7 @@ const schema = Joi.object({
       "string.pattern.base": "O número de telefone não esta no formato correto",
       "any.required": "O número de telefone é obrigatório.",
     }),
-
+  profession: Joi.string().lowercase().optional().empty(""),
   city: Joi.string().lowercase().optional().empty(""),
   neighborhood: Joi.string().lowercase().optional().empty(""),
   road: Joi.string().lowercase().optional().empty(""),
@@ -138,15 +184,9 @@ class ClientController {
 
       return res.status(200).json({ msg: "Cliente registrado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
-      if (err.name !== "SequelizeUniqueConstraintError")
-        return res.status(500).json({ msg: "Erro interno do servidor." });
-
-      err.parent.constraint === "Clients_cpfCnpj_key"
-        ? res.status(500).json({ msg: "Cliente ja registrado!" })
-        : err.parent.constraint === "Clients_phoneNumber_key" &&
-          res.status(500).json({ msg: "Numero de telefone ja registrado!" });
+      res
+        .status(500)
+        .json({ msg: ClientController.verifyErrDb(err.parent.constrain) });
     }
   }
 
@@ -173,13 +213,9 @@ class ClientController {
         .status(200)
         .json({ msg: "Informações alteradas com sucesso!" });
     } catch (err) {
-      if (err.name !== "SequelizeUniqueConstraintError")
-        return res.status(500).json({ msg: "Erro interno do servidor." });
-
-      err.parent.constraint === "Clients_cpfCnpj_key"
-        ? res.status(500).json({ msg: "Cliente ja registrado!" })
-        : err.parent.constraint === "Clients_phoneNumber_key" &&
-          res.status(500).json({ msg: "Numero de telefone ja registrado!" });
+      res
+        .status(500)
+        .json({ msg: ClientController.verifyErrDb(err.parent.constrain) });
     }
   }
 
@@ -207,6 +243,26 @@ class ClientController {
     } catch (err) {
       res.status(500).json({ msg: "Não foi possivel encontrar cliente" });
     }
+  }
+
+  static verifyErrDb(err) {
+    let msg = "Erro interno no servidor!";
+
+    switch (err) {
+      case "Clients_cpfCnpj_key":
+        msg = "Cliente ja registrado!";
+        break;
+
+      case "Clients_phoneNumber_key":
+        msg = "Numero de telefone ja registrado!";
+        break;
+
+      case "Clients_rg_key":
+        msg = "Cliente ja registrado!";
+        break;
+    }
+
+    return msg;
   }
 }
 

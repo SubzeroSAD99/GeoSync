@@ -22,6 +22,17 @@ Client.init(
       unique: true,
     },
 
+    rg: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+
+    dateOfBirth: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -31,6 +42,22 @@ Client.init(
     personType: {
       type: DataTypes.ENUM("natural", "legal"),
       defaultValue: "natural",
+    },
+
+    maritalStatus: {
+      type: DataTypes.ENUM(
+        "single",
+        "married",
+        "separate",
+        "divorced",
+        "stableUnion"
+      ),
+      allowNull: true,
+    },
+
+    profession: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
 
     city: {

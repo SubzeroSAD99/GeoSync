@@ -10,6 +10,10 @@ const FormClients = ({
   fullName,
   personType,
   cpfCnpj,
+  rg,
+  dateOfBirth,
+  maritalStatus,
+  profession,
   road,
   city,
   neighborhood,
@@ -24,6 +28,10 @@ const FormClients = ({
       <DataSector
         fullName={fullName}
         cpfCnpj={cpfCnpj}
+        rg={rg}
+        maritalStatus={maritalStatus}
+        profession={profession}
+        dateOfBirth={dateOfBirth}
         personType={personType}
       />
 
