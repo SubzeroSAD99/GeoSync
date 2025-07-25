@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import FormMunicipalities from "../FormMunicipalities/FormMunicipalities";
 import { Title } from "../Municipalities.styled.mjs";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 
 const EditMunicipalities = ({ id }) => {
   const [name, setName] = useState("");

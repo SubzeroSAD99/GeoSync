@@ -1,5 +1,5 @@
 import React from "react";
-import ScheduleServices from "../../components/Services/ScheduleServices/ScheduleServices";
+import ScheduleServices from "@components/Services/ScheduleServices/ScheduleServices";
 
 const ScheduleServicesPage = () => {
   return <ScheduleServices />;

@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Main from "./components/Main/Main";
+import Main from "@components/Main/Main";
 
 const App = () => {
   return (

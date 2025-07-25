@@ -2,8 +2,8 @@ import React from "react";
 import { Title } from "../Municipalities.styled.mjs";
 import FormMunicipalities from "../FormMunicipalities/FormMunicipalities";
 import { toast } from "react-toastify";
-import { useAuth } from "../../../contexts/AuthContext";
-import api from "../../../utils/api.mjs";
+import { useAuth } from "@contexts/AuthContext";
+import api from "@utils/api.mjs";
 
 const RegisterMunicipalities = () => {
   const { setUserLogged } = useAuth();

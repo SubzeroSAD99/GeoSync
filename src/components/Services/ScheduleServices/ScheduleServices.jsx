@@ -10,9 +10,9 @@ import {
   TableContainer,
 } from "./ScheduleService.styled.mjs";
 import { faCheck, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 
 const ScheduleServices = () => {
   const [eventsByTopographer, setEventsByTopographer] = useState({});

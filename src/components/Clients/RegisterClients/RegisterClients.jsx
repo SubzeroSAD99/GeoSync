@@ -1,9 +1,9 @@
 import React from "react";
 import { Title } from "./RegisterClients.styled.mjs";
 import FormClients from "../FormClients/FormClients";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 
 const RegisterClients = () => {
   const { setUserLogged } = useAuth();

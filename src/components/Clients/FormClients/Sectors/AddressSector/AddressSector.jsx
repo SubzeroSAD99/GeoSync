@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "../Sector.styled.mjs";
-import FormInputItem from "../../../../FormInputItem/FormInputItem";
+import FormInputItem from "@components/FormInputItem/FormInputItem";
 
 const AddressSector = ({
   neighborhood,

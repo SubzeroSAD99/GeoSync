@@ -1,5 +1,5 @@
 import React from "react";
-import ClosedServices from "../../components/Services/ClosedServices/ClosedServices";
+import ClosedServices from "@components/Services/ClosedServices/ClosedServices";
 
 const ClosedServicesPage = () => {
   return <ClosedServices />;

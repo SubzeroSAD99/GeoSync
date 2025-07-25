@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Loading from "../Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import Table from "../Table/Table";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
 import { StyledLink, Title, TitleContainer } from "./Clients.styled.mjs";
-import api from "../../utils/api.mjs";
+import api from "@utils/api.mjs";
 
 const Clients = () => {
   const [allClients, setAllClients] = useState();

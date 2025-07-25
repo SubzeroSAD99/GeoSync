@@ -20,10 +20,11 @@ import {
   faEarthAmerica,
   faBackward,
   faPersonCirclePlus,
+  faWrench,
 } from "@fortawesome/free-solid-svg-icons";
-import { useUI } from "../../contexts/UIContext.jsx";
+import { useUI } from "@contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
-import { useTheme } from "../../contexts/ThemeContext.jsx";
+import { useTheme } from "@contexts/ThemeContext.jsx";
 
 const Menu = () => {
   const menuItems = [
@@ -76,6 +77,12 @@ const Menu = () => {
           label: "Clientes",
           icon: faPersonCirclePlus,
           redirect: "/gerenciamento/clientes",
+        },
+
+        {
+          label: "Equipamentos",
+          icon: faWrench,
+          redirect: "/gerenciamento/equipamentos",
         },
       ],
     },

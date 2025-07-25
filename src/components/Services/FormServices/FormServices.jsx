@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { StyledButton, StyledForm } from "./FormServices.styled.mjs";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import { useSearchParams } from "react-router-dom";
 import ServiceSector from "./Sectors/ServiceSector/ServiceSector";
 import OwnershipSector from "./Sectors/OwnershipSector/OwnershipSector";

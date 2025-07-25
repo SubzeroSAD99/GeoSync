@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import FormServices from "../FormServices/FormServices";
 import { Title } from "./EditServices.styled.mjs";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const EditServices = (id) => {

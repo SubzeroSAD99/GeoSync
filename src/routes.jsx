@@ -1,21 +1,34 @@
 import HomePage from "./pages/Services/HomePage.jsx";
+import Loading from "./components/Loading/Loading.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+
+// Services
 import RegisterServicesPage from "./pages/Services/RegisterServicesPage.jsx";
 import ClosedServicesPage from "./pages/Services/ClosedServicesPage.jsx";
 import EditServicesPage from "./pages/Services/EditServicesPage.jsx";
 import ScheduleServicesPage from "./pages/Services/ScheduleServicesPage.jsx";
+import TrackingServicePage from "./pages/Services/TrackingServicePage";
+
+// Employees
 import EmployeesPage from "./pages/Employees/EmployeesPage.jsx";
 import RegisterEmployeesPage from "./pages/Employees/RegisterEmployeesPage.jsx";
 import EditEmployeesPage from "./pages/Employees/EditEmployeesPage.jsx";
 import LoginPage from "./pages/Employees/LoginPage.jsx";
-import Loading from "./components/Loading/Loading.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
+
+// Municipalities
 import MunicipalitiesPage from "./pages/Municipalities/MunicipalitiesPage.jsx";
 import RegisterMunicipalitiesPage from "./pages/Municipalities/RegisterMunicipalitiesPage.jsx";
 import EditMunicipalitiesPage from "./pages/Municipalities/EditMunicipalitiesPage.jsx";
+
+// Clients
 import ClientsPage from "./pages/Clients/ClientsPage.jsx";
-import RegisterClients from "./components/Clients/RegisterClients/RegisterClients.jsx";
 import EditClientsPage from "./pages/Clients/EditClientsPage.jsx";
-import TrackingServicePage from "./pages/Services/TrackingServicePage";
+import RegisterClientsPage from "./pages/Clients/RegisterClientsPage";
+
+// Equipments
+import EquipmentsPage from "./pages/Equipments/EquipmentsPage.jsx";
+import RegisterEquipmentsPage from "./pages/Equipments/RegisterEquipmentsPage.jsx";
+import EditEquipmentsPage from "./pages/Equipments/EditEquipmentsPage";
 
 const publicRoutes = [
   { path: "/login", element: <LoginPage /> },
@@ -54,7 +67,11 @@ const privateRoutes = [
 
       { path: "clientes", element: <ClientsPage /> },
       { path: "clientes/editar/:id", element: <EditClientsPage /> },
-      { path: "clientes/cadastrar", element: <RegisterClients /> },
+      { path: "clientes/cadastrar", element: <RegisterClientsPage /> },
+
+      { path: "equipamentos", element: <EquipmentsPage /> },
+      { path: "equipamentos/cadastrar", element: <RegisterEquipmentsPage /> },
+      { path: "equipamentos/editar/:id", element: <EditEquipmentsPage /> },
     ],
   },
   { path: "teste", element: <Loading /> },

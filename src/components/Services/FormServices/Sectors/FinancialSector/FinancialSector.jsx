@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "../Sectors.styled.mjs";
-import InputText from "../../../InputText/InputText";
-import SelectItem from "../../../../SelectItem/SelectItem";
+import InputText from "@components/Services/InputText/InputText";
+import SelectItem from "@components/SelectItem/SelectItem";
 import InputSector from "../InputSector/InputSector";
 
 const FinancialSector = ({

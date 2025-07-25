@@ -1,5 +1,5 @@
 import React from "react";
-import TrackingService from "../../components/Services/TrackingService/TrackingService";
+import TrackingService from "@components/Services/TrackingService/TrackingService";
 import { useParams } from "react-router-dom";
 
 const TrackingServicePage = () => {

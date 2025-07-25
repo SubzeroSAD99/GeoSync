@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TableServices from "../TableServices/TableServices.jsx";
-import api from "../../../utils/api.mjs";
-import { useAuth } from "../../../contexts/AuthContext.jsx";
+import api from "@utils/api.mjs";
+import { useAuth } from "@contexts/AuthContext.jsx";
 
 const Section = () => {
   const [allServices, setAllServices] = useState([]);

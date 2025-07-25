@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Table from "../Table/Table.jsx";
-import api from "../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import { StyledLink, Title, TitleContainer } from "./Employees.styled.mjs";
-import { useAuth } from "../../contexts/AuthContext.jsx";
+import { useAuth } from "@contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Title } from "./EditClients.styled.mjs";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
-import api from "../../../utils/api.mjs";
-import FormClients from "./../FormClients/FormClients";
+import api from "@utils/api.mjs";
+import FormClients from "../FormClients/FormClients";
 
 const EditClients = ({ id }) => {
   const [infoClient, setInfoClient] = useState({});

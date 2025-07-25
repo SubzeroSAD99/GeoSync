@@ -1,5 +1,5 @@
 import React from "react";
-import FormInputItem from "../../../../FormInputItem/FormInputItem";
+import FormInputItem from "@components/FormInputItem/FormInputItem";
 import { Container } from "../Sector.styled.mjs";
 
 const ContactSector = ({ phoneNumber }) => {

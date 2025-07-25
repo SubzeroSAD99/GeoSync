@@ -1,11 +1,11 @@
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { RequireAuth } from "../RequireAuth.jsx";
-import { useAuth } from "../../contexts/AuthContext.jsx";
+import { useAuth } from "@contexts/AuthContext.jsx";
 import { Content, StyledMain } from "./Main.styles.mjs";
-import { privateRoutes, publicRoutes } from "../../routes.jsx";
-import Menu from "./../Menu/Menu";
-import Header from "./../Header/Header.jsx";
+import { privateRoutes, publicRoutes } from "@/routes.jsx";
+import Menu from "@components/Menu/Menu";
+import Header from "@components/Header/Header.jsx";
 
 const Main = () => {
   const { userLogged } = useAuth();

@@ -1,5 +1,5 @@
 import React from "react";
-import EditEmployees from "../../components/Employees/EditEmployees/EditEmployees";
+import EditEmployees from "@components/Employees/EditEmployees/EditEmployees";
 import { useParams } from "react-router-dom";
 
 const EditEmployeesPage = () => {

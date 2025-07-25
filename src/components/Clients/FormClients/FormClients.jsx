@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { StyledButton, StyledForm } from "./FormClients.styled.mjs";
-import FormInputItem from "../../FormInputItem/FormInputItem";
 import DataSector from "./Sectors/DataSector/DataSector";
 import ContactSector from "./Sectors/ContactSector/ContactSector";
 import AddressSector from "./Sectors/AddressSector/AddressSector";

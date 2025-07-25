@@ -15,8 +15,8 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../contexts/AuthContext.jsx";
-import api from "../../../utils/api.mjs";
+import { useAuth } from "@contexts/AuthContext.jsx";
+import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import axios from "axios";
 

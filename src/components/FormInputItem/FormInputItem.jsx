@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { InputContainer } from "./FormInputItem.styled.mjs";
 import { IMaskInput } from "react-imask";
-import EyeIcon from "./../EyeIcon/EyeIcon";
+import EyeIcon from "@components/EyeIcon/EyeIcon";
 
 const FormInputItem = ({
   id,

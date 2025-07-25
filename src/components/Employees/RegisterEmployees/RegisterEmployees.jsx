@@ -1,7 +1,7 @@
 import React from "react";
 import { Title } from "./RegisterEmployees.styled.mjs";
-import { useAuth } from "../../../contexts/AuthContext.jsx";
-import api from "../../../utils/api.mjs";
+import { useAuth } from "@contexts/AuthContext.jsx";
+import api from "@utils/api.mjs";
 import FormEmployees from "../FormEmployees/FormEmployees.jsx";
 import { toast } from "react-toastify";
 

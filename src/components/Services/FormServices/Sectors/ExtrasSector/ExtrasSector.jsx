@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "../Sectors.styled.mjs";
-import Comment from "../../../../Comment/Comment";
+import Comment from "@components/Comment/Comment";
 
 const ExtrasSector = ({ internalObs, externalObs }) => {
   return (

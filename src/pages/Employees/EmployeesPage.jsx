@@ -1,5 +1,5 @@
 import React from "react";
-import Employees from "../../components/Employees/Employees";
+import Employees from "@components/Employees/Employees";
 
 const EmployeesPage = () => {
   return <Employees />;

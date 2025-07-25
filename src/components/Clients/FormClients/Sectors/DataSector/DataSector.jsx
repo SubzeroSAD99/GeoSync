@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import FormInputItem from "../../../../FormInputItem/FormInputItem";
+import FormInputItem from "@components/FormInputItem/FormInputItem";
 import { Container } from "../Sector.styled.mjs";
 import InputRadio from "./InputRadio/InputRadio";
 

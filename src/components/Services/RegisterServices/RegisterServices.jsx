@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Title } from "./RegisterServices.styled.mjs";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import FormServices from "../FormServices/FormServices";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 
 const RegisterServices = () => {
   const [errors, setErrors] = useState("");

@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterServices from "../../components/Services/RegisterServices/RegisterServices";
+import RegisterServices from "@components/Services/RegisterServices/RegisterServices";
 
 const RegisterServicesPage = () => {
   return <RegisterServices />;

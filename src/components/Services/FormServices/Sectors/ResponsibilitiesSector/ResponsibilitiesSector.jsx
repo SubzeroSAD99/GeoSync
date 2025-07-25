@@ -1,5 +1,5 @@
 import React from "react";
-import SelectItem from "../../../../SelectItem/SelectItem";
+import SelectItem from "@components/SelectItem/SelectItem";
 import { Container } from "../Sectors.styled.mjs";
 
 const ResponsibilitiesSector = ({

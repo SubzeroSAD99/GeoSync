@@ -13,6 +13,7 @@ import {
 
 const RowTable = ({
   id,
+  key,
   owner,
   cadist,
   serviceType,
@@ -25,7 +26,7 @@ const RowTable = ({
   onView,
 }) => {
   return (
-    <tr>
+    <tr key={key}>
       <StyledTd>{owner}</StyledTd>
       <StyledTd>{serviceType}</StyledTd>
       <StyledTd>{cadist}</StyledTd>

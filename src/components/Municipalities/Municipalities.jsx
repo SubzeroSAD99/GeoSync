@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Table from "../Table/Table";
 import { StyledLink, Title, TitleContainer } from "./Municipalities.styled.mjs";
 import { toast } from "react-toastify";
-import api from "../../utils/api.mjs";
-import { useAuth } from "../../contexts/AuthContext";
+import api from "@utils/api.mjs";
+import { useAuth } from "@contexts/AuthContext";
 import Loading from "../Loading/Loading";
 import { useNavigate } from "react-router-dom";
 

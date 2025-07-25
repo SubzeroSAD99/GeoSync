@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterClients from "../../components/Clients/RegisterClients/RegisterClients";
+import RegisterClients from "@components/Clients/RegisterClients/RegisterClients";
 
 const RegisterClientsPage = () => {
   return <RegisterClients />;

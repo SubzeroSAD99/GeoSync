@@ -5,10 +5,10 @@ import {
   SubmitInput,
   StyledSection,
 } from "./Login.styled.mjs";
-import FormInputItem from "../../FormInputItem/FormInputItem";
-import api from "../../../utils/api.mjs";
+import FormInputItem from "@components/FormInputItem/FormInputItem";
+import api from "@utils/api.mjs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const Login = () => {

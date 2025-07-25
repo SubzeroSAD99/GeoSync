@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Title } from "../Employees.styled.mjs";
 import FormEmployees from "../FormEmployees/FormEmployees";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 
 const EditEmployees = ({ id }) => {

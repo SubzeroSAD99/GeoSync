@@ -4,8 +4,8 @@ import {
   StyledButton,
   StyledForm,
 } from "./FormEmployees.styled.mjs";
-import SelectItem from "../../SelectItem/SelectItem";
-import FormInputItem from "../../FormInputItem/FormInputItem";
+import SelectItem from "@components/SelectItem/SelectItem";
+import FormInputItem from "@components/FormInputItem/FormInputItem";
 
 const FormEmployees = ({
   handleSubmit,

@@ -1,6 +1,6 @@
 import React from "react";
-import SelectItem from "../../../../SelectItem/SelectItem";
-import InputDate from "../../../InputDate/InputDate";
+import SelectItem from "@components/SelectItem/SelectItem";
+import InputDate from "@components/Services/InputDate/InputDate";
 import { Container } from "../Sectors.styled.mjs";
 import InputSector from "../InputSector/InputSector";
 

@@ -10,7 +10,7 @@ import {
   StyledSection,
   Text,
 } from "./TrackingService.styled.mjs";
-import api from "../../../utils/api.mjs";
+import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 
 const TrackingService = ({ id }) => {

@@ -2,6 +2,7 @@ import Client from "./Client.mjs";
 import Employee from "./Employee.mjs";
 import Municipality from "./Municipality.mjs";
 import ServiceOrder from "./ServiceOrder.mjs";
+import Equipment from "./Equipment.mjs";
 
 // Topografo
 ServiceOrder.belongsTo(Employee, {
@@ -93,6 +94,7 @@ const initAll = async () => {
     ServiceOrder.sync({ force: false }),
     Municipality.sync({ force: false }),
     Client.sync({ force: false }),
+    Equipment.sync({ force: false }),
   ]);
 };
 
