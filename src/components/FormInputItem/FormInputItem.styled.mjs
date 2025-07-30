@@ -4,7 +4,7 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid var(--main-color);
-  padding: 10px;
+  padding: 15px 10px;
   border-radius: 5px;
   position: relative;
   width: 100%;
@@ -27,7 +27,7 @@ const InputContainer = styled.div`
   & > input {
     border-radius: 5px;
     border: none;
-    height: 28px;
+    height: 38px;
     outline: none;
     padding: 5px;
     font-size: 0.9rem;
@@ -38,7 +38,7 @@ const InputContainer = styled.div`
     left: 20px;
     transition: left 0.2s linear, transform 0.3s ease-in-out,
       color 0.3s ease-in-out, background-color 0.3s ease 0.2s;
-    transform: translateY(-36px);
+    transform: translateY(-40px);
     background-color: var(--bg-secundary-color);
     color: var(--text-color);
   }

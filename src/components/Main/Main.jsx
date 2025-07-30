@@ -6,6 +6,16 @@ import { Content, StyledMain } from "./Main.styles.mjs";
 import { privateRoutes, publicRoutes } from "@/routes.jsx";
 import Menu from "@components/Menu/Menu";
 import Header from "@components/Header/Header.jsx";
+import ProtectedRoute from "./../ProtectedRoute";
+
+const wrapWithProtection = (element, meta) => {
+  if (!meta) return element;
+  return (
+    <ProtectedRoute resource={meta.resource} action={meta.action}>
+      {element}
+    </ProtectedRoute>
+  );
+};
 
 const Main = () => {
   const { userLogged } = useAuth();
@@ -52,7 +62,10 @@ const Main = () => {
                                 key={`${i}-${j}`}
                                 path={child.path}
                                 index={child.index}
-                                element={child.element}
+                                element={wrapWithProtection(
+                                  child.element,
+                                  child.meta
+                                )}
                               />
                             ))}
                           </Route>
@@ -63,7 +76,10 @@ const Main = () => {
                           key={i}
                           path={route.path}
                           index={route.index}
-                          element={route.element}
+                          element={wrapWithProtection(
+                            route.element,
+                            route.meta
+                          )}
                         />
                       );
                     })}

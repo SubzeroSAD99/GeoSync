@@ -1,12 +1,19 @@
 import { Router } from "express";
 import EmployeeController from "../controllers/EmployeeController.mjs";
-import { authMiddleware } from "../middlewares/authorize.mjs";
+import { authenticate } from "../middlewares/authMiddleware.mjs";
 import ServiceOrderController from "../controllers/ServiceOrderController.mjs";
+import permissions from "../access/permissions.mjs";
 
 const router = Router();
 
-router.post("/validate", authMiddleware, (req, res) => {
-  res.json({ err: false, employee: req.employee.fullName });
+router.post("/validate", authenticate, (req, res) => {
+  res.json({
+    employee: {
+      name: req.employee.fullName,
+      role: req.employee.role?.toUpperCase(),
+    },
+    permissions,
+  });
 });
 
 router.post("/login", EmployeeController.login);

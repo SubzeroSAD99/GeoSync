@@ -1,5 +1,8 @@
 import Employee from "../models/Employee.mjs";
 import Municipality from "../models/Municipality.mjs";
+import Equipment from "../models/Equipment.mjs";
+import XLSX from "xlsx";
+import Client from "../models/Client.mjs";
 
 const EMPLOYEES = [
   {
@@ -646,5 +649,70 @@ const MUNICIPALITIES = [
   },
 ];
 
+const EQUIPMENTS = [
+  {
+    name: "grx2 gnss receiver",
+    manufacturer: "sokkia",
+    serialNumber: 2004522031,
+    model: "grx2",
+    color: "branco e azul",
+  },
+
+  {
+    name: "topcon gnss rtk hiper v",
+    manufacturer: "topcon",
+    serialNumber: 0,
+    model: "hiper v",
+    color: "preto e amarelo",
+  },
+
+  {
+    name: "dji mavic 3 enterprise",
+    manufacturer: "dji",
+    serialNumber: null,
+    model: "mavic 3 enterprise",
+    color: "cinza escuro",
+  },
+
+  {
+    name: "estação total leica tc407",
+    manufacturer: "leica geosystems",
+    serialNumber: null,
+    model: "ts06 puls",
+    color: "branco com detalhes em verde",
+  },
+
+  {
+    name: "trimble gps pro-xt",
+    manufacturer: "trimble",
+    serialNumber: null,
+    model: "pro-xt",
+    color: "amarelo com detalhes pretos",
+  },
+];
+
+const workbook = XLSX.readFile("./CLIENTES.xlsx");
+const tab = workbook.SheetNames[0];
+const spreadsheet = workbook.Sheets[tab];
+const data = XLSX.utils.sheet_to_json(spreadsheet);
+
+(async () => {
+  const normalizedData = data.map((line) => {
+    const normalizedLine = {};
+
+    for (const [key, value] of Object.entries(line)) {
+      normalizedLine[key] =
+        typeof value === "string" ? value.toLowerCase() : value;
+    }
+
+    return normalizedLine;
+  });
+
+  await Client.bulkCreate(normalizedData, {
+    ignoreDuplicates: true,
+  });
+})();
+
 Employee.bulkCreate(EMPLOYEES, { ignoreDuplicates: true });
 Municipality.bulkCreate(MUNICIPALITIES, { ignoreDuplicates: true });
+Equipment.bulkCreate(EQUIPMENTS, { ignoreDuplicates: true });

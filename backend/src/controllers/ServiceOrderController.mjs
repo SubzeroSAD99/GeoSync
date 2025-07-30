@@ -9,17 +9,21 @@ import { col, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
 
 const registerSchema = Joi.object({
-  cadist: Joi.string().trim().empty(["", "selecione", "SELECIONE"]).optional(),
+  cadist: Joi.string().trim().empty("").allow(null).default(null).optional(),
   topographer: Joi.string()
+    .empty("")
+    .allow(null)
+    .default(null)
     .trim()
-    .empty(["", "selecione", "SELECIONE"])
     .optional(),
-  owner: Joi.string().trim().empty(["", "selecione", "SELECIONE"]).optional(),
+  owner: Joi.string().empty("").allow(null).default(null).trim().optional(),
   contractor: Joi.string()
     .trim()
-    .empty(["", "selecione", "SELECIONE"])
+    .allow(null)
+    .default(null)
+    .empty("")
     .optional(),
-  guide: Joi.string().trim().empty(["", "selecione", "SELECIONE"]).optional(),
+  guide: Joi.string().trim().empty("").optional(),
   serviceType: Joi.string()
     .lowercase()
     .trim()
@@ -31,15 +35,15 @@ const registerSchema = Joi.object({
   priority: Joi.string()
     .lowercase()
     .valid("baixa", "normal", "alta")
-    .empty([""])
+    .empty("")
     .default("normal"),
   status: Joi.string()
     .lowercase()
     .valid("aberta", "fechada")
-    .empty([""])
+    .empty("")
     .default("aberta"),
-  step: Joi.string().lowercase().trim().empty([""]).default("agendado"),
-  pending: Joi.string().lowercase().allow("").empty("selecione"),
+  step: Joi.string().lowercase().trim().empty("").default("agendado"),
+  pending: Joi.string().lowercase().allow(null).default(null).empty(""),
   quantity: Joi.number().min(1).default(1).empty(["", null]).messages({
     "number.min": "A quantidade deve ser maior ou igual a 1",
     "number.base": "A quantidade deve ser um número válido",
@@ -56,20 +60,15 @@ const registerSchema = Joi.object({
     .lowercase()
     .trim()
     .optional()
-    .empty([""])
+    .empty("")
     .allow(null)
     .default(null),
-  location: Joi.string()
-    .trim()
-    .optional()
-    .empty([""])
-    .allow(null)
-    .default(null),
+  location: Joi.string().trim().optional().empty("").allow(null).default(null),
 
   serviceValue: Joi.string()
     .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
     .optional()
-    .empty([""])
+    .empty("")
     .allow(null)
     .default(null)
     .messages({
@@ -79,7 +78,7 @@ const registerSchema = Joi.object({
   amountPaid: Joi.string()
     .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
     .optional()
-    .empty([""])
+    .empty("")
     .allow(null)
     .default(null)
     .messages({
@@ -89,7 +88,7 @@ const registerSchema = Joi.object({
   paymentSituation: Joi.string()
     .lowercase()
     .valid("não pago", "pago", "parcialmente pago", "isento")
-    .empty([""])
+    .empty("")
     .default("não pago"),
   measurementDate: Joi.string()
     .pattern(/^\d{2}\/\d{2}\/\d{4}$/)
@@ -105,19 +104,13 @@ const registerSchema = Joi.object({
     .default(null)
     .optional()
     .allow(null),
-  schedulingResp: Joi.string()
-    .trim()
-    .empty(["", "selecione", "SELECIONE"])
-    .optional(),
-  processingResp: Joi.string()
-    .trim()
-    .empty(["", "selecione", "SELECIONE"])
-    .optional(),
+  schedulingResp: Joi.string().trim().empty("").optional(),
+  processingResp: Joi.string().trim().empty("").optional(),
   payer: Joi.string()
     .lowercase()
     .trim()
     .optional()
-    .empty([""])
+    .empty("")
     .allow(null)
     .default(null),
   internalObs: Joi.string().allow("").max(500).optional(),
@@ -135,10 +128,6 @@ class ServiceOrderController {
         msg: error.details[0].message,
       });
     }
-
-    value.owner = verifyToken(value.owner)?.id ?? null;
-    value.contractor = verifyToken(value.contractor)?.id ?? null;
-    value.guide = verifyToken(value.guide)?.id ?? null;
 
     value.cadist = verifyToken(value.cadist)?.id ?? null;
     value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
@@ -195,6 +184,8 @@ class ServiceOrderController {
     try {
       const { id } = req.body;
 
+      console.log(req.body);
+
       delete req.body.id;
 
       const { error, value } = registerSchema.validate(req.body);
@@ -206,9 +197,7 @@ class ServiceOrderController {
         });
       }
 
-      value.owner = verifyToken(value.owner)?.id ?? null;
-      value.contractor = verifyToken(value.contractor)?.id ?? null;
-      value.guide = verifyToken(value.guide)?.id ?? null;
+      delete value.confirmed;
 
       value.cadist = verifyToken(value.cadist)?.id ?? null;
       value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
@@ -268,10 +257,6 @@ class ServiceOrderController {
 
       data.topographer = generateToken({ id: data.topographer });
 
-      data.owner = generateToken({ id: data.owner });
-      data.contractor = generateToken({ id: data.contractor });
-      data.guide = generateToken({ id: data.guide });
-
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
       res.json({ service: data });
@@ -312,6 +297,8 @@ class ServiceOrderController {
       data.map((obj) => {
         obj.createdAt = formatDate(obj.createdAt).split(",")[0];
       });
+
+      console.log(data);
 
       res.json(data);
     } catch (err) {
@@ -379,6 +366,7 @@ class ServiceOrderController {
             "measurementHour",
             "measurementDate",
             "internalObs",
+            "location",
             "confirmed",
             [col("OwnerReader.fullName"), "owner"],
             [col("ContractorReader.fullName"), "contractor"],
@@ -425,6 +413,7 @@ class ServiceOrderController {
           measurementHour,
           measurementDate,
           internalObs,
+          location,
           confirmed,
         }) => {
           return {
@@ -439,6 +428,7 @@ class ServiceOrderController {
             measurementHour: measurementHour?.slice(0, -3),
             measurementDate,
             internalObs,
+            location,
             confirmed,
           };
         }
@@ -446,8 +436,6 @@ class ServiceOrderController {
 
       res.json({ services: formattedServices });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao acessar agendamento!" });
     }
   }

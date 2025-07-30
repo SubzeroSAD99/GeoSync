@@ -33,13 +33,14 @@ const SERVICE_TYPE = [
   "LAUDO TÉCNICO",
 ];
 
-const PRIORITY = ["BAIXA", "ALTA"];
+const PRIORITY = ["BAIXA", "NORMAL", "ALTA"];
 
-const STATS = ["FECHADA"];
+const STATS = ["ABERTA", "FECHADA"];
 
-const PAYMENT_SITUATION = ["PAGO", "PARCIALMENTE PAGO", "ISENTO"];
+const PAYMENT_SITUATION = ["NÃO PAGO", "PAGO", "PARCIALMENTE PAGO", "ISENTO"];
 
 const STEP = [
+  "AGENDADO",
   "MEDIDO",
   "PROCESSADO",
   "CONFECÇÃO",
@@ -94,15 +95,16 @@ const FormServices = ({
   const [values, setValues] = useState({});
   const [searchParams] = useSearchParams();
 
-  const toOptions = (arr) =>
-    arr
-      .map((item) => ({ value: item, label: item }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+  const toOptions = (arr, sort = true) => {
+    const array = arr.map((item) => ({ value: item, label: item }));
+
+    return sort ? array.sort((a, b) => a.label.localeCompare(b.label)) : array;
+  };
 
   const SERVICE_TYPE_OPTS = toOptions(SERVICE_TYPE);
   const PRIORITY_OPTS = toOptions(PRIORITY);
   const STATS_OPTS = toOptions(STATS);
-  const STEP_OPTS = toOptions(STEP);
+  const STEP_OPTS = toOptions(STEP, false);
   const PAYMENT_SITUATION_OPTS = toOptions(PAYMENT_SITUATION);
 
   useEffect(() => {

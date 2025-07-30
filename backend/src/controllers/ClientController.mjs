@@ -1,7 +1,23 @@
 import Client from "../models/Client.mjs";
 import formatPhone from "../utils/formatPhone.mjs";
-import { generateToken, verifyToken } from "../utils/Token.mjs";
 import Joi from "joi";
+import path from "path";
+import { promises as fs } from "fs";
+
+const ufsFilePath = path.join(import.meta.dirname, "..", "public", "ufs.json");
+
+let validStateMap = new Map();
+
+const loadStates = async () => {
+  if (validStateMap.size > 0) return validStateMap;
+
+  const data = await fs.readFile(ufsFilePath, "utf-8");
+  const statesJson = JSON.parse(data);
+  validStateMap = new Map(statesJson.map(({ state, uf }) => [state, uf]));
+  return validStateMap;
+};
+
+await loadStates();
 
 const schema = Joi.object({
   personType: Joi.string()
@@ -58,6 +74,18 @@ const schema = Joi.object({
       "any.unknown": "O campo RG não deve ser preenchido para pessoa jurídica.",
     }),
   }),
+
+  issuingAuthority: Joi.string().when("personType", {
+    is: "natural",
+    then: Joi.string().lowercase().trim().empty(""),
+    otherwise: Joi.forbidden().messages({
+      "any.unknown":
+        "O campo orgão emissor não deve ser preenchido para pessoa jurídica.",
+    }),
+  }),
+
+  state: Joi.string().lowercase().empty("", "selecione").optional(),
+  uf: Joi.string().lowercase().empty("", "selecione").optional(),
 
   dateOfBirth: Joi.string().when("personType", {
     is: "natural",
@@ -118,6 +146,15 @@ const schema = Joi.object({
     .messages({
       "string.pattern.base": "O CEP deve estar no formato 00000-000",
     }),
+}).custom((value, helpers) => {
+  const expectedUf = validStateMap.get(value.state);
+  if (!expectedUf) {
+    return helpers.message(`Estado inválido: ${value.state}`);
+  }
+  if (expectedUf !== value.uf.toUpperCase()) {
+    return helpers.message(`UF não corresponde ao estado`);
+  }
+  return value;
 });
 
 class ClientController {
@@ -138,6 +175,7 @@ class ClientController {
 
       res.json({ clients: formattedClients });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ msg: "Erro ao localizar clientes!" });
     }
   }
@@ -186,7 +224,7 @@ class ClientController {
     } catch (err) {
       res
         .status(500)
-        .json({ msg: ClientController.verifyErrDb(err.parent.constrain) });
+        .json({ msg: ClientController.verifyErrDb(err.parent.constraint) });
     }
   }
 

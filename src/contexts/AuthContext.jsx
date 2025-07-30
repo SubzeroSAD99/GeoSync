@@ -6,13 +6,18 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [userLogged, setUserLogged] = useState(null);
+  const [permissions, setPermissions] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api
       .post("/validate")
       .then((res) => {
-        if (res.data) return setUserLogged(res.data.employee);
+        if (res.data) {
+          setUserLogged(res.data.employee);
+          setPermissions(res.data.permissions);
+          return;
+        }
         throw new Error("Não autenticado");
       })
       .catch(() => {
@@ -25,7 +30,14 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ userLogged, setUserLogged, loading, setLoading }}
+      value={{
+        userLogged,
+        setUserLogged,
+        loading,
+        setLoading,
+        permissions,
+        setPermissions,
+      }}
     >
       {children}
     </AuthContext.Provider>

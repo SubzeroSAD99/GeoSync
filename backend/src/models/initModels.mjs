@@ -3,6 +3,7 @@ import Employee from "./Employee.mjs";
 import Municipality from "./Municipality.mjs";
 import ServiceOrder from "./ServiceOrder.mjs";
 import Equipment from "./Equipment.mjs";
+import Vehicle from "./Vehicle.mjs";
 
 // Topografo
 ServiceOrder.belongsTo(Employee, {
@@ -88,13 +89,28 @@ Client.hasMany(ServiceOrder, {
 });
 // ------------------------------------
 
+// ------------------------------------
+
+// Veiculo
+Vehicle.belongsTo(Employee, {
+  foreignKey: "topographer",
+  as: "TopographerReader",
+});
+
+Employee.hasMany(ServiceOrder, {
+  foreignKey: "topographer",
+  as: "TopographerVehicle",
+});
+// ------------------------------------
+
 const initAll = async () => {
   await Promise.all([
-    Employee.sync({ force: false }),
-    ServiceOrder.sync({ force: false }),
-    Municipality.sync({ force: false }),
-    Client.sync({ force: false }),
-    Equipment.sync({ force: false }),
+    await Employee.sync({ force: false }),
+    await Client.sync({ force: false }),
+    await Municipality.sync({ force: false }),
+    await Equipment.sync({ force: false }),
+    await Vehicle.sync({ force: false }),
+    await ServiceOrder.sync({ force: false }),
   ]);
 };
 

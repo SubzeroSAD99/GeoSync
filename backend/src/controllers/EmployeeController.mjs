@@ -1,3 +1,4 @@
+import permissions from "../access/permissions.mjs";
 import Employee from "../models/Employee.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { registerSchema, updateSchema } from "../utils/employeeSchema.mjs";
@@ -36,8 +37,11 @@ class EmployeeController {
           maxAge: 60 * 60 * 1000, // 1h em ms
         })
         .json({
-          err: false,
-          employee: employee.fullName,
+          employee: {
+            name: employee.fullName,
+            role: employee.role.toUpperCase(),
+          },
+          permissions,
         });
     } catch (err) {
       res.status(500).json({ err: "Erro interno do servidor!" });
@@ -116,7 +120,7 @@ class EmployeeController {
     }
   }
 
-  static async exists(cpf) {
+  static async getByCPF(cpf) {
     return new Promise(async (resolve) => {
       try {
         const cpfFormatted = cpf.replace(/[.-]/g, "");
@@ -124,10 +128,12 @@ class EmployeeController {
         const employee = await Employee.findOne({
           raw: true,
           where: { cpf: cpfFormatted },
+          attributes: ["fullName", "cpf", "role"],
         });
 
         if (!employee) resolve(false);
-        resolve(true);
+
+        resolve(employee);
       } catch (error) {
         resolve(false);
       }
@@ -140,7 +146,7 @@ class EmployeeController {
     if (error) return res.status(500).json({ msg: error.details[0].message });
 
     value.cpf = value.cpf.replace(/[.-\s]/g, "");
-    value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s]/g, "");
+    value.phoneNumber = value.phoneNumber?.replace(/[\(\)-\s\+]/g, "");
 
     try {
       const employee = await Employee.create(value);
@@ -174,7 +180,7 @@ class EmployeeController {
     }
 
     value.cpf = value.cpf.replace(/[().-\s]/g, "");
-    value.phoneNumber = value.phoneNumber?.replace(/[().-\s]/g, "");
+    value.phoneNumber = value.phoneNumber?.replace(/[().-\s\+]/g, "");
 
     if (error) return res.status(500).json({ msg: error.details[0] });
 

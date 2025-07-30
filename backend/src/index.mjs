@@ -1,15 +1,20 @@
 import express from "express";
+
+// Routers
 import employeeRouter from "./routes/employeeRouter.mjs";
 import serviceRouter from "./routes/serviceRouter.mjs";
 import mainRouter from "./routes/mainRouter.mjs";
 import municipalityRouter from "./routes/municipalityRouter.mjs";
 import clientRouter from "./routes/clientRouter.mjs";
 import equipmentRouter from "./routes/equipmentRouter.mjs";
-import { authMiddleware } from "./middlewares/authorize.mjs";
+import vehicleRouter from "./routes/vehicleRouter.mjs";
+
+import { authenticate } from "./middlewares/authMiddleware.mjs";
 import initAll from "./models/initModels.mjs";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { startSock } from "./services/whatsappServices.mjs";
+import path from "path";
 
 const app = express();
 const PORT = 9999;
@@ -23,17 +28,20 @@ app.use(
   })
 );
 
+app.use(express.static(path.join(import.meta.dirname, "public")));
+
 app.use(cookieParser());
 app.use(express.json());
 
 app.use("/", mainRouter);
 
-app.use(authMiddleware);
+app.use(authenticate);
 app.use("/service", serviceRouter);
 app.use("/employee", employeeRouter);
 app.use("/municipality", municipalityRouter);
 app.use("/client", clientRouter);
 app.use("/equipment", equipmentRouter);
+app.use("/vehicle", vehicleRouter);
 
 app.listen(PORT, () => {
   initAll().then(() => {

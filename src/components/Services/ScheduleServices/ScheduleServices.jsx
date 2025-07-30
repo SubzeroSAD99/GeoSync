@@ -9,10 +9,15 @@ import {
   StyledTh,
   TableContainer,
 } from "./ScheduleService.styled.mjs";
-import { faCheck, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faLocationDot,
+  faSquareCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import { useAuth } from "@contexts/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ScheduleServices = () => {
   const [eventsByTopographer, setEventsByTopographer] = useState({});
@@ -110,6 +115,7 @@ const ScheduleServices = () => {
                   <StyledTh>Municipio / Local</StyledTh>
                   <StyledTh>Horario</StyledTh>
                   <StyledTh>Obs</StyledTh>
+                  <StyledTh>Localização</StyledTh>
                   <StyledTh>Confirmar</StyledTh>
                 </tr>
               </thead>
@@ -125,6 +131,7 @@ const ScheduleServices = () => {
                     locality,
                     measurementHour,
                     internalObs,
+                    location,
                     confirmed,
                   }) => (
                     <tr key={id}>
@@ -138,6 +145,21 @@ const ScheduleServices = () => {
                       </StyledTd>
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>
+                      <StyledTd>
+                        {location ? (
+                          <a
+                            href={location}
+                            target="_blank"
+                            style={{
+                              backgroundColor: "transparent",
+                              boxShadow: "none",
+                              color: "var(--highlight-main-color)",
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faLocationDot} />
+                          </a>
+                        ) : null}
+                      </StyledTd>
                       <StyledTd>
                         {!confirmed ? (
                           <StyledButton

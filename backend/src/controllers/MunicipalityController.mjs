@@ -12,12 +12,13 @@ class MunicipalityController {
   static async getAll(req, res) {
     try {
       const municipalities = await Municipality.findAll({
-        attributes: ["name"],
+        attributes: ["id", "name"],
         raw: true,
       });
 
       const formattedMunicipalities = municipalities.map((it) => {
         return {
+          id: it.id,
           name: it.name,
         };
       });
@@ -31,17 +32,10 @@ class MunicipalityController {
   static async getById(req, res) {
     const { id } = req.body;
 
-    console.log(req.body);
-
     try {
-      const decoded = verifyToken(id);
-
-      if (!decoded)
-        return res.status(500).json({ msg: "Municipio não encontrado!" });
-
       const municipality = await Municipality.findOne({
         raw: true,
-        where: { id: decoded.id },
+        where: { id },
         attributes: ["name"],
       });
 
@@ -98,12 +92,8 @@ class MunicipalityController {
     }
 
     try {
-      const decoded = verifyToken(id);
-
-      if (!decoded) res.status(500).json({ msg: "Municipio não encontrado!" });
-
       const municipality = await Municipality.update(value, {
-        where: { id: decoded.id },
+        where: { id },
       });
 
       if (!municipality)
@@ -131,17 +121,9 @@ class MunicipalityController {
           msg: "Não foi possivel encontrar municipio",
         });
 
-      const decodedId = verifyToken(id);
-
-      if (!decodedId.id)
-        return res.json({
-          err: true,
-          msg: "Não foi possivel encontrar municipio",
-        });
-
       const destroy = await Municipality.destroy({
         where: {
-          id: decodedId.id,
+          id,
         },
       });
 

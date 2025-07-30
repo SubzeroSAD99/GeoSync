@@ -18,7 +18,7 @@ const StyledInput = styled.input`
   width: 100%;
   border-radius: 5px;
   border: none;
-  height: 28px;
+  height: 38px;
   padding: 5px;
   outline-color: var(--main-color);
   text-transform: ${(props) => (props.uppercase ? "uppercase" : undefined)};

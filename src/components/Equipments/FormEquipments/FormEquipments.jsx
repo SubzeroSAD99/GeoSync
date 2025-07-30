@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   StyledButton,
@@ -15,6 +15,9 @@ const FormEquipments = ({
   color,
   btnSubmitValue,
 }) => {
+  useEffect(() => {
+    console.log(serialNumber);
+  }, []);
   return (
     <StyledForm onSubmit={handleSubmit}>
       <Container>
@@ -31,7 +34,7 @@ const FormEquipments = ({
           id="serialNumber"
           type="number"
           label="Nº de serie"
-          valueInput={serialNumber}
+          valueInput={String(serialNumber)}
           mask="0000000000"
         />
 

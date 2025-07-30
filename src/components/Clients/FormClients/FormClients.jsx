@@ -18,6 +18,9 @@ const FormClients = ({
   neighborhood,
   number,
   cep,
+  issuingAuthority,
+  state,
+  uf,
   complement,
   phoneNumber,
   textBtnSubmit,
@@ -32,6 +35,7 @@ const FormClients = ({
         profession={profession}
         dateOfBirth={dateOfBirth}
         personType={personType}
+        acronym={issuingAuthority}
       />
 
       <ContactSector phoneNumber={phoneNumber} />
@@ -43,6 +47,8 @@ const FormClients = ({
         number={number}
         cep={cep}
         complement={complement}
+        state={state}
+        uf={uf}
       />
 
       <StyledButton type="submit">{textBtnSubmit}</StyledButton>

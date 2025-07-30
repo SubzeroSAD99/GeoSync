@@ -22,6 +22,7 @@ const FormEmployees = ({
         <SelectItem
           options={options}
           title="Cargo"
+          select={role}
           placeholder={role || "\u2003"}
           name="role"
         />

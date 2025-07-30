@@ -13,9 +13,9 @@ import {
   StyledTd,
 } from "./RowTable.styled.mjs";
 
-const RowTable = ({ rows, obj, onDelete, onEdit }) => {
+const RowTable = ({ key, rows, obj, onDelete, onEdit }) => {
   return (
-    <tr>
+    <tr key={key}>
       {rows.map((it) => (
         <>
           <StyledTd>

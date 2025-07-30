@@ -28,6 +28,11 @@ Client.init(
       unique: true,
     },
 
+    issuingAuthority: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
     dateOfBirth: {
       type: DataTypes.DATEONLY,
       allowNull: true,
@@ -57,6 +62,16 @@ Client.init(
 
     profession: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    state: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    uf: {
+      type: DataTypes.STRING(2),
       allowNull: true,
     },
 

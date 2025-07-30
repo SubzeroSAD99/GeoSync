@@ -35,6 +35,8 @@ const EditServices = (id) => {
       try {
         const response = await api.post("/service/getOne", id);
 
+        console.log(response.data);
+
         if (response.data) setServiceInfo(response.data.service);
       } catch (err) {
         const msg = err?.response?.data?.msg;

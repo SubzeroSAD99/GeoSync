@@ -55,20 +55,22 @@ const MenuItemList = ({
               e.stopPropagation();
             }}
           >
-            {submenu.map((obj, index) => (
-              <StyledMenuItemList key={`${obj.label}-${index}`}>
-                <div
-                  className={
-                    location.pathname.includes(obj.redirect) ? "selected" : ""
-                  }
-                >
-                  <StyledLink to={obj.redirect}>
-                    <FontAwesomeIcon icon={obj.icon} />
-                    <p>{obj.label}</p>
-                  </StyledLink>
-                </div>
-              </StyledMenuItemList>
-            ))}
+            {submenu
+              .filter((obj) => obj.condition === undefined || obj.condition)
+              .map((obj, index) => (
+                <StyledMenuItemList key={`${obj.label}-${index}`}>
+                  <div
+                    className={
+                      location.pathname.includes(obj.redirect) ? "selected" : ""
+                    }
+                  >
+                    <StyledLink to={obj.redirect}>
+                      <FontAwesomeIcon icon={obj.icon} />
+                      <p>{obj.label}</p>
+                    </StyledLink>
+                  </div>
+                </StyledMenuItemList>
+              ))}
           </SubList>
         </SubmenuContainer>
       )}

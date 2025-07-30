@@ -1,110 +1,156 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  SearchContainer,
-  InputSearch,
-  StyledCboxButton,
-  StyledCboxOption,
-  StyledCboxOptions,
-  OptionsContainer,
-  StyledFontAwesome,
-  Container,
-  Title,
-} from "./SelectItem.styled.mjs";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { Combobox } from "@headlessui/react";
+// SelectItem.jsx
+import React, { useEffect, useState, useRef } from "react";
+import Select, { components } from "react-select";
+import { FixedSizeList as List } from "react-window";
+import { Container, Title } from "./SelectItem.styled.mjs";
+
+const ITEM_H = 35;
+const MAX_H = 300;
+
+// 1) Wrapper que intercepta o wheel em capture
+const OuterList = React.forwardRef(({ children, style, ...rest }, ref) => (
+  <div
+    ref={ref}
+    style={style}
+    onWheelCapture={(e) => e.stopPropagation()}
+    {...rest}
+  >
+    {children}
+  </div>
+));
+
+// 2) MenuList que usa esse OuterList
+const MenuList = (props) => {
+  const { options, children, getValue } = props;
+  const [value] = getValue();
+  const initialOffset = options.indexOf(value) * ITEM_H;
+
+  return (
+    <components.MenuList
+      {...props}
+      style={{
+        padding: "0px",
+        maxHeight: "none",
+        overflow: "hidden", // só o List rola
+        overscrollBehavior: "contain",
+      }}
+    >
+      <List
+        height={Math.min(MAX_H, children.length * ITEM_H)}
+        itemCount={children.length}
+        itemSize={ITEM_H}
+        width="100%"
+        initialScrollOffset={initialOffset}
+        outerElementType={OuterList}
+      >
+        {({ index, style }) => <div style={style}>{children[index]}</div>}
+      </List>
+    </components.MenuList>
+  );
+};
 
 const SelectItem = ({
   options,
   title,
-  placeholder = "Selecione",
   name,
   required,
   select,
+  placeholder,
   error,
 }) => {
-  const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState(select ?? "");
+  const [selectedOption, setSelectedOption] = useState(null);
   const containerRef = useRef();
 
   useEffect(() => {
-    setSelected(select ?? "");
-  }, [select]);
+    if (select != null) {
+      const match = options.find(
+        (opt) =>
+          String(opt.label).toUpperCase() === String(select).toUpperCase() ||
+          String(opt.value).toUpperCase() === String(select).toUpperCase()
+      );
+      setSelectedOption(match || null);
+    }
+  }, [select, options]);
 
-  const selectedOption = options.find((opt) =>
-    opt.value
-      ? String(opt.value).toUpperCase() === String(selected).toUpperCase()
-      : String(opt.label).toUpperCase() === String(selected).toUpperCase()
-  );
+  const handleChange = (opt) => {
+    setSelectedOption(opt);
 
-  const filteredOptions =
-    query === ""
-      ? options
-      : options.filter((it) =>
-          it.label.toUpperCase().includes(query.toUpperCase())
-        );
+    if (containerRef.current) containerRef.current.style.border = "";
+  };
 
   return (
-    <>
-      <Container
-        ref={containerRef}
-        data-required={required}
-        style={error ? { border: "1px solid red" } : undefined}
-      >
-        <Title>
-          {title}
-          {required && <span style={{ color: "red" }}> *</span>}
-        </Title>
+    <Container
+      ref={containerRef}
+      data-required={required}
+      style={error ? { border: "1px solid red" } : undefined}
+    >
+      <Title>
+        {title}
+        {required && <span style={{ color: "red" }}> *</span>}
+      </Title>
 
-        <Combobox
-          value={selected}
-          onChange={(value) => {
-            setSelected(value);
-            containerRef.current.style.border = "";
-          }}
-          name={name}
-        >
-          <StyledCboxButton
-            onClick={() => {
-              setQuery("");
-            }}
-          >
-            {selectedOption?.label?.toUpperCase() || placeholder?.toUpperCase()}
-            <StyledFontAwesome icon={faCaretDown} />
-          </StyledCboxButton>
-          <StyledCboxOptions>
-            <SearchContainer>
-              <InputSearch
-                type="text"
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar..."
-                onMouseDown={(e) => e.stopPropagation()}
-              />
-            </SearchContainer>
+      <Select
+        name={name}
+        options={options}
+        value={selectedOption}
+        getOptionLabel={(opt) => opt.label}
+        getOptionValue={(opt) => opt.value ?? opt.label}
+        onChange={handleChange}
+        placeholder={placeholder ?? "SELECIONE..."}
+        isSearchable
+        isClearable
+        menuShouldBlockScroll={false}
+        components={{ MenuList }}
+        styles={{
+          control: (base) => ({
+            ...base,
+            border: error ? "1px solid red" : base.border,
+            boxShadow: "none",
+            textTransform: "uppercase",
+          }),
+          menu: (base) => ({
+            ...base,
+            overflow: "visible",
+            borderBottomLeftRadius: "5px",
+            borderBottomRightRadius: "5px",
+            backgroundColor: "white",
+          }),
+          menuList: (base) => ({
+            ...base,
+            padding: 0,
+            maxHeight: "none",
+            overflow: "hidden",
+            overscrollBehavior: "contain",
+          }),
 
-            <OptionsContainer>
-              <StyledCboxOption value={placeholder?.toUpperCase()}>
-                {placeholder?.toUpperCase()}
-              </StyledCboxOption>
-              {/* Opções filtradas */}
-              {filteredOptions.length === 0 ? (
-                <div style={{ padding: "20px", textAlign: "center" }}>
-                  Nada encontrado.
-                </div>
-              ) : (
-                filteredOptions.map((it, index) => (
-                  <StyledCboxOption
-                    key={`${it}-${index}`}
-                    value={it.value ?? it.label}
-                  >
-                    {it.label.toUpperCase()}
-                  </StyledCboxOption>
-                ))
-              )}
-            </OptionsContainer>
-          </StyledCboxOptions>
-        </Combobox>
-      </Container>
-    </>
+          option: (base, { isSelected, isFocused }) => ({
+            ...base,
+            color: isSelected ? "var(--text-color2)" : "black",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+
+            backgroundColor: isSelected
+              ? "var(--main-color)" // só o selecionado
+              : isFocused
+              ? "#eee" // hover
+              : "white",
+          }),
+
+          dropdownIndicator: (base) => ({
+            ...base,
+            color: "var(--main-color)",
+          }),
+
+          clearIndicator: (base) => ({
+            ...base,
+            color: "red",
+          }),
+        }}
+        maxMenuHeight={MAX_H}
+      />
+    </Container>
   );
 };
 

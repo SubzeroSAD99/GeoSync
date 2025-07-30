@@ -29,6 +29,9 @@ import RegisterClientsPage from "./pages/Clients/RegisterClientsPage";
 import EquipmentsPage from "./pages/Equipments/EquipmentsPage.jsx";
 import RegisterEquipmentsPage from "./pages/Equipments/RegisterEquipmentsPage.jsx";
 import EditEquipmentsPage from "./pages/Equipments/EditEquipmentsPage";
+import VehiclesPage from "./pages/Vehicles/VehiclesPage";
+import EditVehiclesPage from "./pages/Vehicles/EditVehiclesPage";
+import RegisterVehiclesPage from "./pages/Vehicles/RegisterVehiclesPage";
 
 const publicRoutes = [
   { path: "/login", element: <LoginPage /> },
@@ -46,38 +49,118 @@ const privateRoutes = [
       {
         path: "cadastrar",
         element: <RegisterServicesPage />,
+        meta: { resource: "service", action: "create" },
       },
-      { path: "abertos", element: <HomePage /> },
-      { path: "fechados", element: <ClosedServicesPage /> },
-      { path: "editar/:id", element: <EditServicesPage /> },
-      { path: "agendamento", element: <ScheduleServicesPage /> },
+
+      {
+        path: "abertos",
+        element: <HomePage />,
+        meta: { resource: "service", action: "read" },
+      },
+      {
+        path: "fechados",
+        element: <ClosedServicesPage />,
+        meta: { resource: "service", action: "read" },
+      },
+      {
+        path: "editar/:id",
+        element: <EditServicesPage />,
+        meta: { resource: "service", action: "update" },
+      },
+      {
+        path: "agendamento",
+        element: <ScheduleServicesPage />,
+        meta: { resource: "service", action: "schedule" },
+      },
     ],
   },
 
   {
     path: "gerenciamento",
     children: [
-      { path: "funcionarios", element: <EmployeesPage /> },
-      { path: "funcionarios/cadastrar", element: <RegisterEmployeesPage /> },
-      { path: "funcionarios/editar/:id", element: <EditEmployeesPage /> },
+      {
+        path: "funcionarios",
+        element: <EmployeesPage />,
+        meta: { resource: "management", action: "read" },
+      },
+      {
+        path: "funcionarios/cadastrar",
+        element: <RegisterEmployeesPage />,
+        meta: { resource: "management", action: "create" },
+      },
+      {
+        path: "funcionarios/editar/:id",
+        element: <EditEmployeesPage />,
+        meta: { resource: "management", action: "update" },
+      },
 
-      { path: "municipios", element: <MunicipalitiesPage /> },
-      { path: "municipios/cadastrar", element: <RegisterMunicipalitiesPage /> },
-      { path: "municipios/editar/:id", element: <EditMunicipalitiesPage /> },
+      {
+        path: "municipios",
+        element: <MunicipalitiesPage />,
+        meta: { resource: "management", action: "read" },
+      },
+      {
+        path: "municipios/editar/:id",
+        element: <EditMunicipalitiesPage />,
+        meta: { resource: "management", action: "update" },
+      },
+      {
+        path: "municipios/cadastrar",
+        element: <RegisterMunicipalitiesPage />,
+        meta: { resource: "management", action: "create" },
+      },
 
-      { path: "clientes", element: <ClientsPage /> },
-      { path: "clientes/editar/:id", element: <EditClientsPage /> },
-      { path: "clientes/cadastrar", element: <RegisterClientsPage /> },
+      {
+        path: "clientes",
+        element: <ClientsPage />,
+        meta: { resource: "management", action: "read" },
+      },
+      {
+        path: "clientes/editar/:id",
+        element: <EditClientsPage />,
+        meta: { resource: "management", action: "update" },
+      },
+      {
+        path: "clientes/cadastrar",
+        element: <RegisterClientsPage />,
+        meta: { resource: "management", action: "create" },
+      },
 
-      { path: "equipamentos", element: <EquipmentsPage /> },
-      { path: "equipamentos/cadastrar", element: <RegisterEquipmentsPage /> },
-      { path: "equipamentos/editar/:id", element: <EditEquipmentsPage /> },
+      {
+        path: "equipamentos",
+        element: <EquipmentsPage />,
+        meta: { resource: "management", action: "read" },
+      },
+      {
+        path: "equipamentos/cadastrar",
+        element: <RegisterEquipmentsPage />,
+        meta: { resource: "management", action: "create" },
+      },
+      {
+        path: "equipamentos/editar/:id",
+        element: <EditEquipmentsPage />,
+        meta: { resource: "management", action: "update" },
+      },
+
+      {
+        path: "veiculos",
+        element: <VehiclesPage />,
+        meta: { resource: "management", action: "read" },
+      },
+      {
+        path: "veiculos/cadastrar",
+        element: <RegisterVehiclesPage />,
+        meta: { resource: "management", action: "create" },
+      },
+      {
+        path: "veiculos/editar/:id",
+        element: <EditVehiclesPage />,
+        meta: { resource: "management", action: "update" },
+      },
     ],
   },
   { path: "teste", element: <Loading /> },
   { path: "*", element: <NotFoundPage /> },
 ];
-
-const adminRoutes = [];
 
 export { publicRoutes, privateRoutes };

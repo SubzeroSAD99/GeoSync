@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   StyledForm,
   Title,
@@ -12,7 +12,7 @@ import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const { setUserLogged } = useAuth();
+  const { setUserLogged, userLogged, setPermissions, permissions } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -32,13 +32,15 @@ const Login = () => {
       });
 
       if (response.data && !response.data.err) {
-        const name = response.data.employee.split(" ")[0].toLowerCase();
+        const name = response.data.employee.name.split(" ")[0].toLowerCase();
+        const { employee, permissions } = response.data;
 
         toast(
           `Seja Bem Vindo ${name.charAt(0).toUpperCase() + name.slice(1)}!`
         );
-        setUserLogged(response.data.employee);
-        navigate(from, { replace: true });
+
+        setUserLogged(employee);
+        setPermissions(permissions);
       }
     } catch (err) {
       const msg = err.response?.data?.msg;
@@ -46,6 +48,10 @@ const Login = () => {
       if (msg) toast.error(msg);
     }
   };
+
+  useEffect(() => {
+    if (permissions && userLogged) navigate(from, { replace: true });
+  }, [permissions, userLogged]);
 
   return (
     <StyledSection>

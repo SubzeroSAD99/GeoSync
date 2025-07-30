@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import FormInputItem from "@components/FormInputItem/FormInputItem";
 import { Container } from "../Sector.styled.mjs";
 import InputRadio from "./InputRadio/InputRadio";
+import SelectItem from "@components/SelectItem/SelectItem.jsx";
+import { toast } from "react-toastify";
 
 const DataSector = ({
   fullName,
@@ -9,14 +11,27 @@ const DataSector = ({
   personType,
   dateOfBirth,
   rg,
+  acronym,
+  allUfs = [],
+  uf,
   profession,
 }) => {
   const [defaultPersonType, setDefaultPersonType] = useState("natural");
   const [maritalStatus, setMaritalStatus] = useState("single");
+  const [allAcronyms, setAllAcronyms] = useState([]);
 
   useEffect(() => {
     setDefaultPersonType(personType ?? "natural");
   }, [personType]);
+
+  useEffect(() => {
+    fetch("/data/acronyms.json")
+      .then((res) => res.json())
+      .then((data) => setAllAcronyms(data))
+      .catch((err) => {
+        toast.error("Erro ao carregar acrônimos");
+      });
+  }, []);
 
   return (
     <div>
@@ -68,6 +83,13 @@ const DataSector = ({
               mask="00.000.000-0"
               placeholder="__.__.___-__"
               valueInput={rg}
+            />
+
+            <SelectItem
+              title="Orgão Emissor"
+              options={allAcronyms}
+              name="issuingAuthority"
+              select={acronym}
             />
 
             <FormInputItem

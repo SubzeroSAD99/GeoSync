@@ -22,7 +22,13 @@ const Employees = () => {
 
         response.data && setAllEmployees(objList);
       } catch (err) {
+        const msg = err?.response?.data?.msg;
+
         if (err.status == 401) return setUserLogged(null);
+
+        toast.error(msg);
+
+        navigate("/");
       }
     };
 
