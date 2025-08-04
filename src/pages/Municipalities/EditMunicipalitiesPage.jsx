@@ -1,5 +1,5 @@
 import React from "react";
-import EditMunicipalities from "@components/Municipalities/EditMunicipalities/EditMunicipalities";
+import EditMunicipalities from "@components/Management/Municipalities/EditMunicipalities/EditMunicipalities";
 import { useParams } from "react-router-dom";
 
 const EditMunicipalitiesPage = () => {

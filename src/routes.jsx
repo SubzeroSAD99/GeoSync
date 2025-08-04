@@ -32,6 +32,7 @@ import EditEquipmentsPage from "./pages/Equipments/EditEquipmentsPage";
 import VehiclesPage from "./pages/Vehicles/VehiclesPage";
 import EditVehiclesPage from "./pages/Vehicles/EditVehiclesPage";
 import RegisterVehiclesPage from "./pages/Vehicles/RegisterVehiclesPage";
+import OsPage from "./pages/Financial/Os/OsPage.jsx";
 
 const publicRoutes = [
   { path: "/login", element: <LoginPage /> },
@@ -159,7 +160,23 @@ const privateRoutes = [
       },
     ],
   },
-  { path: "teste", element: <Loading /> },
+
+  {
+    path: "financeiro",
+    children: [
+      {
+        path: "os",
+        element: <OsPage />,
+        meta: { resource: "management", action: "read" },
+      },
+
+      {
+        path: "orcamentos",
+        element: <EmployeesPage />,
+        meta: { resource: "management", action: "read" },
+      },
+    ],
+  },
   { path: "*", element: <NotFoundPage /> },
 ];
 

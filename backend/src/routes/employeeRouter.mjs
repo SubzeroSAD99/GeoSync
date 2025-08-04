@@ -4,11 +4,7 @@ import { authorize } from "../middlewares/authMiddleware.mjs";
 
 const router = Router();
 
-router.post(
-  "/getAll",
-  authorize("management", "read"),
-  EmployeeController.getAll
-);
+router.post("/getAll", EmployeeController.getAll);
 
 router.post(
   "/getTopographers",

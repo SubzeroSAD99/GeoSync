@@ -13,22 +13,22 @@ import {
 } from "./TableServices.styled.mjs";
 import RowTable from "./RowTable/RowTable.jsx";
 import FilterBar from "./FilterBar/FilterBar.jsx";
-import api from "@utils/api.mjs";
-import { useAuth } from "@contexts/AuthContext.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
-const TableServices = ({ title, allServices, setAllServices }) => {
+const TableServices = ({
+  title,
+  allServices,
+  filterOptions,
+  options,
+  actions,
+}) => {
   const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
-  const { setUserLogged } = useAuth();
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setTablePage(1);
@@ -54,67 +54,20 @@ const TableServices = ({ title, allServices, setAllServices }) => {
     return filteredServices.slice(start, end);
   }, [filteredServices, tablePage]);
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await api.post("/service/delete", { id });
-
-      if (response.data && !response.data.err) {
-        toast.warn("Serviço deletado com sucesso!");
-        setAllServices((prevServices) =>
-          prevServices.filter((service) => service.id !== id)
-        );
-      }
-    } catch (err) {
-      if (err.status == 401) return setUserLogged(null);
-    }
-  };
-
-  const handleEdit = async (id) => {
-    navigate(`/servicos/editar/${id}`);
-  };
-
-  const handleView = async (id) => {
-    window.open(`/servicos/rastreamento/${id}`, "_blank");
-  };
-
   return (
     <section>
       <Title>{title}</Title>
       <TitleContainer>
         <FilterContainer>
-          <FilterBar
-            label="Propietário"
-            column="owner"
-            filters={filters}
-            onChange={setFilters}
-          />
-          <FilterBar
-            label="Tipo de Serviço"
-            column="serviceType"
-            filters={filters}
-            onChange={setFilters}
-          />
-
-          <FilterBar
-            label="Funcionário"
-            column="employee"
-            filters={filters}
-            onChange={setFilters}
-          />
-
-          <FilterBar
-            label="Municipio"
-            column="municipality"
-            filters={filters}
-            onChange={setFilters}
-          />
-
-          <FilterBar
-            label="Prioridade"
-            column="priority"
-            filters={filters}
-            onChange={setFilters}
-          />
+          {filterOptions.map((it, index) => (
+            <FilterBar
+              key={`${it}-${index}`}
+              label={it.label}
+              column={it.column}
+              filters={filters}
+              onChange={setFilters}
+            />
+          ))}
         </FilterContainer>
       </TitleContainer>
 
@@ -122,45 +75,23 @@ const TableServices = ({ title, allServices, setAllServices }) => {
         <StyledTable>
           <thead>
             <tr style={{ backgroundColor: "var(--main-color-op05)" }}>
-              <StyledTh>Propietário</StyledTh>
-              <StyledTh>Tipo de Serviço</StyledTh>
-              <StyledTh>Cadista</StyledTh>
-              <StyledTh>Município</StyledTh>
-              <StyledTh>Prioridade</StyledTh>
-              <StyledTh>Status</StyledTh>
-              <StyledTh>Data da criação</StyledTh>
+              {options.map(({ header }, index) => (
+                <StyledTh key={`${header}-${index}`}>{header}</StyledTh>
+              ))}
               <StyledTh>Ações</StyledTh>
             </tr>
           </thead>
           <StyledTBody>
             {filteredServices.length > 0 ? (
-              pageServices.map(
-                ({
-                  id,
-                  owner,
-                  serviceType,
-                  cadist,
-                  municipality,
-                  priority,
-                  status,
-                  createdAt,
-                }) => (
-                  <RowTable
-                    key={id}
-                    id={id}
-                    owner={owner}
-                    cadist={cadist}
-                    serviceType={serviceType}
-                    municipality={municipality}
-                    priority={priority}
-                    stats={status}
-                    createdDate={createdAt}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                    onView={handleView}
-                  />
-                )
-              )
+              pageServices.map((it, index) => (
+                <RowTable
+                  key={`${it.id}-${index}`}
+                  id={it.id}
+                  item={it}
+                  options={options.map((it) => it.column)}
+                  actions={actions}
+                />
+              ))
             ) : (
               <tr>
                 <StyledTd colSpan={8}>SEM REGISTROS</StyledTd>

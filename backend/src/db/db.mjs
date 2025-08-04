@@ -8,6 +8,10 @@ const db = new Sequelize({
   dialect: "postgres",
   ssl: false,
   logging: false,
+
+  define: {
+    underscored: true,
+  },
 });
 
 export default db;

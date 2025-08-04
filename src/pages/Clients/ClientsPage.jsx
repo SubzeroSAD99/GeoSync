@@ -1,5 +1,5 @@
 import React from "react";
-import Clients from "@components/Clients/Clients";
+import Clients from "@components/Management/Clients/Clients";
 
 const ClientsPage = () => {
   return <Clients />;

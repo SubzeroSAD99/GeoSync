@@ -29,6 +29,12 @@ router.post(
 );
 
 router.post(
+  "/getAll",
+  authorize("service", "read"),
+  ServiceOrderController.getAll
+);
+
+router.post(
   "/getAllOpen",
   authorize("service", "read"),
   ServiceOrderController.getAllOpen
@@ -50,12 +56,6 @@ router.post(
   "/confirm",
   authorize("service", "update"),
   ServiceOrderController.confirm
-);
-
-router.post(
-  "/genPdf",
-  authorize("service", "create"),
-  ServiceOrderController.genPdf
 );
 
 export default router;

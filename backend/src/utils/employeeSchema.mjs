@@ -4,7 +4,14 @@ export const registerSchema = Joi.object({
   role: Joi.string()
     .lowercase()
     .empty("", "selecione")
-    .valid("cadista", "administrador", "topografo")
+    .valid(
+      "cadista",
+      "ge. administrativo",
+      "socio",
+      "aux. administrativo",
+      "topografo",
+      "aux. topografo"
+    )
     .default("cadista"),
   cpf: Joi.string()
     .pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
@@ -69,7 +76,14 @@ export const updateSchema = Joi.object({
   role: Joi.string()
     .empty("", "selecione")
     .lowercase()
-    .valid("cadista", "administrador", "topografo")
+    .valid(
+      "cadista",
+      "ge. administrativo",
+      "socio",
+      "aux. administrativo",
+      "topografo",
+      "aux. topografo"
+    )
     .default("cadista"),
 
   phoneNumber: Joi.string()

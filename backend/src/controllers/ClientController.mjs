@@ -1,5 +1,5 @@
 import Client from "../models/Client.mjs";
-import formatPhone from "../utils/formatPhone.mjs";
+import { formatPhone } from "../utils/format.mjs";
 import Joi from "joi";
 import path from "path";
 import { promises as fs } from "fs";

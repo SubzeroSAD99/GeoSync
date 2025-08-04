@@ -29,7 +29,14 @@ Employee.init(
     },
 
     role: {
-      type: DataTypes.ENUM("cadista", "administrador", "topografo"),
+      type: DataTypes.ENUM(
+        "cadista",
+        "ge. administrativo",
+        "socio",
+        "aux. administrativo",
+        "topografo",
+        "aux. topografo"
+      ),
       defaultValue: "cadista",
       allowNull: false,
     },

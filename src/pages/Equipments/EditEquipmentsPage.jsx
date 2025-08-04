@@ -1,5 +1,5 @@
 import React from "react";
-import EditEquipments from "@components/Equipments/EditEquipments/EditEquipments";
+import EditEquipments from "@components/Management/Equipments/EditEquipments/EditEquipments";
 import { useParams } from "react-router-dom";
 
 const EditEquipmentsPage = () => {

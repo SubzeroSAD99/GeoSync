@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterEquipments from "@components/Equipments/RegisterEquipments/RegisterEquipments";
+import RegisterEquipments from "@components/Management/Equipments/RegisterEquipments/RegisterEquipments";
 
 const RegisterEquipmentsPage = () => {
   return <RegisterEquipments />;

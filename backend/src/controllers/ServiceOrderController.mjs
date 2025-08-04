@@ -1,9 +1,6 @@
-import handlebars from "handlebars";
-import puppeteer from "puppeteer";
-import fs from "fs";
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
-import formatDate from "../utils/formatDate.mjs";
+import { formatDate, formatCurrency } from "../utils/format.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { col, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
@@ -23,7 +20,7 @@ const registerSchema = Joi.object({
     .default(null)
     .empty("")
     .optional(),
-  guide: Joi.string().trim().empty("").optional(),
+  guide: Joi.string().trim().empty("").allow(null).default(null).optional(),
   serviceType: Joi.string()
     .lowercase()
     .trim()
@@ -101,11 +98,21 @@ const registerSchema = Joi.object({
     .pattern(/^(?:[01]?[0-9]|2[0-3]):([0-5]?[0-9])$/)
     .trim()
     .empty("")
-    .default(null)
     .optional()
+    .default(null)
     .allow(null),
-  schedulingResp: Joi.string().trim().empty("").optional(),
-  processingResp: Joi.string().trim().empty("").optional(),
+  schedulingResp: Joi.string()
+    .trim()
+    .empty("")
+    .allow(null)
+    .default(null)
+    .optional(),
+  processingResp: Joi.string()
+    .trim()
+    .empty("")
+    .allow(null)
+    .default(null)
+    .optional(),
   payer: Joi.string()
     .lowercase()
     .trim()
@@ -184,8 +191,6 @@ class ServiceOrderController {
     try {
       const { id } = req.body;
 
-      console.log(req.body);
-
       delete req.body.id;
 
       const { error, value } = registerSchema.validate(req.body);
@@ -210,22 +215,22 @@ class ServiceOrderController {
       value.amountPaid = ServiceOrderController.parseCurrency(value.amountPaid);
 
       value.topographer = verifyToken(value.topographer)?.id ?? null;
-      value.measurementDate = value?.measurementDate?.replace(
-        /(\d{2})\/(\d{2})\/(\d{4})/,
-        "$3-$2-$1"
-      );
+      value.measurementDate =
+        value?.measurementDate?.replace(
+          /(\d{2})\/(\d{2})\/(\d{4})/,
+          "$3-$2-$1"
+        ) ?? null;
 
       const row = await ServiceOrder.update(value, {
         where: {
           id,
         },
+        omitNull: false,
       });
 
       if (row) return res.json({ msg: "Serviço atualizado com sucesso!" });
       res.status(400).json({ msg: "Erro ao atualizar o serviço!" });
     } catch (err) {
-      console.log(err);
-
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
   }
@@ -243,6 +248,9 @@ class ServiceOrderController {
         },
         raw: true,
       });
+
+      if (!data)
+        return res.status(500).json({ msg: "Serviço não encontrado!" });
 
       data.measurementDate = data?.measurementDate?.replace(
         /(\d){4}-(\d){2}-(\d){2}/,
@@ -267,6 +275,44 @@ class ServiceOrderController {
     }
   }
 
+  static async getAll(req, res) {
+    try {
+      const data = await ServiceOrder.findAll({
+        attributes: {
+          exclude: ["cadist", "topographer", "updatedAt"],
+          include: [
+            [col("CadistReader.full_name"), "cadist"],
+            [col("OwnerReader.full_name"), "owner"],
+          ],
+        },
+        include: [
+          {
+            association: "CadistReader",
+            // esvaziar os atributos aqui, senão eles voltam duplicados
+            attributes: [],
+          },
+          {
+            association: "OwnerReader",
+            attributes: [],
+          },
+        ],
+        raw: true,
+      });
+
+      data.map((obj) => {
+        obj.serviceValue = formatCurrency(obj.serviceValue);
+
+        obj.amountPaid = formatCurrency(obj.amountPaid);
+      });
+
+      res.json(data);
+    } catch (err) {
+      console.log(err);
+
+      res.status(500).json({ msg: "Erro interno do servidor!" });
+    }
+  }
+
   static async getAllOpen(req, res) {
     try {
       const data = await ServiceOrder.findAll({
@@ -276,8 +322,8 @@ class ServiceOrderController {
         attributes: {
           exclude: ["cadist", "topographer", "updatedAt"],
           include: [
-            [col("CadistReader.fullName"), "cadist"],
-            [col("OwnerReader.fullName"), "owner"],
+            [col("CadistReader.full_name"), "cadist"],
+            [col("OwnerReader.full_name"), "owner"],
           ],
         },
         include: [
@@ -315,8 +361,8 @@ class ServiceOrderController {
         attributes: {
           exclude: ["cadist", "topographer", "updatedAt"],
           include: [
-            [col("CadistReader.fullName"), "cadist"],
-            [col("OwnerReader.fullName"), "owner"],
+            [col("CadistReader.full_name"), "cadist"],
+            [col("OwnerReader.full_name"), "owner"],
           ],
         },
         include: [
@@ -368,9 +414,9 @@ class ServiceOrderController {
             "internalObs",
             "location",
             "confirmed",
-            [col("OwnerReader.fullName"), "owner"],
-            [col("ContractorReader.fullName"), "contractor"],
-            [col("GuideReader.fullName"), "guide"],
+            [col("OwnerReader.full_name"), "owner"],
+            [col("ContractorReader.full_name"), "contractor"],
+            [col("GuideReader.full_name"), "guide"],
           ],
         },
         include: [
@@ -448,7 +494,7 @@ class ServiceOrderController {
         return res.status(500).json({ msg: "Serviço não encontrado!" });
 
       const data = await ServiceOrder.findByPk(id, {
-        attributes: ["step", [col("OwnerReader.fullName"), "owner"]],
+        attributes: ["step", [col("OwnerReader.full_name"), "owner"]],
 
         include: [
           {
@@ -465,27 +511,6 @@ class ServiceOrderController {
     } catch (err) {
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
-  }
-
-  static async genPdf(req, res) {
-    const templateHtml = fs.readFileSync(
-      "../templates/service-order-template.html",
-      "utf8"
-    );
-    const template = handlebars.compile(templateHtml);
-    const html = template(dados);
-
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    await page.pdf({
-      path: "service_order.pdf",
-      format: "A4",
-      margin: 0,
-      landscape: true,
-    });
-
-    await browser.close();
   }
 
   static async confirm(req, res) {
@@ -577,13 +602,6 @@ class ServiceOrderController {
 
       res.status(500).json({ msg: "Erro ao confirmar serviço!" });
     }
-  }
-
-  static formatCurrency(value) {
-    return value.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
   }
 
   static parseCurrency(value) {

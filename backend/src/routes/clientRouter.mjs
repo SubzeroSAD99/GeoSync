@@ -4,11 +4,7 @@ import { authorize } from "../middlewares/authMiddleware.mjs";
 
 const router = Router();
 
-router.post(
-  "/getAll",
-  authorize("management", "read"),
-  ClientController.getAll
-);
+router.post("/getAll", ClientController.getAll);
 router.post(
   "/register",
   authorize("management", "create"),

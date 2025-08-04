@@ -25,6 +25,10 @@ const EditServices = (id) => {
       const field = err.response?.data?.field;
       const msg = err.response?.data?.msg;
 
+      if (err.status == 401) {
+        setUserLogged(null);
+      }
+
       if (field) setErrors(field);
       if (msg) toast.error(msg);
     }
@@ -34,8 +38,6 @@ const EditServices = (id) => {
     (async () => {
       try {
         const response = await api.post("/service/getOne", id);
-
-        console.log(response.data);
 
         if (response.data) setServiceInfo(response.data.service);
       } catch (err) {

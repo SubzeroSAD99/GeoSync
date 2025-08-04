@@ -22,6 +22,9 @@ import {
   faPersonCirclePlus,
   faWrench,
   faCar,
+  faCoins,
+  faTicketSimple,
+  faMoneyCheckDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "@contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -97,6 +100,25 @@ const Menu = () => {
           label: "Veiculos",
           icon: faCar,
           redirect: "/gerenciamento/veiculos",
+        },
+      ],
+    },
+
+    {
+      label: "Financeiro",
+      icon: faCoins,
+      condition: canAccess("management", "read"),
+      submenu: [
+        {
+          label: "Ordens de Serviços",
+          icon: faTicketSimple,
+          redirect: "/financeiro/os",
+        },
+
+        {
+          label: "Orçamentos",
+          icon: faMoneyCheckDollar,
+          redirect: "/financeiro/orcamentos",
         },
       ],
     },

@@ -9,7 +9,7 @@ const EMPLOYEES = [
     fullName: "antonio kauan lopes freitas",
     cpf: "10179366335",
     password: "99",
-    role: "administrador",
+    role: "aux. administrativo",
     phoneNumber: "558896459091",
   },
 
@@ -24,7 +24,7 @@ const EMPLOYEES = [
     fullName: "bruno feliciano de lima alves",
     cpf: "06988874330",
     password: "99",
-    role: "administrador",
+    role: "ge. administrativo",
     phoneNumber: "558899582603",
   },
   {
@@ -37,7 +37,7 @@ const EMPLOYEES = [
     fullName: "francisco das chagas pontes neto",
     cpf: "78018293368",
     password: "99",
-    role: "administrador",
+    role: "socio",
   },
   {
     fullName: "francisco edson soeiro carneiro",
@@ -73,7 +73,7 @@ const EMPLOYEES = [
     fullName: "jonas saulo leorne pontes",
     cpf: "64457923320",
     password: "99",
-    role: "administrador",
+    role: "socio",
   },
   {
     fullName: "kauan de sousa vasconcelos",

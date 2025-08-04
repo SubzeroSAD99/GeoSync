@@ -22,11 +22,17 @@ const StyledTd = styled.td`
   font-size: 1rem;
 `;
 
-const PriorityContainer = styled.div(({ $priority }) => {
+const HighlightContainer = styled.div(({ $info }) => {
   let color = "transparent";
   let alert = false;
 
-  switch ($priority.toUpperCase()) {
+  switch ($info?.toUpperCase()) {
+    case "ABERTA":
+      color = "rgb(0, 190, 0)";
+      break;
+    case "FECHADA":
+      color = "#ff0000";
+      break;
     case "BAIXA":
       color = "var(--main-color)";
       break;
@@ -37,43 +43,33 @@ const PriorityContainer = styled.div(({ $priority }) => {
       color = "#ff0000";
       alert = true;
       break;
+    case "ISENTO":
+      color = "#00aeffff";
+      break;
+    case "NÃO PAGO":
+      color = "#ff0000";
+      break;
+    case "PARCIALMENTE PAGO":
+      color = "rgba(209, 209, 0, 1)";
+      break;
+    case "PAGO":
+      color = "rgb(0, 190, 0)";
+      break;
   }
 
   return css`
     justify-self: center;
-    width: 80%;
+    width: 60%;
     min-width: max-content;
-    border-radius: 4px;
-    padding: 5px;
+    border-radius: 3px;
+    padding: 2px;
     background-color: ${color};
-    box-shadow: 0px 0px 5px 0px ${color};
+    box-shadow: 0px 0px 4px 0px ${color};
     ${alert &&
     css`
       animation: ${alertAnimation} 1s linear infinite;
     `}
   `;
-});
-
-const StatsContainer = styled.div(({ $stats }) => {
-  let color;
-
-  switch ($stats.toUpperCase()) {
-    case "ABERTA":
-      color = "rgb(0, 190, 0)";
-      break;
-    case "FECHADA":
-      color = "#ff0000";
-      break;
-  }
-
-  return {
-    justifySelf: "center",
-    width: "max-content",
-    padding: "5px",
-    borderRadius: "4px",
-    backgroundColor: color,
-    boxShadow: `0px 0px 8px 2px ${color}`,
-  };
 });
 
 const Actions = styled.div`
@@ -83,9 +79,6 @@ const Actions = styled.div`
   flex-wrap: wrap;
   padding: 10px;
   gap: 10px;
-
-  --_button-delete-color: #ff0000;
-  --_button-edit-color: #e48900;
 
   & button {
     display: flex;
@@ -109,36 +102,12 @@ const Actions = styled.div`
   }
 `;
 
-const ButtonDelete = styled.button`
-  background-color: var(--_button-delete-color);
+const Button = styled.button`
+  background-color: ${(props) => props.color};
 
   &:hover {
-    box-shadow: 0px 0px 6px 0px var(--_button-delete-color);
+    box-shadow: 0px 0px 6px 0px ${(props) => props.color};
   }
 `;
 
-const ButtonEdit = styled.button`
-  background-color: var(--_button-edit-color);
-
-  &:hover {
-    box-shadow: 0px 0px 6px 0px var(--_button-edit-color);
-  }
-`;
-
-const ButtonView = styled.button`
-  background-color: var(--main-color);
-
-  &:hover {
-    box-shadow: 0px 0px 6px 0px var(--main-color);
-  }
-`;
-
-export {
-  StyledTd,
-  PriorityContainer,
-  StatsContainer,
-  Actions,
-  ButtonDelete,
-  ButtonEdit,
-  ButtonView,
-};
+export { StyledTd, HighlightContainer, Actions, Button };

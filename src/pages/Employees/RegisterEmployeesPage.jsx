@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterEmployees from "@components/Employees/RegisterEmployees/RegisterEmployees";
+import RegisterEmployees from "@components/Management/Employees/RegisterEmployees/RegisterEmployees";
 
 const RegisterEmployeesPage = () => {
   return <RegisterEmployees />;

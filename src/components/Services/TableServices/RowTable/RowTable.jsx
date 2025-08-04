@@ -1,75 +1,40 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   StyledTd,
   Actions,
-  ButtonDelete,
-  ButtonEdit,
-  ButtonView,
-  PriorityContainer,
-  StatsContainer,
+  Button,
+  HighlightContainer,
 } from "./RowTable.styled.mjs";
-import useCanAccess from "@/hooks/useCanAccess.mjs";
 
-const RowTable = ({
-  id,
-  key,
-  owner,
-  cadist,
-  serviceType,
-  municipality,
-  priority,
-  stats,
-  createdDate,
-  onDelete,
-  onEdit,
-  onView,
-}) => {
-  const canAccess = useCanAccess();
-
+const RowTable = ({ id, item, options, actions = [] }) => {
   return (
-    <tr key={key}>
-      <StyledTd>{owner}</StyledTd>
-      <StyledTd>{serviceType}</StyledTd>
-      <StyledTd>{cadist}</StyledTd>
-      <StyledTd>{municipality}</StyledTd>
-      <StyledTd>
-        <PriorityContainer $priority={priority}>{priority}</PriorityContainer>
-      </StyledTd>
-      <StyledTd>
-        <StatsContainer $stats={stats}>{stats}</StatsContainer>
-      </StyledTd>
-      <StyledTd>{createdDate}</StyledTd>
+    <tr key={id}>
+      {options.map((it, index) => (
+        <StyledTd key={`${it}-${index}`}>
+          {it === "priority" || it === "status" || it === "paymentSituation" ? (
+            <HighlightContainer $info={item[it]}>{item[it]}</HighlightContainer>
+          ) : (
+            item[it]
+          )}
+        </StyledTd>
+      ))}
       <StyledTd>
         <Actions>
-          {canAccess("service", "delete") ? (
-            <ButtonDelete
-              onClick={() => {
-                onDelete(id);
-              }}
-            >
-              <FontAwesomeIcon icon={faTrash} />
-              <span>Excluir</span>
-            </ButtonDelete>
-          ) : null}
-
-          <ButtonEdit
-            onClick={() => {
-              onEdit(id);
-            }}
-          >
-            <FontAwesomeIcon icon={faEdit} />
-            <span>Editar</span>
-          </ButtonEdit>
-          <ButtonView
-            onClick={() => {
-              onView(id);
-            }}
-          >
-            <FontAwesomeIcon icon={faEye} />
-            <span>Visualizar</span>
-          </ButtonView>
+          {actions.map(({ condition, buttonInfo }, index) =>
+            condition == undefined || condition ? (
+              <Button
+                key={`${buttonInfo.label}-${index}`}
+                color={buttonInfo.color}
+                onClick={() => {
+                  buttonInfo.click(id);
+                }}
+              >
+                <FontAwesomeIcon icon={buttonInfo.icon} />
+                <span>{buttonInfo.label}</span>
+              </Button>
+            ) : null
+          )}
         </Actions>
       </StyledTd>
     </tr>

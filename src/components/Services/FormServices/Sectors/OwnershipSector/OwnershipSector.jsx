@@ -10,7 +10,7 @@ const OwnershipSector = ({ owners, owner, contractor, guide, errors }) => {
       <Container>
         <SelectItem
           options={owners}
-          title="Propietario"
+          title="Proprietario"
           name="owner"
           select={owner}
           error={errors === "owner"}

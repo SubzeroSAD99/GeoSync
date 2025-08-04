@@ -21,7 +21,15 @@ const RowTable = ({ key, rows, obj, onDelete, onEdit }) => {
           <StyledTd>
             {it === "role" && (
               <FontAwesomeIcon
-                icon={it === "administrador" ? faUserTie : faUser}
+                icon={
+                  [
+                    "aux. administrativo",
+                    "ge. administrativo",
+                    "socio",
+                  ].includes(obj[it])
+                    ? faUserTie
+                    : faUser
+                }
                 style={{
                   paddingRight: "8px",
                 }}

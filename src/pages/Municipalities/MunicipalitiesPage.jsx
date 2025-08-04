@@ -1,5 +1,5 @@
 import React from "react";
-import Municipalities from "@components/Municipalities/Municipalities";
+import Municipalities from "@components/Management/Municipalities/Municipalities";
 
 const MunicipalitiesPage = () => {
   return <Municipalities />;

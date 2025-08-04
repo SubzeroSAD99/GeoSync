@@ -29,7 +29,7 @@ ServiceOrder.belongsTo(Employee, {
 });
 // ------------------------------------
 
-// Propietario
+// Proprietario
 ServiceOrder.belongsTo(Client, {
   foreignKey: "owner",
   as: "OwnerReader",

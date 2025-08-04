@@ -109,7 +109,7 @@ const ScheduleServices = () => {
               <thead>
                 <tr>
                   <StyledTh>Tipo de Serviço</StyledTh>
-                  <StyledTh>Propietário</StyledTh>
+                  <StyledTh>Proprietário</StyledTh>
                   <StyledTh>Contratante</StyledTh>
                   <StyledTh>Guia</StyledTh>
                   <StyledTh>Municipio / Local</StyledTh>

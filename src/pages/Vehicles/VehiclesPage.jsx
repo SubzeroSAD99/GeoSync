@@ -1,5 +1,5 @@
 import React from "react";
-import Vehicles from "@components/Vehicles/Vehicles.jsx";
+import Vehicles from "@components/Management/Vehicles/Vehicles.jsx";
 
 const VehiclesPage = () => {
   return <Vehicles />;

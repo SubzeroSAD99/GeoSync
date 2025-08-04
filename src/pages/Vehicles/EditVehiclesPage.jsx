@@ -1,5 +1,5 @@
 import React from "react";
-import EditVehicles from "@components/Vehicles/EditVehicles/EditVehicles.jsx";
+import EditVehicles from "@components/Management/Vehicles/EditVehicles/EditVehicles.jsx";
 import { useParams } from "react-router-dom";
 
 const EditVehiclesPage = () => {
