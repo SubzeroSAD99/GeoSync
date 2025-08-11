@@ -16,7 +16,7 @@ const TitleContainer = styled.div`
 const Title = styled.h2`
   border-bottom: 2px solid var(--main-color);
   width: max-content;
-  margin: 0px auto;
+  grid-column: 2;
 `;
 
 const FilterContainer = styled.div`

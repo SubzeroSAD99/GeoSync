@@ -27,10 +27,10 @@ const HighlightContainer = styled.div(({ $info }) => {
   let alert = false;
 
   switch ($info?.toUpperCase()) {
-    case "ABERTA":
+    case "ABERTO":
       color = "rgb(0, 190, 0)";
       break;
-    case "FECHADA":
+    case "FECHADO":
       color = "#ff0000";
       break;
     case "BAIXA":

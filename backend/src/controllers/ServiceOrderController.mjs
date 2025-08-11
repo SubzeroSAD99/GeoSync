@@ -1,18 +1,72 @@
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
-import { formatDate, formatCurrency } from "../utils/format.mjs";
+import { formatDate, formatCurrency, parseCurrency } from "../utils/format.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { col, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
 
 const registerSchema = Joi.object({
-  cadist: Joi.string().trim().empty("").allow(null).default(null).optional(),
-  topographer: Joi.string()
+  //#region ServiceSchema
+  code: Joi.array().items(
+    Joi.string().trim().empty("").allow(null).default(null)
+  ),
+  serviceType: Joi.array()
+    .items(Joi.string().lowercase().trim().required().empty(""))
+    .messages({
+      "any.required": "Por favor, selecione um tipo de serviço.",
+    }),
+  serviceValue: Joi.array()
+    .items(
+      Joi.string()
+        .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
+        .optional()
+        .empty("")
+        .allow(null)
+        .default(null)
+    )
+    .messages({
+      "string.pattern.currency":
+        "O valor deve estar no formato monetário correto!",
+    }),
+  step: Joi.array().items(
+    Joi.string().lowercase().trim().empty("").default("agendado")
+  ),
+  quantity: Joi.array()
+    .items(Joi.number().min(1).default(1).empty(["", null]))
+    .messages({
+      "number.min": "A quantidade deve ser maior ou igual a 1",
+      "number.base": "A quantidade deve ser um número válido",
+    }),
+  municipality: Joi.array()
+    .items(Joi.string().lowercase().trim().required().empty([""]))
+    .messages({
+      "any.required": "Por favor, selecione um municipio!.",
+    }),
+  locality: Joi.array().items(
+    Joi.string()
+      .lowercase()
+      .trim()
+      .optional()
+      .empty("")
+      .allow(null)
+      .default(null)
+  ),
+  location: Joi.array().items(
+    Joi.string().trim().optional().empty("").allow(null).default(null)
+  ),
+  //#endregion
+
+  //#region PriorityPendingSchema
+  priority: Joi.string()
+    .lowercase()
+    .valid("baixa", "normal", "alta")
     .empty("")
-    .allow(null)
-    .default(null)
-    .trim()
-    .optional(),
+    .default("normal"),
+
+  pending: Joi.string().lowercase().allow(null).default(null).empty(""),
+  //#endregion
+
+  //#region OwnershipSchema
   owner: Joi.string().empty("").allow(null).default(null).trim().optional(),
   contractor: Joi.string()
     .trim()
@@ -21,72 +75,15 @@ const registerSchema = Joi.object({
     .empty("")
     .optional(),
   guide: Joi.string().trim().empty("").allow(null).default(null).optional(),
-  serviceType: Joi.string()
-    .lowercase()
-    .trim()
-    .required()
-    .empty(["", "selecione"])
-    .messages({
-      "any.required": "Por favor, selecione um tipo de serviço.",
-    }),
-  priority: Joi.string()
-    .lowercase()
-    .valid("baixa", "normal", "alta")
-    .empty("")
-    .default("normal"),
-  status: Joi.string()
-    .lowercase()
-    .valid("aberta", "fechada")
-    .empty("")
-    .default("aberta"),
-  step: Joi.string().lowercase().trim().empty("").default("agendado"),
-  pending: Joi.string().lowercase().allow(null).default(null).empty(""),
-  quantity: Joi.number().min(1).default(1).empty(["", null]).messages({
-    "number.min": "A quantidade deve ser maior ou igual a 1",
-    "number.base": "A quantidade deve ser um número válido",
-  }),
-  municipality: Joi.string()
-    .lowercase()
-    .trim()
-    .required()
-    .empty(["", "selecione"])
-    .messages({
-      "any.required": "Por favor, selecione um municipio!.",
-    }),
-  locality: Joi.string()
-    .lowercase()
-    .trim()
-    .optional()
-    .empty("")
-    .allow(null)
-    .default(null),
-  location: Joi.string().trim().optional().empty("").allow(null).default(null),
+  //#endregion
 
-  serviceValue: Joi.string()
-    .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
-    .optional()
+  //#region MeasurementSchema
+  topographer: Joi.string()
     .empty("")
     .allow(null)
     .default(null)
-    .messages({
-      "string.pattern.currency":
-        "O valor deve estar no formato monetário correto!",
-    }),
-  amountPaid: Joi.string()
-    .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
-    .optional()
-    .empty("")
-    .allow(null)
-    .default(null)
-    .messages({
-      "string.pattern.currency":
-        "O valor deve estar no formato monetário correto!",
-    }),
-  paymentSituation: Joi.string()
-    .lowercase()
-    .valid("não pago", "pago", "parcialmente pago", "isento")
-    .empty("")
-    .default("não pago"),
+    .trim()
+    .optional(),
   measurementDate: Joi.string()
     .pattern(/^\d{2}\/\d{2}\/\d{4}$/)
     .trim()
@@ -101,6 +98,10 @@ const registerSchema = Joi.object({
     .optional()
     .default(null)
     .allow(null),
+  //#endregion
+
+  //#region ResponsibilitiesSchema
+  cadist: Joi.string().trim().empty("").allow(null).default(null).optional(),
   schedulingResp: Joi.string()
     .trim()
     .empty("")
@@ -113,6 +114,49 @@ const registerSchema = Joi.object({
     .allow(null)
     .default(null)
     .optional(),
+  //#endregion
+
+  //#region FinantialSchema
+  discount: Joi.string()
+    .empty("")
+    .default("0")
+    .replace(/,/g, ".")
+    .custom((value, helpers) => {
+      const num = parseFloat(value);
+
+      if (Number.isNaN(num)) {
+        return helpers.error("any.invalid", { value });
+      }
+      if (num < 0) {
+        return helpers.error("number.min", { limit: 0 });
+      }
+      if (num > 100) {
+        return helpers.error("number.max", { limit: 100 });
+      }
+      // trunca (descarta) para 2 casas decimais
+      return Math.floor(num * 100) / 100;
+    })
+    .messages({
+      "discount.invalid": "Desconto inválido",
+      "number.min": "Desconto mínimo é {#limit}",
+      "number.max": "Desconto máximo é {#limit}",
+    }),
+
+  paymentSituation: Joi.string()
+    .lowercase()
+    .valid("não pago", "pago", "parcialmente pago", "isento")
+    .empty("")
+    .default("não pago"),
+  amountPaid: Joi.string()
+    .pattern(/^\s*R\$[\s\u00A0]?\d{1,3}(?:\.\d{3})*,\d{2}\s*$/, "currency")
+    .optional()
+    .empty("")
+    .allow(null)
+    .default(null)
+    .messages({
+      "string.pattern.currency":
+        "O valor deve estar no formato monetário correto!",
+    }),
   payer: Joi.string()
     .lowercase()
     .trim()
@@ -120,13 +164,20 @@ const registerSchema = Joi.object({
     .empty("")
     .allow(null)
     .default(null),
+  //#endregion
+
+  //#region ExtrasSchema
   internalObs: Joi.string().allow("").max(500).optional(),
   externalObs: Joi.string().allow("").max(500).optional(),
+  finished: Joi.bool().truthy("on").falsy("off").default(false),
   confirmed: Joi.bool().default(false),
+  //#endregion
 });
 
 class ServiceOrderController {
   static async register(req, res) {
+    console.log(req.body);
+
     const { error, value } = registerSchema.validate(req.body);
 
     if (error) {
@@ -142,9 +193,10 @@ class ServiceOrderController {
 
     value.topographer = verifyToken(value.topographer)?.id ?? null;
 
-    value.serviceValue = ServiceOrderController.parseCurrency(
-      value.serviceValue
+    value.serviceValue = value.serviceValue.map((it) =>
+      ServiceOrderController.parseCurrency(it)
     );
+
     value.amountPaid = ServiceOrderController.parseCurrency(value.amountPaid);
 
     value.measurementDate = value?.measurementDate?.replace(
@@ -161,6 +213,7 @@ class ServiceOrderController {
       return res.status(200).json({ msg: "Ordem de serviço criada!" });
     } catch (err) {
       console.log(err);
+
       return res.status(500).json({ msg: "Erro interno do servidor." });
     }
   }
@@ -208,8 +261,8 @@ class ServiceOrderController {
       value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
       value.processingResp = verifyToken(value.processingResp)?.id ?? null;
 
-      value.serviceValue = ServiceOrderController.parseCurrency(
-        value.serviceValue
+      value.serviceValue = value.serviceValue.map((it) =>
+        ServiceOrderController.parseCurrency(it)
       );
 
       value.amountPaid = ServiceOrderController.parseCurrency(value.amountPaid);
@@ -265,12 +318,14 @@ class ServiceOrderController {
 
       data.topographer = generateToken({ id: data.topographer });
 
+      data.serviceValue = data.serviceValue.map((it) => formatCurrency(it));
+      data.amountPaid = formatCurrency(data.amountPaid);
+      console.log(data);
+
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
       res.json({ service: data });
     } catch (err) {
-      console.log(err);
-
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
   }
@@ -300,7 +355,7 @@ class ServiceOrderController {
       });
 
       data.map((obj) => {
-        obj.serviceValue = formatCurrency(obj.serviceValue);
+        obj.serviceValue = obj.serviceValue.map((it) => formatCurrency(it));
 
         obj.amountPaid = formatCurrency(obj.amountPaid);
       });
@@ -317,7 +372,7 @@ class ServiceOrderController {
     try {
       const data = await ServiceOrder.findAll({
         where: {
-          status: "aberta",
+          finished: false,
         },
         attributes: {
           exclude: ["cadist", "topographer", "updatedAt"],
@@ -356,7 +411,7 @@ class ServiceOrderController {
     try {
       const data = await ServiceOrder.findAll({
         where: {
-          status: "fechada",
+          finished: true,
         },
         attributes: {
           exclude: ["cadist", "topographer", "updatedAt"],
@@ -438,7 +493,7 @@ class ServiceOrderController {
             [Op.gte]: start, // >= YYYY-MM-01
             [Op.lt]: end, // < YYYY-MM+1-01
           },
-          status: "aberta",
+          finished: false,
           topographer: verifyToken(topographer)?.id,
         },
 
@@ -482,6 +537,8 @@ class ServiceOrderController {
 
       res.json({ services: formattedServices });
     } catch (err) {
+      console.log(err);
+
       res.status(500).json({ msg: "Erro ao acessar agendamento!" });
     }
   }

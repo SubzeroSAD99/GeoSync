@@ -75,7 +75,7 @@ class MunicipalityController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Municipalities_name_key" &&
+      err.parent.constraint === "municipalities_name_key" &&
         res.status(500).json({ msg: "Municipio ja registrado!" });
     }
   }
@@ -106,7 +106,7 @@ class MunicipalityController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Municipality_name_key" &&
+      err.parent.constraint === "municipality_name_key" &&
         res.status(500).json({ msg: "Municipio ja registrado!" });
     }
   }

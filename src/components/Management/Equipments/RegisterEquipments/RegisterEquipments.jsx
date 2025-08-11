@@ -36,7 +36,6 @@ const RegisterEquipments = () => {
       <FormEquipments
         handleSubmit={handleSubmit}
         options={[]}
-        role="FUNCIONARIO"
         btnSubmitValue="Cadastrar"
       />
     </section>

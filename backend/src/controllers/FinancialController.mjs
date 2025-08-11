@@ -11,12 +11,15 @@ class FinancialController {
       const order = await ServiceOrder.findByPk(id, {
         attributes: {
           include: [
+            "code",
             "serviceType",
             "municipality",
             "locality",
             "quantity",
             "serviceValue",
+            "amountPaid",
             "owner",
+            "discount",
             "createdAt",
             "externalObs",
           ],
@@ -72,6 +75,7 @@ class FinancialController {
           emissionDate: formattedDate,
           emissonHour: formattedHour,
           finishedDate: null,
+          discount: order.discount ?? 0,
           client: {
             fullName: order.owner?.toUpperCase(),
             road: order.ownerRoad?.toUpperCase(),
@@ -81,17 +85,20 @@ class FinancialController {
             cep: order.ownerCep?.toUpperCase(),
             phoneNumber: formatPhone(order.ownerPhoneNumber),
           },
-          service: {
-            type: order?.serviceType?.toUpperCase(),
-            location: `${order?.municipality?.toUpperCase()} ${
-              order.locality ? `/ ${order.locality.toUpperCase()}` : ""
-            }`,
-            quantity: order.quantity,
-            price: order.serviceValue,
+          services: {
+            codes: order.code,
+            types: order.serviceType,
+            municipalities: order.municipality,
+            localities: order.locality,
+            quantities: order.quantity,
+            prices: order.serviceValue,
+            amountPaid: order.amountPaid,
           },
-          responsible: "ANTONIO KAUAN LOPES FREITAS",
-          responsiblePhone: "+55 (88) 9645-9091",
-          responsibleRole: "Aux. Administrativo",
+          responsible: {
+            name: req.employee?.fullName?.toUpperCase(),
+            role: FinancialController.toTitleCase(req.employee?.role),
+            phoneNumber: formatPhone(req.employee?.phoneNumber),
+          },
           obs: order.externalObs?.toUpperCase(),
         },
         res
@@ -101,6 +108,10 @@ class FinancialController {
 
       res.status(500).json({ msg: "Erro interno no servidor!" });
     }
+  }
+
+  static toTitleCase(str) {
+    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
   }
 }
 

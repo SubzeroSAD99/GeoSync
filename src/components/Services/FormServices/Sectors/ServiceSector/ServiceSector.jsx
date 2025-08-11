@@ -1,74 +1,191 @@
-import React from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import SelectItem from "@components/SelectItem/SelectItem";
 import { Container } from "../Sectors.styled.mjs";
 import InputSector from "../InputSector/InputSector";
+import { TitleContainer, ServiceContainer } from "./ServiceSector.styled.mjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import api from "@utils/api.mjs";
+import ServiceItem from "./ServiceItem";
+
+const createServiceFactory =
+  (idRef) =>
+  (
+    defCode,
+    defServiceType,
+    defServiceValue,
+    defStep,
+    defQuantity,
+    defMunicipality,
+    defLocality,
+    defLocation
+  ) => ({
+    id: idRef.current++,
+    code: defCode ?? "",
+    serviceType: defServiceType ?? "",
+    serviceValue: defServiceValue ?? "",
+    step: defStep ?? "",
+    quantity: defQuantity ?? 1,
+    municipality: defMunicipality ?? "",
+    locality: defLocality ?? "",
+    location: defLocation ?? "",
+  });
 
 const ServiceSector = ({
-  serviceTypeOpts,
+  services,
+  setServices,
+  code,
   serviceType,
-  statsOpts,
-  stats,
-  priorityOpts,
-  priority,
+  serviceValue,
   stepOpts,
   step,
   quantity,
-  pending,
+  municipalities,
+  municipality,
+  locality,
+  location,
   errors,
 }) => {
+  const idRef = useRef(0);
+
+  const createService = useMemo(() => createServiceFactory(idRef), []);
+
+  const [serviceTypesOpts, setServiceTypesOpts] = useState([]);
+  const [serviceValuesOpts, setServiceValuesOpts] = useState({});
+
+  const updateService = useCallback(
+    (id, field, value) => {
+      setServices((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, [field]: value } : s))
+      );
+    },
+    [setServices]
+  );
+
+  const addNewService = useCallback(
+    (e) => {
+      e.preventDefault();
+      setServices((prev) => [...prev, createService()]);
+    },
+    [setServices, createService]
+  );
+
+  const removeService = useCallback(
+    (e, id) => {
+      e.preventDefault();
+      setServices((prev) => prev.filter((it) => it.id !== id));
+    },
+    [setServices, createService]
+  );
+
+  useEffect(() => {
+    // Service Types
+    (async () => {
+      try {
+        const response = await api.post("/serviceType/getAll");
+
+        const data = response.data;
+
+        if (data) {
+          const sorted = [...data.serviceTypes].sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+
+          const valuesPayload = sorted.reduce((acc, obj) => {
+            acc[obj.name] = obj.values.map((val) => ({ label: val }));
+            return acc;
+          }, {});
+
+          const typesPayload = sorted.map((obj) => ({
+            label: obj.name,
+          }));
+
+          setServiceValuesOpts(valuesPayload);
+          setServiceTypesOpts(typesPayload);
+        }
+      } catch (err) {
+        const msg = err?.response?.data?.msg;
+
+        if (err.status == 401) return setUserLogged(null);
+
+        toast.error(msg);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    const initial = serviceType
+      ? serviceType.map((t, i) =>
+          createService(
+            code[i],
+            t,
+            serviceValue[i],
+            step[i],
+            quantity[i],
+            municipality[i],
+            locality[i],
+            location[i]
+          )
+        )
+      : [createService()];
+
+    console.log(initial);
+
+    setServices(initial);
+  }, [
+    code,
+    serviceType,
+    serviceValue,
+    step,
+    quantity,
+    municipality,
+    locality,
+    location,
+    createService,
+  ]);
+
   return (
     <>
-      <h3>Identificação do Serviço</h3>
+      <TitleContainer>
+        <h3>Identificação do Serviço</h3>
+        <button type="button" onClick={addNewService}>
+          +
+        </button>
+      </TitleContainer>
 
-      <Container>
-        <SelectItem
-          options={serviceTypeOpts.sort()}
-          title="Tipo de Serviço"
-          name="serviceType"
-          required={true}
-          select={serviceType}
-          error={errors === "serviceType"}
-        />
+      {services.map((s, idx) => {
+        return (
+          <ServiceContainer key={`service${s.id}`}>
+            {idx !== 0 && (
+              <button type="button" onClick={(e) => removeService(e, s.id)}>
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            )}
 
-        <SelectItem
-          options={statsOpts.sort()}
-          title="Status"
-          name="status"
-          placeholder="ABERTA"
-          select={stats}
-        />
-
-        <SelectItem
-          options={priorityOpts.sort()}
-          title="Prioridade"
-          name="priority"
-          placeholder="NORMAL"
-          select={priority}
-        />
-
-        <SelectItem
-          options={stepOpts.sort()}
-          title="Etapa"
-          name="step"
-          placeholder="AGENDADO"
-          select={step}
-        />
-
-        <SelectItem
-          options={[]}
-          title="Pendências"
-          name="pending"
-          select={pending}
-        />
-
-        <InputSector
-          id="quantity"
-          type="number"
-          label="Quantidade"
-          defaultValue={quantity || 1}
-          min={1}
-        />
-      </Container>
+            <ServiceItem
+              key={s.id}
+              idx={idx}
+              service={s}
+              options={{
+                serviceTypesOpts,
+                serviceValuesOpts,
+                stepOpts,
+                municipalities,
+              }}
+              updateService={updateService}
+              removeService={() => removeService(s.id)}
+              errors={errors}
+            />
+          </ServiceContainer>
+        );
+      })}
     </>
   );
 };

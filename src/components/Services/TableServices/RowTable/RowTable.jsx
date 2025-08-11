@@ -12,8 +12,22 @@ const RowTable = ({ id, item, options, actions = [] }) => {
     <tr key={id}>
       {options.map((it, index) => (
         <StyledTd key={`${it}-${index}`}>
-          {it === "priority" || it === "status" || it === "paymentSituation" ? (
-            <HighlightContainer $info={item[it]}>{item[it]}</HighlightContainer>
+          {["priority", "finished", "paymentSituation"].includes(it) ? (
+            <HighlightContainer
+              $info={
+                it === "finished" ? (item[it] ? "FECHADO" : "ABERTO") : item[it]
+              }
+            >
+              {it === "finished" ? (item[it] ? "FECHADO" : "ABERTO") : item[it]}
+            </HighlightContainer>
+          ) : ["serviceType", "step", "serviceValue", "municipality"].includes(
+              it
+            ) ? (
+            item[it].map((it, idx) => (
+              <p key={`${it}item${idx}`} style={{ padding: "5px 0px" }}>
+                {it}
+              </p>
+            ))
           ) : (
             item[it]
           )}

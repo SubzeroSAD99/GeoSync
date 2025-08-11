@@ -1,41 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@contexts/AuthContext";
-import { StyledButton, StyledForm } from "./FormServices.styled.mjs";
+import {
+  FinishedServiceContainer,
+  StyledButton,
+  StyledForm,
+} from "./FormServices.styled.mjs";
 import api from "@utils/api.mjs";
 import { useSearchParams } from "react-router-dom";
 import ServiceSector from "./Sectors/ServiceSector/ServiceSector";
 import OwnershipSector from "./Sectors/OwnershipSector/OwnershipSector";
 import MeasurementSector from "./Sectors/MeasurementSector/MeasurementSector";
-import LocationSector from "./Sectors/LocationSector/LocationSector";
 import ResponsibilitiesSector from "./Sectors/ResponsibilitiesSector/ResponsibilitiesSector";
 import ExtrasSector from "./Sectors/ExtrasSector/ExtrasSector";
 import FinancialSector from "./Sectors/FinancialSector/FinancialSector";
-
-const SERVICE_TYPE = [
-  "PLANIMETRIA",
-  "ALTIMETRIA",
-  "PLANIALTIMETRIA",
-  "GEOREFERENCIAMENTO DE IMÓVEL RURAL",
-  "REGULARIZAÇÃO FUNDIÁRIA URBANA (REURB-E)",
-  "REURB-S",
-  "GEO",
-  "DESCARACTERIZAÇÃO",
-  "PROJETO DE LOTEAMENTO",
-  "CADASTRO AMBIENTAL RURAL - CAR",
-  "REGULARIZAÇÃO FUNDIÁRIA RURAL",
-  "OUTROS",
-  "ORTOFOTO",
-  "DESMEMBRAMENTO",
-  "DESAPROPIAÇÃO",
-  "PERICIA",
-  "PROJETO IDACE",
-  "LOCAÇÃO",
-  "LAUDO TÉCNICO",
-];
+import PriorityPendingSector from "./Sectors/PriorityPendingSector/PriorityPendingSector";
 
 const PRIORITY = ["BAIXA", "NORMAL", "ALTA"];
-
-const STATS = ["ABERTA", "FECHADA"];
 
 const PAYMENT_SITUATION = ["NÃO PAGO", "PAGO", "PARCIALMENTE PAGO", "ISENTO"];
 
@@ -52,12 +32,14 @@ const STEP = [
 ];
 
 const FormServices = ({
+  code,
   serviceType,
-  status,
-  priority,
   step,
-  pending,
+  serviceValue,
   quantity,
+
+  priority,
+  pending,
 
   owner,
   contractor,
@@ -75,7 +57,7 @@ const FormServices = ({
   schedulingResp,
   processingResp,
 
-  serviceValue,
+  discount,
   paymentSituation,
   amountPaid,
   payer,
@@ -85,12 +67,21 @@ const FormServices = ({
 
   handleSubmit,
   textBtnSubmit,
+  finished,
   errors,
 }) => {
   const [employees, setEmployees] = useState([]);
   const [topographers, setTopographers] = useState([]);
   const [municipalities, setMunicipalities] = useState([]);
+  const [finishedChecked, setFinishedChecked] = useState(finished ?? false);
+  const [services, setServices] = useState([]);
+
   const [owners, setOwners] = useState([]);
+
+  const [defaultServiceValue, setDefaultServiceValue] = useState(
+    serviceValue ?? ""
+  );
+
   const { setUserLogged } = useAuth();
   const [values, setValues] = useState({});
   const [searchParams] = useSearchParams();
@@ -101,9 +92,7 @@ const FormServices = ({
     return sort ? array.sort((a, b) => a.label.localeCompare(b.label)) : array;
   };
 
-  const SERVICE_TYPE_OPTS = toOptions(SERVICE_TYPE);
   const PRIORITY_OPTS = toOptions(PRIORITY);
-  const STATS_OPTS = toOptions(STATS);
   const STEP_OPTS = toOptions(STEP, false);
   const PAYMENT_SITUATION_OPTS = toOptions(PAYMENT_SITUATION);
 
@@ -193,20 +182,44 @@ const FormServices = ({
     })();
   }, []);
 
+  useEffect(() => {
+    setFinishedChecked(finished ?? false);
+  }, [finished]);
+
+  useEffect(() => {
+    setDefaultServiceValue(serviceValue ?? "");
+  }, [serviceValue]);
+
   return (
     <StyledForm onSubmit={handleSubmit}>
+      <FinishedServiceContainer>
+        <label htmlFor="finished">Baixa do Serviço</label>
+        <input
+          type="checkbox"
+          name="finished"
+          id="finished"
+          checked={finishedChecked}
+          onChange={(e) => setFinishedChecked(e.target.checked)}
+        />
+      </FinishedServiceContainer>
+
       <ServiceSector
-        serviceTypeOpts={SERVICE_TYPE_OPTS}
+        services={services}
+        setServices={setServices}
+        code={code}
         serviceType={serviceType}
-        priorityOpts={PRIORITY_OPTS}
-        priority={priority}
-        statsOpts={STATS_OPTS}
-        stats={status}
+        serviceValue={defaultServiceValue}
         stepOpts={STEP_OPTS}
         step={step}
+        municipalities={municipalities}
         quantity={quantity}
+        municipality={municipality}
+        locality={locality}
+        location={location}
         errors={errors}
       />
+
+      <PriorityPendingSector priorityOpts={PRIORITY_OPTS} priority={priority} />
 
       <OwnershipSector
         owners={owners}
@@ -225,14 +238,6 @@ const FormServices = ({
         errors={errors}
       />
 
-      <LocationSector
-        municipalities={municipalities}
-        municipality={municipality}
-        locality={locality}
-        location={location}
-        errors={errors}
-      />
-
       <ResponsibilitiesSector
         employees={employees}
         cadist={cadist}
@@ -244,8 +249,9 @@ const FormServices = ({
       <FinancialSector
         paymentSituationOpts={PAYMENT_SITUATION_OPTS}
         paymentSituation={paymentSituation}
-        serviceValue={serviceValue}
         amountPaid={amountPaid}
+        defaultDiscount={discount}
+        services={services}
         payer={payer}
       />
 

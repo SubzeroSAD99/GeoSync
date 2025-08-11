@@ -55,6 +55,7 @@ const Os = () => {
     <TableServices
       title="Ordem de Serviços"
       allServices={allServices}
+      shortcut={{ label: "CADASTRAR OS", url: "/servicos/cadastrar" }}
       filterOptions={[
         { label: "Proprietário", column: "owner" },
         { label: "Pagador", column: "payer" },

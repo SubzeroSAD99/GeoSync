@@ -25,6 +25,7 @@ import {
   faCoins,
   faTicketSimple,
   faMoneyCheckDollar,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "@contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
@@ -88,6 +89,12 @@ const Menu = () => {
           label: "Clientes",
           icon: faPersonCirclePlus,
           redirect: "/gerenciamento/clientes",
+        },
+
+        {
+          label: "Tipos de Serviços",
+          icon: faTag,
+          redirect: "/gerenciamento/tipos-de-servicos",
         },
 
         {

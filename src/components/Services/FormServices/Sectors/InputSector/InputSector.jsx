@@ -2,18 +2,22 @@ import React, { useEffect, useState } from "react";
 import { InputContainer, StyledInput } from "./InputSector.styled.mjs";
 
 const InputSector = ({
+  id,
   type,
   label,
-  id,
   defaultValue,
   placeholder,
+  inputMode,
+  pattern,
+  onChange,
+  onBlur,
   min,
   uppercase,
 }) => {
-  const [value, setValue] = useState("");
+  const [valueInpt, setValueInpt] = useState("");
 
   useEffect(() => {
-    setValue(defaultValue);
+    setValueInpt(defaultValue || "");
   }, [defaultValue]);
 
   return (
@@ -23,10 +27,14 @@ const InputSector = ({
         type={type}
         id={id}
         name={id}
-        defaultValue={value}
+        inputMode={inputMode}
+        pattern={pattern}
+        onChange={onChange}
+        onBlur={onBlur}
+        defaultValue={valueInpt}
         placeholder={placeholder}
         min={min}
-        uppercase={uppercase}
+        $uppercase={String(uppercase)}
       />
     </InputContainer>
   );

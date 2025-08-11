@@ -10,28 +10,37 @@ import ScheduleServicesPage from "./pages/Services/ScheduleServicesPage.jsx";
 import TrackingServicePage from "./pages/Services/TrackingServicePage";
 
 // Employees
-import EmployeesPage from "./pages/Employees/EmployeesPage.jsx";
-import RegisterEmployeesPage from "./pages/Employees/RegisterEmployeesPage.jsx";
-import EditEmployeesPage from "./pages/Employees/EditEmployeesPage.jsx";
-import LoginPage from "./pages/Employees/LoginPage.jsx";
+import EmployeesPage from "./pages/Management/Employees/EmployeesPage.jsx";
+import RegisterEmployeesPage from "./pages/Management/Employees/RegisterEmployeesPage.jsx";
+import EditEmployeesPage from "./pages/Management/Employees/EditEmployeesPage.jsx";
+import LoginPage from "./pages/Management/Employees/LoginPage.jsx";
 
 // Municipalities
-import MunicipalitiesPage from "./pages/Municipalities/MunicipalitiesPage.jsx";
-import RegisterMunicipalitiesPage from "./pages/Municipalities/RegisterMunicipalitiesPage.jsx";
-import EditMunicipalitiesPage from "./pages/Municipalities/EditMunicipalitiesPage.jsx";
+import MunicipalitiesPage from "./pages/Management/Municipalities/MunicipalitiesPage.jsx";
+import RegisterMunicipalitiesPage from "./pages/Management/Municipalities/RegisterMunicipalitiesPage.jsx";
+import EditMunicipalitiesPage from "./pages/Management/Municipalities/EditMunicipalitiesPage.jsx";
 
 // Clients
-import ClientsPage from "./pages/Clients/ClientsPage.jsx";
-import EditClientsPage from "./pages/Clients/EditClientsPage.jsx";
-import RegisterClientsPage from "./pages/Clients/RegisterClientsPage";
+import ClientsPage from "./pages/Management/Clients/ClientsPage.jsx";
+import EditClientsPage from "./pages/Management/Clients/EditClientsPage.jsx";
+import RegisterClientsPage from "./pages/Management/Clients/RegisterClientsPage.jsx";
 
 // Equipments
-import EquipmentsPage from "./pages/Equipments/EquipmentsPage.jsx";
-import RegisterEquipmentsPage from "./pages/Equipments/RegisterEquipmentsPage.jsx";
-import EditEquipmentsPage from "./pages/Equipments/EditEquipmentsPage";
-import VehiclesPage from "./pages/Vehicles/VehiclesPage";
-import EditVehiclesPage from "./pages/Vehicles/EditVehiclesPage";
-import RegisterVehiclesPage from "./pages/Vehicles/RegisterVehiclesPage";
+import EquipmentsPage from "./pages/Management/Equipments/EquipmentsPage.jsx";
+import RegisterEquipmentsPage from "./pages/Management/Equipments/RegisterEquipmentsPage.jsx";
+import EditEquipmentsPage from "./pages/Management/Equipments/EditEquipmentsPage.jsx";
+
+// Vehicle
+import VehiclesPage from "./pages/Management/Vehicles/VehiclesPage.jsx";
+import EditVehiclesPage from "./pages/Management/Vehicles/EditVehiclesPage.jsx";
+import RegisterVehiclesPage from "./pages/Management/Vehicles/RegisterVehiclesPage.jsx";
+
+// ServiceTypes
+import ServiceTypesPage from "./pages/Management/ServiceTypes/ServiceTypesPage.jsx";
+import EditServiceTypesPage from "./pages/Management/ServiceTypes/EditServiceTypesPage.jsx";
+import RegisterServiceTypesPage from "./pages/Management/ServiceTypes/RegisterServiceTypesPage.jsx";
+
+// Financial
 import OsPage from "./pages/Financial/Os/OsPage.jsx";
 
 const publicRoutes = [
@@ -156,6 +165,22 @@ const privateRoutes = [
       {
         path: "veiculos/editar/:id",
         element: <EditVehiclesPage />,
+        meta: { resource: "management", action: "update" },
+      },
+
+      {
+        path: "tipos-de-servicos",
+        element: <ServiceTypesPage />,
+        meta: { resource: "management", action: "read" },
+      },
+      {
+        path: "tipos-de-servicos/cadastrar",
+        element: <RegisterServiceTypesPage />,
+        meta: { resource: "management", action: "create" },
+      },
+      {
+        path: "tipos-de-servicos/editar/:id",
+        element: <EditServiceTypesPage />,
         meta: { resource: "management", action: "update" },
       },
     ],

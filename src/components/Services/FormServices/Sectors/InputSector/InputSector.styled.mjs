@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
 const InputContainer = styled.div`
+  display: flex;
   position: relative;
   border: 1px solid var(--main-color);
   border-radius: 5px;
-  padding: 15px 10px;
+  padding: 15px;
+  gap: 5px;
 
   & label {
     position: absolute;
@@ -21,7 +23,8 @@ const StyledInput = styled.input`
   height: 38px;
   padding: 5px;
   outline-color: var(--main-color);
-  text-transform: ${(props) => (props.uppercase ? "uppercase" : undefined)};
+  text-transform: ${(props) =>
+    props.$uppercase === "true" ? "uppercase" : undefined};
 `;
 
 export { InputContainer, StyledInput };

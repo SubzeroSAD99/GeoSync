@@ -11,6 +11,11 @@ ServiceOrder.init(
       autoIncrement: true,
     },
 
+    code: {
+      type: DataTypes.ARRAY(DataTypes.CHAR(12)),
+      allowNull: true,
+    },
+
     owner: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -27,7 +32,7 @@ ServiceOrder.init(
     },
 
     serviceType: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
 
@@ -37,14 +42,8 @@ ServiceOrder.init(
       defaultValue: "normal",
     },
 
-    status: {
-      type: DataTypes.ENUM("fechada", "aberta"),
-      allowNull: false,
-      defaultValue: "aberta",
-    },
-
     step: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
 
@@ -54,12 +53,12 @@ ServiceOrder.init(
     },
 
     municipality: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
 
     locality: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
 
@@ -79,8 +78,17 @@ ServiceOrder.init(
     },
 
     serviceValue: {
-      type: DataTypes.DECIMAL(12, 2),
+      type: DataTypes.ARRAY(DataTypes.DECIMAL(12, 2)),
       allowNull: true,
+    },
+
+    discount: {
+      type: DataTypes.DECIMAL(5, 2),
+      allowNull: true,
+      validate: {
+        min: 0,
+        max: 100,
+      },
     },
 
     paymentSituation: {
@@ -114,13 +122,12 @@ ServiceOrder.init(
     },
 
     quantity: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,
-      defaultValue: 1,
     },
 
     location: {
-      type: DataTypes.TEXT,
+      type: DataTypes.ARRAY(DataTypes.TEXT),
       allowNull: true,
     },
 
@@ -132,6 +139,11 @@ ServiceOrder.init(
     externalObs: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+
+    finished: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
 
     confirmed: {

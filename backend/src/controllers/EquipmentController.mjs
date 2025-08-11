@@ -140,7 +140,7 @@ class EquipmentController {
     let msg = "Erro interno no servidor!";
 
     switch (err) {
-      case "Equipments_name_key":
+      case "equipments_name_key":
         msg = "Equipamento ja registrado!";
         break;
     }

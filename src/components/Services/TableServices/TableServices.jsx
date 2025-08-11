@@ -18,9 +18,11 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const TableServices = ({
   title,
+  shortcut,
   allServices,
   filterOptions,
   options,
@@ -29,6 +31,7 @@ const TableServices = ({
   const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTablePage(1);
@@ -56,7 +59,32 @@ const TableServices = ({
 
   return (
     <section>
-      <Title>{title}</Title>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          width: "100%",
+          gridGap: "20px",
+        }}
+      >
+        <Title>{title}</Title>
+
+        {shortcut && (
+          <button
+            style={{
+              padding: "0px 5px",
+              gridColumn: 3,
+              justifySelf: "end",
+            }}
+            type="button"
+            onClick={() => {
+              navigate(shortcut?.url);
+            }}
+          >
+            {shortcut?.label}
+          </button>
+        )}
+      </div>
       <TitleContainer>
         <FilterContainer>
           {filterOptions.map((it, index) => (

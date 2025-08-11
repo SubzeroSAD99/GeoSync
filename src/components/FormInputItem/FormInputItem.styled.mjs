@@ -22,6 +22,7 @@ const InputContainer = styled.div`
     background-color: transparent;
     transition: left 0.2s linear, transform 0.3s ease-in-out,
       color 0.3s ease-in-out, background-color 0.2s ease;
+    pointer-events: none;
   }
 
   & > input {
@@ -38,7 +39,7 @@ const InputContainer = styled.div`
     left: 20px;
     transition: left 0.2s linear, transform 0.3s ease-in-out,
       color 0.3s ease-in-out, background-color 0.3s ease 0.2s;
-    transform: translateY(-40px);
+    transform: translateY(-43px);
     background-color: var(--bg-secundary-color);
     color: var(--text-color);
   }

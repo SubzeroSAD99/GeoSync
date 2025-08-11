@@ -15,7 +15,34 @@ const EditServices = (id) => {
     const form = e.target;
 
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const multiFields = [
+      "code",
+      "serviceType",
+      "serviceValue",
+      "step",
+      "quantity",
+      "municipality",
+      "locality",
+      "location",
+    ];
+
+    const data = Array.from(formData.entries()).reduce((acc, [key, value]) => {
+      if (!multiFields.includes(key)) {
+        if (acc[key] !== undefined) {
+          acc[key] = Array.isArray(acc[key])
+            ? [...acc[key], value]
+            : [acc[key], value];
+        } else {
+          acc[key] = value;
+        }
+      }
+      return acc;
+    }, {});
+
+    // Para cada campo multiFields, use getAll (sempre retorna array)
+    multiFields.forEach((field) => {
+      data[field] = formData.getAll(field);
+    });
 
     try {
       const response = await api.post("/service/edit", { ...data, ...id });

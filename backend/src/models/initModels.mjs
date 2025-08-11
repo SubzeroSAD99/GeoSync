@@ -4,6 +4,7 @@ import Municipality from "./Municipality.mjs";
 import ServiceOrder from "./ServiceOrder.mjs";
 import Equipment from "./Equipment.mjs";
 import Vehicle from "./Vehicle.mjs";
+import ServiceType from "./ServiceType.mjs";
 
 // Topografo
 ServiceOrder.belongsTo(Employee, {
@@ -111,6 +112,7 @@ const initAll = async () => {
     await Equipment.sync({ force: false }),
     await Vehicle.sync({ force: false }),
     await ServiceOrder.sync({ force: false }),
+    await ServiceType.sync({ force: false }),
   ]);
 };
 

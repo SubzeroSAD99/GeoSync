@@ -31,7 +31,6 @@ const MenuList = (props) => {
       style={{
         padding: "0px",
         maxHeight: "none",
-        overflow: "hidden", // só o List rola
         overscrollBehavior: "contain",
       }}
     >
@@ -40,7 +39,6 @@ const MenuList = (props) => {
         itemCount={children.length}
         itemSize={ITEM_H}
         width="100%"
-        initialScrollOffset={initialOffset}
         outerElementType={OuterList}
       >
         {({ index, style }) => <div style={style}>{children[index]}</div>}
@@ -56,6 +54,7 @@ const SelectItem = ({
   required,
   select,
   placeholder,
+  onChange,
   error,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -75,6 +74,8 @@ const SelectItem = ({
   const handleChange = (opt) => {
     setSelectedOption(opt);
 
+    onChange && onChange(opt?.label, setSelectedOption);
+
     if (containerRef.current) containerRef.current.style.border = "";
   };
 
@@ -82,7 +83,7 @@ const SelectItem = ({
     <Container
       ref={containerRef}
       data-required={required}
-      style={error ? { border: "1px solid red" } : undefined}
+      style={error && !selectedOption ? { border: "1px solid red" } : undefined}
     >
       <Title>
         {title}
@@ -104,7 +105,7 @@ const SelectItem = ({
         styles={{
           control: (base) => ({
             ...base,
-            border: error ? "1px solid red" : base.border,
+            border: error && !selectedOption ? "1px solid red" : base.border,
             boxShadow: "none",
             textTransform: "uppercase",
           }),

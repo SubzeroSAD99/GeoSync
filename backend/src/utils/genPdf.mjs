@@ -58,11 +58,10 @@ const genPdf = ({
   emissionDate,
   emissonHour,
   finishedDate,
+  discount,
   client,
-  service,
+  services,
   responsible,
-  responsiblePhone,
-  responsibleRole,
   obs,
 }) => {
   const formattedTitle = `${title} N° ${id}`;
@@ -76,9 +75,7 @@ const genPdf = ({
   const { left, right } = doc.page.margins;
   const defaultMoveDown = 0.5;
   const fontSizeSubtitle = 13;
-  const discount = 5;
-  const subtotal = service.quantity * service.price;
-  const total = subtotal - subtotal * (discount / 100);
+  let subtotal = 0;
 
   // Header
   // Titulo
@@ -234,30 +231,43 @@ const genPdf = ({
   //#endregion
 
   //#region Tabela
+  const header = [
+    "Tipo de Serviço",
+    "Local do Serviço",
+    "Quantidade",
+    "Unidade",
+    "Preço Unitário",
+    "Total do Serviço",
+  ];
+
+  const rows = services.types.map((it, index) => {
+    const serviceValue = services.quantities[index] * services.prices[index];
+    const serviceLocation = `${services?.municipalities[
+      index
+    ]?.toUpperCase()} ${
+      services?.localities[index]
+        ? `/ ${services?.localities[index]?.toUpperCase()}`
+        : ""
+    }`;
+
+    subtotal += serviceValue;
+    return [
+      it?.toUpperCase(),
+      serviceLocation,
+      services.quantities[index],
+      "-",
+      formatCurrency(services.prices[index]) || "R$ 0,00",
+      formatCurrency(serviceValue) || "R$ 0,00",
+    ];
+  });
+
   doc.moveDown(defaultMoveDown).table({
     rowStyles: (i) => {
       if (i === 0) return { backgroundColor: "#048f50", textColor: "#ffffff" };
       else if (i % 2 === 0) return { backgroundColor: "#eeeeee" };
     },
     columnStyles: ["*", "*", 70, 60, 80, 80],
-    data: [
-      [
-        "Tipo de Serviço",
-        "Local do Serviço",
-        "Quantidade",
-        "Unidade",
-        "Preço Unitário",
-        "Total do Serviço",
-      ],
-      [
-        service.type,
-        service.location,
-        service.quantity,
-        "-",
-        formatCurrency(service.price) || "R$ 0,00",
-        formatCurrency(service.quantity * service.price) || "R$ 0,00",
-      ],
-    ],
+    data: [header, ...rows],
   });
 
   doc
@@ -329,7 +339,7 @@ const genPdf = ({
     .font("Helvetica")
     .fillColor("#048f50")
     .text(
-      `${String(discount.toFixed(2)).replace(".", ",")}%`,
+      `${String(Number(discount)?.toFixed(2)).replace(".", ",")}%`,
       doc.x + 5,
       doc.y,
       {
@@ -343,14 +353,66 @@ const genPdf = ({
     .fontSize(11)
     .moveDown()
     .font("Helvetica-Bold")
-    .text("Total:", left, doc.y, {
+    .text("Total com Desconto:", left, doc.y, {
+      align: "left",
+    });
+
+  let totalWithDiscount = subtotal - subtotal * (discount / 100);
+
+  doc
+    .fontSize(10)
+    .moveUp(1)
+    .font("Helvetica")
+    .text(
+      formatCurrency(totalWithDiscount) || "R$ 0,00",
+      doc.x + (doc.page.width - right - left - 76),
+      doc.y - 1,
+      {
+        align: "left",
+        width: 200,
+      }
+    );
+
+  doc
+    .fontSize(11)
+    .moveDown()
+    .font("Helvetica-Bold")
+    .text("Valor Pago:", left, doc.y, {
       align: "left",
     });
 
   doc
     .fontSize(10)
     .moveUp(1)
+    .fillColor("#048f50")
     .font("Helvetica")
+    .text(
+      formatCurrency(services.amountPaid) || "R$ 0,00",
+      doc.x + (doc.page.width - right - left - 76),
+      doc.y - 1,
+      {
+        align: "left",
+        width: 200,
+      }
+    );
+
+  doc.fillColor("black");
+
+  doc
+    .fontSize(11)
+    .moveDown()
+    .font("Helvetica-Bold")
+    .text("Total:", left, doc.y, {
+      align: "left",
+    });
+
+  let total = totalWithDiscount - services.amountPaid;
+
+  doc
+    .fontSize(10)
+    .moveUp(1)
+    .font("Helvetica")
+    .fillColor(total < 0 ? "#ff0000" : "black")
     .text(
       formatCurrency(total) || "R$ 0,00",
       doc.x + (doc.page.width - right - left - 76),
@@ -361,6 +423,8 @@ const genPdf = ({
       }
     );
 
+  doc.fillColor("black");
+
   doc
     .moveDown(defaultMoveDown)
     .moveTo(left, doc.y)
@@ -368,7 +432,7 @@ const genPdf = ({
     .stroke();
   //#endregion
 
-  // Responsavel
+  //#region Responsavel
   doc
     .fontSize(11)
     .moveDown(defaultMoveDown)
@@ -383,20 +447,20 @@ const genPdf = ({
   doc
     .fontSize(10)
     .font("Helvetica")
-    .text(responsible, doc.x + 5, doc.y, {
+    .text(responsible.name, doc.x + 5, doc.y, {
       align: "left",
     });
 
   doc.fontSize(11);
 
-  const respWidth = doc.widthOfString(responsible);
-  const roleWidth = doc.widthOfString(responsibleRole || " ");
+  const respWidth = doc.widthOfString(responsible.name);
+  const roleWidth = doc.widthOfString(responsible.role || " ");
   const startX = left + labelWidth + (respWidth - roleWidth) / 2;
 
   doc
     .moveDown(defaultMoveDown)
     .font("Helvetica")
-    .text(responsibleRole, startX - 10, doc.y, {
+    .text(responsible.role, startX - 10, doc.y, {
       align: "left",
     });
 
@@ -410,10 +474,12 @@ const genPdf = ({
     })
     .fontSize(10)
     .font("Helvetica")
-    .text(responsiblePhone, doc.x + 5, doc.y, {
+    .text(responsible.phoneNumber, doc.x + 5, doc.y, {
       align: "left",
     });
+  //#endregion
 
+  //#region Obs
   doc.moveDown(3);
 
   const boxX = left;
@@ -451,6 +517,14 @@ const genPdf = ({
         continued: true,
       });
 
+      const codes = (services.codes ?? [])
+        .map((c) => String(c).trim())
+        .filter((c) => c !== "");
+
+      doc.font("Helvetica").text(codes.join(" / "), {
+        width: contentW,
+      });
+
       doc.font("Helvetica").text(chunk.join("\n"), {
         width: contentW,
       });
@@ -463,6 +537,29 @@ const genPdf = ({
 
     pageIndex++;
   }
+  //#endregion
+
+  // calcula início e fim da linha
+  const x1 = doc.page.width - 320;
+  const x2 = doc.page.width - right - 15;
+  const lineWidth = x2 - x1;
+
+  // desenha a linha
+  doc
+    .moveDown(defaultMoveDown + 4)
+    .moveTo(x1, doc.y)
+    .lineTo(x2, doc.y)
+    .stroke();
+
+  // posiciona o texto centralizado
+  doc
+    .fontSize(11)
+    .moveDown(defaultMoveDown)
+    .font("Helvetica-Bold")
+    .text("Assinatura / Carimbo", x1, doc.y, {
+      width: lineWidth,
+      align: "center",
+    });
 
   return doc;
 };

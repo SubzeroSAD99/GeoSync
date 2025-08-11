@@ -30,4 +30,15 @@ const formatPhone = (phone) => {
   return raw?.replace(/^(\d{2})(\d{2})(\d{4})(\d{4})$/, "+$1 ($2) $3-$4");
 };
 
-export { formatCurrency, formatDate, formatPhone };
+const parseCurrency = (value) => {
+  const cleaned = value
+    ?.replace(/[^0-9\-,]+/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+  const num = Number.parseFloat(cleaned);
+  if (Number.isNaN(num)) return null;
+
+  return String(num).length > 13 ? null : num;
+};
+
+export { formatCurrency, formatDate, formatPhone, parseCurrency };

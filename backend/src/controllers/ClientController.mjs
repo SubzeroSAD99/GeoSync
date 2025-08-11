@@ -287,15 +287,15 @@ class ClientController {
     let msg = "Erro interno no servidor!";
 
     switch (err) {
-      case "Clients_cpfCnpj_key":
+      case "clients_cpf_cnpj_key":
         msg = "Cliente ja registrado!";
         break;
 
-      case "Clients_phoneNumber_key":
+      case "clients_phone_number_key":
         msg = "Numero de telefone ja registrado!";
         break;
 
-      case "Clients_rg_key":
+      case "clients_rg_key":
         msg = "Cliente ja registrado!";
         break;
     }

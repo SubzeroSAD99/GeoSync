@@ -67,7 +67,7 @@ const Section = () => {
         { header: "Cadista", column: "cadist" },
         { header: "Município", column: "municipality" },
         { header: "Prioridade", column: "priority" },
-        { header: "Status", column: "status" },
+        { header: "Status", column: "finished" },
         { header: "Data de Criação", column: "createdAt" },
       ]}
       actions={[

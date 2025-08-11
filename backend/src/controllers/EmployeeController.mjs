@@ -128,7 +128,7 @@ class EmployeeController {
         const employee = await Employee.findOne({
           raw: true,
           where: { cpf: cpfFormatted },
-          attributes: ["fullName", "cpf", "role"],
+          attributes: ["fullName", "cpf", "role", "phoneNumber"],
         });
 
         if (!employee) resolve(false);
@@ -161,7 +161,7 @@ class EmployeeController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Employees_cpf_key" &&
+      err.parent.constraint === "employees_cpf_key" &&
         res.status(500).json({ msg: "CPF ja registrado!" });
     }
   }
@@ -204,7 +204,7 @@ class EmployeeController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "Employees_cpf_key"
+      err.parent.constraint === "employees_cpf_key"
         ? res.status(500).json({ msg: "CPF ja registrado!" })
         : res.status(500).json({ msg: "Email ja registrado!" });
     }

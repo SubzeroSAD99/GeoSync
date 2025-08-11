@@ -16,9 +16,9 @@ import {
 const RowTable = ({ key, rows, obj, onDelete, onEdit }) => {
   return (
     <tr key={key}>
-      {rows.map((it) => (
+      {rows.map((it, index) => (
         <>
-          <StyledTd>
+          <StyledTd key={`${it}-${index}`}>
             {it === "role" && (
               <FontAwesomeIcon
                 icon={

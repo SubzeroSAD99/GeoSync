@@ -3,19 +3,23 @@ import { Title } from "./RegisterServices.styled.mjs";
 import api from "@utils/api.mjs";
 import FormServices from "../FormServices/FormServices";
 import { toast } from "react-toastify";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 
 const RegisterServices = () => {
   const [errors, setErrors] = useState("");
   const [startingMDate, setStartingMDate] = useState("");
-  const [searchParams] = useSearchParams();
+  const [topographer, setTopographer] = useState("");
   const { setUserLogged } = useAuth();
+  const { state } = useLocation();
 
   useEffect(() => {
-    const measurementDate = searchParams.get("measurementDate");
+    const data = state?.data;
 
-    if (measurementDate) setStartingMDate(measurementDate);
+    console.log(data);
+
+    setStartingMDate(data?.measurementDate ?? "");
+    setTopographer(data?.topographer ?? "");
   }, []);
 
   const handleSubmit = async (e) => {
@@ -23,7 +27,35 @@ const RegisterServices = () => {
     const form = e.target;
 
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+
+    const multiFields = [
+      "code",
+      "serviceType",
+      "serviceValue",
+      "step",
+      "quantity",
+      "municipality",
+      "locality",
+      "location",
+    ];
+
+    const data = Array.from(formData.entries()).reduce((acc, [key, value]) => {
+      if (!multiFields.includes(key)) {
+        if (acc[key] !== undefined) {
+          acc[key] = Array.isArray(acc[key])
+            ? [...acc[key], value]
+            : [acc[key], value];
+        } else {
+          acc[key] = value;
+        }
+      }
+      return acc;
+    }, {});
+
+    // Para cada campo multiFields, use getAll (sempre retorna array)
+    multiFields.forEach((field) => {
+      data[field] = formData.getAll(field);
+    });
 
     try {
       const response = await api.post("/service/register", data);
@@ -49,6 +81,7 @@ const RegisterServices = () => {
         textBtnSubmit={"Cadastrar"}
         errors={errors}
         measurementDate={startingMDate}
+        topographer={topographer}
       />
     </section>
   );

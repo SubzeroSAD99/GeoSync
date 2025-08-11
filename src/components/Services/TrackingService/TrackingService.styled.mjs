@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle, keyframes } from "styled-components";
+import trackingImg from "./img.jpg";
 
 const GlobalStyle = createGlobalStyle`
   :root {
@@ -10,6 +11,9 @@ const GlobalStyle = createGlobalStyle`
   #root {
     display: flex;
     justify-content: space-between;
+    background-image: url(${trackingImg});
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   section.Toastify {
@@ -78,7 +82,8 @@ const StyledSection = styled.section`
   background-color: transparent;
   box-shadow: none;
   width: 80%;
-  border: 2px dashed var(--main-color);
+  background-color: var(--main-color-op07);
+  box-shadow: 0px 0px 5px var(--main-color-op05);
 `;
 
 const StepsGroup = styled.g`

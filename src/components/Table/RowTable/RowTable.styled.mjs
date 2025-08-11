@@ -3,6 +3,8 @@ import styled from "styled-components";
 const StyledTd = styled.td`
   padding: 10px 5px;
   font-size: 1rem;
+  max-width: 300px;
+  word-break: break-word;
 `;
 
 const Actions = styled.div`

@@ -151,7 +151,7 @@ class VehicleController {
     let msg = "Erro interno no servidor!";
 
     switch (err) {
-      case "Vehicles_name_key":
+      case "vehicles_name_key":
         msg = "Veiculo ja registrado!";
         break;
     }

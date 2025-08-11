@@ -135,13 +135,21 @@ const ScheduleServices = () => {
                     confirmed,
                   }) => (
                     <tr key={id}>
-                      <StyledTd>{serviceType}</StyledTd>
+                      <StyledTd>
+                        {serviceType.map((it) => (
+                          <p style={{ padding: "2px" }}>{it}</p>
+                        ))}
+                      </StyledTd>
                       <StyledTd>{owner}</StyledTd>
                       <StyledTd>{contractor}</StyledTd>
                       <StyledTd>{guide}</StyledTd>
                       <StyledTd>
-                        {municipality}
-                        {locality && ` / ${locality}`}
+                        {municipality.map((it, index) => (
+                          <p style={{ padding: "2px" }}>
+                            {it}
+                            {locality[index] && ` / ${locality[index]}`}
+                          </p>
+                        ))}
                       </StyledTd>
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>

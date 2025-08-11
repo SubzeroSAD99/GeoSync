@@ -8,6 +8,21 @@ const StyledForm = styled.form`
   width: 100%;
 `;
 
+const FinishedServiceContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  align-self: flex-end;
+
+  & label,
+  & input {
+    cursor: pointer;
+  }
+`;
+
 const StyledButton = styled.button`
   align-self: center;
   width: 100%;
@@ -16,4 +31,4 @@ const StyledButton = styled.button`
   font-size: 1rem;
 `;
 
-export { StyledForm, StyledButton };
+export { StyledForm, FinishedServiceContainer, StyledButton };

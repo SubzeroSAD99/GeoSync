@@ -78,12 +78,14 @@ const Calendar = ({ topographer, events, setEvents, setViewScheduleDay }) => {
   };
 
   const redirectSchedule = (day) => {
-    navigate(
-      `/servicos/cadastrar?measurementDate=${String(day).padStart(
-        2,
-        "0"
-      )}-${String(month + 1).padStart(2, "0")}-${year}`
-    );
+    navigate(`/servicos/cadastrar`, {
+      state: {
+        data: {
+          measurementDate: `${day}-${month + 1}-${year}`,
+          topographer: topographer.fullName,
+        },
+      },
+    });
   };
 
   const days = getDaysArray();
