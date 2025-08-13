@@ -3,7 +3,7 @@ import { media } from "../../../../utils/Media.styles.mjs";
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   align-items: center;
   grid-gap: 20px;
   padding: 10px;

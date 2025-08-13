@@ -82,7 +82,12 @@ class ServiceTypeController {
       return res.status(500).json({ msg: error.details[0].message });
     }
 
-    value.values = value.values?.map((it) => parseCurrency(it));
+    value.values = value.values?.map((obj) => {
+      return Object.entries(obj).reduce((acc, [key, val]) => {
+        acc[key] = val?.map(parseCurrency);
+        return acc;
+      }, {});
+    });
 
     try {
       const serviceTypes = await ServiceType.update(value, {
@@ -109,11 +114,25 @@ class ServiceTypeController {
         raw: true,
       });
 
-      serviceTypes.map(
-        (it) => (it.values = it.values.map((v) => formatCurrency(v)))
-      );
+      const objValues = {};
 
-      res.json({ serviceTypes });
+      serviceTypes.forEach((it) => {
+        if (!objValues[it.name]) objValues[it.name] = {};
+
+        const formattedFlat = it.values.flatMap((obj) => {
+          const key = Object.keys(obj)[0];
+          const vals = Object.values(obj).flat();
+          const formatted = vals.map(formatCurrency);
+
+          objValues[it.name][key] = formatted;
+
+          return formatted;
+        });
+
+        it.values = formattedFlat;
+      });
+
+      res.json({ serviceTypes, objValues });
     } catch (err) {
       res.status(500).json({ msg: "Erro ao localizar tipo de serviços!" });
     }
@@ -127,13 +146,14 @@ class ServiceTypeController {
         raw: true,
         where: { id },
         attributes: {
-          exclude: ["id", "createdAt", "updateAt"],
+          exclude: ["id", "createdAt", "updatedAt"],
         },
       });
 
-      serviceTypes.values = serviceTypes.values?.map((it) =>
-        formatCurrency(it)
-      );
+      serviceTypes.values = serviceTypes.values?.map((it) => {
+        const [key, arr] = Object.entries(it)[0]; // primeira (e única) entrada
+        return { [key]: arr.map((n) => formatCurrency(Number(n))) };
+      });
 
       if (!serviceTypes)
         return res.status(500).json({ msg: "Tipo de serviço não encontrado!" });

@@ -9,7 +9,6 @@ import {
 } from "./InputMultiSelect.styled.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import TableServiceTypes from "../Management/ServiceTypes/TableServiceTypes/TableServiceTypes";
 
 const InputMultiSelect = (props) => {
   const [value, setValue] = useState("");
@@ -49,7 +48,6 @@ const InputMultiSelect = (props) => {
           >
             <span>{key}</span>
             <ItemsContainer key={blockIndex}>
-              <TableServiceTypes />
               <Items>
                 {/* Renderiza os valores de cada bloco */}
                 {val?.map((value2, index) => (
@@ -59,24 +57,23 @@ const InputMultiSelect = (props) => {
                       type="button"
                       onClick={() => {
                         props.setAllValues((prev) => {
-                          // copia segura: clona o array e cada objeto interno
+                          // clona o array de blocos
                           const updated = prev.map((b) => ({ ...b }));
 
-                          const block = updated[blockIndex];
-                          if (!block) return updated; // índice inválido
+                          // clona o bloco alvo para evitar mutação direta
+                          const block = { ...updated[blockIndex] };
+                          updated[blockIndex] = block;
 
-                          const current = block[key];
+                          const current = Array.isArray(block[key])
+                            ? [...block[key]]
+                            : [];
 
-                          // se não existir array, nada a remover
-                          if (!Array.isArray(current)) return updated;
-
-                          const next = current.filter((v) => v !== value);
+                          const next = current.filter((_, i) => i !== index);
 
                           if (next.length) {
                             block[key] = next;
                           } else {
-                            delete block[key]; // remove a chave vazia
-                            // opcional: se o bloco ficar vazio, remove o bloco
+                            delete block[key];
                             if (Object.keys(block).length === 0) {
                               updated.splice(blockIndex, 1);
                             }

@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 const FormServiceTypes = ({
   handleSubmit,
   name,
-  allValues,
+  allValues = [],
   setAllValues,
   btnSubmitValue,
 }) => {

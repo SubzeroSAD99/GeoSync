@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 5px;
   position: relative;
   overflow: visible;
@@ -21,4 +21,12 @@ const Title = styled.p`
   padding: 0px 5px;
 `;
 
-export { Container, Title };
+const ButtonInfo = styled.button`
+  align-self: center !important;
+  width: 25px !important;
+  height: 25px !important;
+  background-color: var(--main-color) !important;
+  box-shadow: 0px 0px 5px var(--main-color) !important;
+`;
+
+export { Container, Title, ButtonInfo };

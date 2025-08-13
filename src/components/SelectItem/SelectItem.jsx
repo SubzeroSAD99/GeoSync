@@ -2,7 +2,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import Select, { components } from "react-select";
 import { FixedSizeList as List } from "react-window";
-import { Container, Title } from "./SelectItem.styled.mjs";
+import { ButtonInfo, Container, Title } from "./SelectItem.styled.mjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ITEM_H = 35;
 const MAX_H = 300;
@@ -23,7 +24,6 @@ const OuterList = React.forwardRef(({ children, style, ...rest }, ref) => (
 const MenuList = (props) => {
   const { options, children, getValue } = props;
   const [value] = getValue();
-  const initialOffset = options.indexOf(value) * ITEM_H;
 
   return (
     <components.MenuList
@@ -55,6 +55,7 @@ const SelectItem = ({
   select,
   placeholder,
   onChange,
+  btnInfo,
   error,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -103,6 +104,11 @@ const SelectItem = ({
         menuShouldBlockScroll={false}
         components={{ MenuList }}
         styles={{
+          container: (base) => ({
+            ...base,
+            width: "100%",
+          }),
+
           control: (base) => ({
             ...base,
             border: error && !selectedOption ? "1px solid red" : base.border,
@@ -151,6 +157,12 @@ const SelectItem = ({
         }}
         maxMenuHeight={MAX_H}
       />
+
+      {btnInfo && selectedOption && (
+        <ButtonInfo type="button" onClick={btnInfo.click}>
+          <FontAwesomeIcon icon={btnInfo.icon} />
+        </ButtonInfo>
+      )}
     </Container>
   );
 };

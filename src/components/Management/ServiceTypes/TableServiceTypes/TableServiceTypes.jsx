@@ -15,31 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const TableServiceTypes = ({
-  array = [
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-    ["Teste", "Valor"],
-  ],
-}) => {
+const TableServiceTypes = ({ title, array }) => {
   const [tablePage, setTablePage] = useState(1);
   const TOTAL_ITEMS_PAGE = 10;
 
@@ -55,17 +31,14 @@ const TableServiceTypes = ({
       <StyledTable>
         <thead>
           <tr style={{ backgroundColor: "var(--main-color-op05)" }}>
-            <StyledTh>Rótulo</StyledTh>
-            <StyledTh>Valor</StyledTh>
+            <StyledTh>{title}</StyledTh>
           </tr>
         </thead>
         <StyledTBody>
           {pages.length > 0 ? (
             pages.map((it, index) => (
               <tr key={`${it}-${index}`}>
-                {it.map((row, idx) => (
-                  <StyledTd key={`${row}-${idx}`}>{row}</StyledTd>
-                ))}
+                <StyledTd>{it}</StyledTd>
               </tr>
             ))
           ) : (
@@ -76,33 +49,35 @@ const TableServiceTypes = ({
         </StyledTBody>
       </StyledTable>
 
-      <PageContainer>
-        <ButtonChangePage
-          style={tablePage <= 1 ? { visibility: "hidden" } : undefined}
-          onClick={() => {
-            setTablePage(tablePage - 1);
-          }}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </ButtonChangePage>
-        <span>
-          {tablePage} de {Math.ceil(array.length / TOTAL_ITEMS_PAGE) || 1}
-        </span>
-        <ButtonChangePage
-          style={
-            tablePage >= Math.ceil(array.length / TOTAL_ITEMS_PAGE)
-              ? {
-                  visibility: "hidden",
-                }
-              : undefined
-          }
-          onClick={() => {
-            setTablePage(tablePage + 1);
-          }}
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </ButtonChangePage>
-      </PageContainer>
+      {array.length / TOTAL_ITEMS_PAGE > 1 && (
+        <PageContainer>
+          <ButtonChangePage
+            style={tablePage <= 1 ? { visibility: "hidden" } : undefined}
+            onClick={() => {
+              setTablePage(tablePage - 1);
+            }}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </ButtonChangePage>
+          <span>
+            {tablePage} de {Math.ceil(array.length / TOTAL_ITEMS_PAGE) || 1}
+          </span>
+          <ButtonChangePage
+            style={
+              tablePage >= Math.ceil(array.length / TOTAL_ITEMS_PAGE)
+                ? {
+                    visibility: "hidden",
+                  }
+                : undefined
+            }
+            onClick={() => {
+              setTablePage(tablePage + 1);
+            }}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </ButtonChangePage>
+        </PageContainer>
+      )}
     </TableContainer>
   );
 };

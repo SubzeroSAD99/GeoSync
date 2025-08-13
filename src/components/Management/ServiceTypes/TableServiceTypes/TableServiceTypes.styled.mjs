@@ -44,6 +44,7 @@ const StyledTh = styled.th`
 const StyledTd = styled.td`
   padding: 10px 5px;
   font-size: 1rem;
+  text-align: center;
 `;
 
 const PageContainer = styled.div`

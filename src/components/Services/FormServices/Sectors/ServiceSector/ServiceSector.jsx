@@ -8,12 +8,18 @@ import React, {
 import SelectItem from "@components/SelectItem/SelectItem";
 import { Container } from "../Sectors.styled.mjs";
 import InputSector from "../InputSector/InputSector";
-import { TitleContainer, ServiceContainer } from "./ServiceSector.styled.mjs";
+import {
+  TitleContainer,
+  ServiceContainer,
+  TableContainer,
+  ButtonCloseTable,
+} from "./ServiceSector.styled.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTable, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import api from "@utils/api.mjs";
 import ServiceItem from "./ServiceItem";
+import TableServiceTypes from "@components/Management/ServiceTypes/TableServiceTypes/TableServiceTypes";
 
 const createServiceFactory =
   (idRef) =>
@@ -59,6 +65,8 @@ const ServiceSector = ({
 
   const [serviceTypesOpts, setServiceTypesOpts] = useState([]);
   const [serviceValuesOpts, setServiceValuesOpts] = useState({});
+  const [serviceObjValues, setServiceObjValues] = useState({});
+  const [infoTable, setInfoTable] = useState(null);
 
   const updateService = useCallback(
     (id, field, value) => {
@@ -85,6 +93,18 @@ const ServiceSector = ({
     [setServices, createService]
   );
 
+  const showTable = useCallback((id) => {
+    setInfoTable(
+      services.map((it) => {
+        if (it.id === id) return serviceObjValues[it.serviceType];
+      })[0]
+    );
+  });
+
+  useEffect(() => {
+    console.log(infoTable);
+  }, [infoTable]);
+
   useEffect(() => {
     // Service Types
     (async () => {
@@ -109,6 +129,7 @@ const ServiceSector = ({
 
           setServiceValuesOpts(valuesPayload);
           setServiceTypesOpts(typesPayload);
+          setServiceObjValues(data.objValues);
         }
       } catch (err) {
         const msg = err?.response?.data?.msg;
@@ -136,8 +157,6 @@ const ServiceSector = ({
         )
       : [createService()];
 
-    console.log(initial);
-
     setServices(initial);
   }, [
     code,
@@ -153,13 +172,29 @@ const ServiceSector = ({
 
   return (
     <>
+      {infoTable && (
+        <TableContainer>
+          <div>
+            <ButtonCloseTable type="button" onClick={() => setInfoTable("")}>
+              X
+            </ButtonCloseTable>
+          </div>
+          {Object.entries(infoTable).map(([key, val], index) => (
+            <TableServiceTypes
+              key={`${index}-${key}`}
+              title={key + " ha"}
+              array={Object.values(val)}
+            />
+          ))}
+        </TableContainer>
+      )}
+
       <TitleContainer>
         <h3>Identificação do Serviço</h3>
         <button type="button" onClick={addNewService}>
           +
         </button>
       </TitleContainer>
-
       {services.map((s, idx) => {
         return (
           <ServiceContainer key={`service${s.id}`}>
@@ -178,6 +213,12 @@ const ServiceSector = ({
                 serviceValuesOpts,
                 stepOpts,
                 municipalities,
+              }}
+              btnInfo={{
+                icon: faTable,
+                click: () => {
+                  showTable(s.id);
+                },
               }}
               updateService={updateService}
               removeService={() => removeService(s.id)}

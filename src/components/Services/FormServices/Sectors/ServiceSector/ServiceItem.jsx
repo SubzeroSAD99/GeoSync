@@ -9,6 +9,7 @@ const ServiceItem = memo(
     service,
     options: { serviceTypesOpts, serviceValuesOpts, stepOpts, municipalities },
     updateService,
+    btnInfo,
     errors,
   }) => {
     const {
@@ -41,6 +42,7 @@ const ServiceItem = memo(
           options={serviceTypesOpts}
           select={serviceType}
           onChange={(val) => updateService(id, "serviceType", val)}
+          btnInfo={btnInfo}
           required
           error={errors === "serviceType"}
         />

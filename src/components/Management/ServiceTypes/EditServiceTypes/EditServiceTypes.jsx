@@ -7,6 +7,7 @@ import FormServiceTypes from "../FormServiceTypes/FormServiceTypes";
 
 const EditServiceTypes = ({ id }) => {
   const [infoServiceType, setInfoServiceType] = useState({});
+  const [allValues, setAllValues] = useState([]);
   const { setUserLogged } = useAuth();
 
   useEffect(() => {
@@ -15,6 +16,7 @@ const EditServiceTypes = ({ id }) => {
         const response = await api.post("/serviceType/getOne", { id });
 
         if (response.data) {
+          setAllValues(response.data?.values);
           setInfoServiceType(response.data);
         }
       } catch (err) {
@@ -33,13 +35,12 @@ const EditServiceTypes = ({ id }) => {
     const form = new FormData(e.target);
 
     const name = form.get("name");
-    const values = form.getAll("values");
 
     try {
       const response = await api.post("/serviceType/edit", {
         id,
         name,
-        values,
+        values: allValues,
       });
 
       if (response.data) {
@@ -60,6 +61,8 @@ const EditServiceTypes = ({ id }) => {
 
       <FormServiceTypes
         {...infoServiceType}
+        allValues={allValues}
+        setAllValues={setAllValues}
         handleSubmit={handleSubmit}
         btnSubmitValue={"Salvar Alterações"}
       />
