@@ -10,6 +10,7 @@ import equipmentRouter from "./routes/equipmentRouter.mjs";
 import vehicleRouter from "./routes/vehicleRouter.mjs";
 import financialRouter from "./routes/financialRouter.mjs";
 import serviceTypeRouter from "./routes/serviceTypeRouter.mjs";
+import budgetRouter from "./routes/budgetRouter.mjs";
 
 import { authenticate } from "./middlewares/authMiddleware.mjs";
 import initAll from "./models/initModels.mjs";
@@ -46,6 +47,7 @@ app.use("/equipment", equipmentRouter);
 app.use("/vehicle", vehicleRouter);
 app.use("/financial", financialRouter);
 app.use("/serviceType", serviceTypeRouter);
+app.use("/budget", budgetRouter);
 
 app.listen(PORT, () => {
   initAll().then(() => {

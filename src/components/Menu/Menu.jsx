@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  BtnTheme,
   ItemShowHide,
   StyledFontAwesome,
   StyledList,
@@ -8,8 +7,6 @@ import {
 } from "./Menu.styles.mjs";
 import MenuItemList from "./MenuItemList/MenuItemList.jsx";
 import {
-  faSun,
-  faMoon,
   faNewspaper,
   faTable,
   faTableCellsRowLock,
@@ -29,7 +26,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useUI } from "@contexts/UIContext.jsx";
 import { useMediaQuery } from "react-responsive";
-import { useTheme } from "@contexts/ThemeContext.jsx";
 import useCanAccess from "@/hooks/useCanAccess.mjs";
 
 const Menu = () => {
@@ -131,12 +127,7 @@ const Menu = () => {
     },
   ];
 
-  useEffect(() => {
-    console.log(menuItems);
-  }, []);
-
   const { isMenuOpen, setMenuOpen } = useUI();
-  const { theme, toggleTheme } = useTheme();
   const [expandMenu, setExpandMenu] = useState(true);
   const [isActive, setIsActive] = useState([0]);
 
@@ -198,13 +189,6 @@ const Menu = () => {
           ) : null;
         })}
       </StyledList>
-
-      <BtnTheme>
-        <StyledFontAwesome
-          icon={theme === "light" ? faSun : faMoon}
-          onClick={toggleTheme}
-        />
-      </BtnTheme>
     </StyledMenu>
   );
 };

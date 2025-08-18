@@ -65,7 +65,7 @@ const genPdf = ({
   obs,
 }) => {
   const formattedTitle = `${title} N° ${id}`;
-  const imgPath = path.join(import.meta.dirname, "../assets/images/logo.jpg");
+  const imgPath = path.join(import.meta.dirname, "../assets/images/logo.png");
   const doc = new PDFDocument({
     size: "A4",
     margin: 20,
@@ -519,7 +519,7 @@ const genPdf = ({
 
       const codes = (services.codes ?? [])
         .map((c) => String(c).trim())
-        .filter((c) => c !== "");
+        .filter((c) => c !== "null" && c !== "");
 
       doc.font("Helvetica").text(codes.join(" / "), {
         width: contentW,

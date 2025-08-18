@@ -18,8 +18,6 @@ const Section = () => {
       try {
         const response = await api.post("/service/getAllOpen");
 
-        console.log(response.data);
-
         if (response.data) setAllServices(response.data);
       } catch (err) {
         if (err.status == 401) return setUserLogged(null);
@@ -55,6 +53,7 @@ const Section = () => {
       title="Ordem de Serviço [Abertas]"
       allServices={allServices}
       filterOptions={[
+        { label: "Código", column: "code" },
         { label: "Proprietário", column: "owner" },
         { label: "Tipo de Serviço", column: "serviceType" },
         { label: "Cadista", column: "cadist" },
@@ -62,6 +61,7 @@ const Section = () => {
         { label: "Prioridade", column: "priority" },
       ]}
       options={[
+        { header: "Cod.", column: "code" },
         { header: "Proprietário", column: "owner" },
         { header: "Tipo de Serviço", column: "serviceType" },
         { header: "Cadista", column: "cadist" },

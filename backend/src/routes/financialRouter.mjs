@@ -5,9 +5,33 @@ import { authorize } from "../middlewares/authMiddleware.mjs";
 const router = Router();
 
 router.post(
+  "/convertToOs",
+  authorize("financial", "create"),
+  FinancialController.convertToOs
+);
+
+router.post(
   "/genPdfOs",
   authorize("financial", "create"),
   FinancialController.genPdfOs
+);
+
+router.post(
+  "/genPdfBudget",
+  authorize("financial", "create"),
+  FinancialController.genPdfBudget
+);
+
+router.post(
+  "/genReceipt",
+  authorize("financial", "create"),
+  FinancialController.genReceipt
+);
+
+router.post(
+  "/serviceCharger",
+  authorize("financial", "create"),
+  FinancialController.serviceCharger
 );
 
 export default router;

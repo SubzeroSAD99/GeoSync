@@ -48,6 +48,19 @@ class EmployeeController {
     }
   }
 
+  static async logout(req, res) {
+    try {
+      res.clearCookie("authToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+      });
+      return res.status(200).json({ msg: "Logout realizado com sucesso!" });
+    } catch (err) {
+      return res.status(500).json({ err: "Erro interno ao fazer logout." });
+    }
+  }
+
   static async getAll(req, res) {
     try {
       const employees = await Employee.findAll({

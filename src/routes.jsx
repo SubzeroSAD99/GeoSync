@@ -42,6 +42,8 @@ import RegisterServiceTypesPage from "./pages/Management/ServiceTypes/RegisterSe
 
 // Financial
 import OsPage from "./pages/Financial/Os/OsPage.jsx";
+import BudgetPage from "./pages/Financial/Budget/BudgetPage.jsx";
+import RegisterBudgetPage from "./pages/Financial/Budget/RegisterBudgetPage.jsx";
 
 const publicRoutes = [
   { path: "/login", element: <LoginPage /> },
@@ -197,8 +199,14 @@ const privateRoutes = [
 
       {
         path: "orcamentos",
-        element: <EmployeesPage />,
+        element: <BudgetPage />,
         meta: { resource: "management", action: "read" },
+      },
+
+      {
+        path: "orcamentos/cadastrar",
+        element: <RegisterBudgetPage />,
+        meta: { resource: "management", action: "create" },
       },
     ],
   },

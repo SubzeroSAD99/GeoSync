@@ -145,7 +145,7 @@ const ServiceSector = ({
     const initial = serviceType
       ? serviceType.map((t, i) =>
           createService(
-            code[i],
+            Array.isArray(code) ? code[i] : "",
             t,
             serviceValue[i],
             step[i],

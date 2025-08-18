@@ -28,6 +28,7 @@ const ServiceItem = memo(
       <Container>
         <InputSector
           id={`code`}
+          defaultValue={code}
           type="text"
           label="Código"
           onChange={(e) =>

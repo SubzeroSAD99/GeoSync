@@ -79,33 +79,28 @@ const Actions = styled.div`
   flex-wrap: wrap;
   padding: 10px;
   gap: 10px;
-
-  & button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    font-size: 1rem;
-    padding: 8px;
-    cursor: pointer;
-    border: none;
-    border-radius: 2px;
-    color: var(--text-color2);
-    transition: filter 0.5s ease, box-shadow 0.4s linear;
-    box-shadow: 0px 0px 6px 0px transparent;
-
-    &:hover {
-      filter: brightness(130%);
-    }
-  }
 `;
 
 const Button = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  padding: 8px;
+  cursor: pointer;
+  border: none;
+  border-radius: 2px;
   background-color: ${(props) => props.color};
+  color: var(--text-color2);
+  transition: filter 0.5s ease, box-shadow 0.4s linear;
+  box-shadow: 0px 0px 6px 0px transparent;
+  font-size: 1rem;
 
   &:hover {
+    filter: brightness(130%);
     box-shadow: 0px 0px 6px 0px ${(props) => props.color};
   }
 `;

@@ -17,6 +17,7 @@ router.post("/validate", authenticate, (req, res) => {
 });
 
 router.post("/login", EmployeeController.login);
+router.post("/logout", authenticate, EmployeeController.logout);
 router.post("/service/getStep", ServiceOrderController.getStep);
 
 export default router;

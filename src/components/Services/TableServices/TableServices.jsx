@@ -19,6 +19,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@contexts/AuthContext.jsx";
 
 const TableServices = ({
   title,
@@ -31,7 +32,14 @@ const TableServices = ({
   const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
+  const { userLogged } = useAuth();
   const navigate = useNavigate();
+
+  const PRIORITY_ORDER = {
+    alta: 0,
+    normal: 1,
+    baixa: 2,
+  };
 
   useEffect(() => {
     setTablePage(1);
@@ -56,6 +64,22 @@ const TableServices = ({
 
     return filteredServices.slice(start, end);
   }, [filteredServices, tablePage]);
+
+  const sortedServices = useMemo(() => {
+    const getOrder = (p) => PRIORITY_ORDER[String(p ?? "").toLowerCase()] ?? 99;
+
+    if (userLogged.role !== "CADISTA") {
+      return [...pageServices].sort((a, b) => b.id - a.id);
+    } else {
+      return [...pageServices].sort((a, b) => {
+        const pa = getOrder(a.priority);
+        const pb = getOrder(b.priority);
+        if (pa !== pb) return pa - pb;
+
+        return a.id - b.id;
+      });
+    }
+  }, [pageServices]);
 
   return (
     <section>
@@ -111,7 +135,7 @@ const TableServices = ({
           </thead>
           <StyledTBody>
             {filteredServices.length > 0 ? (
-              pageServices.map((it, index) => (
+              sortedServices.map((it, index) => (
                 <RowTable
                   key={`${it.id}-${index}`}
                   id={it.id}
@@ -122,13 +146,13 @@ const TableServices = ({
               ))
             ) : (
               <tr>
-                <StyledTd colSpan={8}>SEM REGISTROS</StyledTd>
+                <StyledTd colSpan={options.length + 1}>SEM REGISTROS</StyledTd>
               </tr>
             )}
           </StyledTBody>
           <tfoot>
             <tr>
-              <StyledTh colSpan={7}>TOTAL DE SERVIÇOS</StyledTh>
+              <StyledTh colSpan={options.length}>TOTAL DE SERVIÇOS</StyledTh>
               <StyledTd>{filteredServices.length}</StyledTd>
             </tr>
           </tfoot>

@@ -10,12 +10,53 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   align-items: center;
   user-select: none;
-  padding-left: 3em;
   background-color: var(--main-color);
+  padding: 0px 0.5rem;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  & span {
+    font-size: 0.7rem;
+  }
+
+  & > img {
+    width: 3.8rem;
+    filter: brightness(0%) invert(1);
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const Title = styled.h1`
   color: var(--text-color2);
+`;
+
+const UserContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+
+  & > span {
+    font-weight: bold;
+    color: var(--text-color2);
+  }
+  & svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
 `;
 
 const StyledFontAwesome = styled(FontAwesomeIcon)`
@@ -24,4 +65,10 @@ const StyledFontAwesome = styled(FontAwesomeIcon)`
   color: var(--main-color);
 `;
 
-export { StyledHeader, Title, StyledFontAwesome };
+export {
+  StyledHeader,
+  TitleContainer,
+  Title,
+  UserContainer,
+  StyledFontAwesome,
+};

@@ -5,6 +5,7 @@ import ServiceOrder from "./ServiceOrder.mjs";
 import Equipment from "./Equipment.mjs";
 import Vehicle from "./Vehicle.mjs";
 import ServiceType from "./ServiceType.mjs";
+import Budget from "./Budget.mjs";
 
 // Topografo
 ServiceOrder.belongsTo(Employee, {
@@ -40,6 +41,16 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "owner",
   as: "OwnerOrders",
 });
+
+Budget.belongsTo(Client, {
+  foreignKey: "owner",
+  as: "OwnerReader",
+});
+
+Client.hasMany(Budget, {
+  foreignKey: "owner",
+  as: "OwnerBudgets",
+});
 // ------------------------------------
 
 // Contratante
@@ -52,6 +63,16 @@ Client.hasMany(ServiceOrder, {
   foreignKey: "contractor",
   as: "ContractorOrders",
 });
+
+Budget.belongsTo(Client, {
+  foreignKey: "contractor",
+  as: "ContractorReader",
+});
+
+Client.hasMany(Budget, {
+  foreignKey: "contractor",
+  as: "ContractorBudgets",
+});
 // ------------------------------------
 
 // Guia
@@ -63,6 +84,16 @@ ServiceOrder.belongsTo(Client, {
 Client.hasMany(ServiceOrder, {
   foreignKey: "guide",
   as: "GuideOrders",
+});
+
+Budget.belongsTo(Client, {
+  foreignKey: "guide",
+  as: "GuideReader",
+});
+
+Client.hasMany(Budget, {
+  foreignKey: "guide",
+  as: "GuideBudgets",
 });
 // ------------------------------------
 
@@ -113,6 +144,7 @@ const initAll = async () => {
     await Vehicle.sync({ force: false }),
     await ServiceOrder.sync({ force: false }),
     await ServiceType.sync({ force: false }),
+    await Budget.sync({ force: false }),
   ]);
 };
 

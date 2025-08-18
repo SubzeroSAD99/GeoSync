@@ -55,20 +55,9 @@ const ItemShowHide = styled.li`
   }
 `;
 
-const BtnTheme = styled.button`
-  position: sticky;
-  bottom: 0px;
-  left: 0px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  width: max-content;
-  box-shadow: none !important;
-  background-color: transparent;
-`;
-
 const StyledFontAwesome = styled(FontAwesomeIcon)`
   font-size: 1.4rem;
   cursor: pointer;
 `;
 
-export { StyledMenu, StyledList, ItemShowHide, BtnTheme, StyledFontAwesome };
+export { StyledMenu, StyledList, ItemShowHide, StyledFontAwesome };

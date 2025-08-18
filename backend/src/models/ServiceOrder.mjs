@@ -45,6 +45,7 @@ ServiceOrder.init(
     step: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
+      defaultValue: ["agendado"],
     },
 
     pending: {
@@ -93,7 +94,8 @@ ServiceOrder.init(
 
     paymentSituation: {
       type: DataTypes.ENUM("pago", "não pago", "parcialmente pago", "isento"),
-      allowNull: true,
+      allowNull: false,
+      defaultValue: "não pago",
     },
 
     amountPaid: {

@@ -7,6 +7,14 @@ import {
   HighlightContainer,
 } from "./RowTable.styled.mjs";
 
+const evaluateCondition = (condition, ctx) => {
+  console.log(typeof condition);
+
+  if (typeof condition === "function") return !!condition(ctx);
+  if (condition === undefined) return true;
+  return !!condition;
+};
+
 const RowTable = ({ id, item, options, actions = [] }) => {
   return (
     <tr key={id}>
@@ -35,20 +43,25 @@ const RowTable = ({ id, item, options, actions = [] }) => {
       ))}
       <StyledTd>
         <Actions>
-          {actions.map(({ condition, buttonInfo }, index) =>
-            condition == undefined || condition ? (
+          {actions.map(({ buttonInfo }, index) => {
+            const shouldShow = evaluateCondition(
+              buttonInfo.condition,
+              item.paymentSituation
+            );
+
+            if (!shouldShow) return null;
+
+            return (
               <Button
                 key={`${buttonInfo.label}-${index}`}
                 color={buttonInfo.color}
-                onClick={() => {
-                  buttonInfo.click(id);
-                }}
+                onClick={() => buttonInfo.click(id)}
               >
                 <FontAwesomeIcon icon={buttonInfo.icon} />
                 <span>{buttonInfo.label}</span>
               </Button>
-            ) : null
-          )}
+            );
+          })}
         </Actions>
       </StyledTd>
     </tr>
