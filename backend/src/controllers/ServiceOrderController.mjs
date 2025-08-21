@@ -176,8 +176,6 @@ const registerSchema = Joi.object({
 
 class ServiceOrderController {
   static async register(req, res) {
-    console.log(req.body);
-
     const { error, value } = registerSchema.validate(req.body);
 
     if (error) {
@@ -212,8 +210,6 @@ class ServiceOrderController {
 
       return res.status(200).json({ msg: "Ordem de serviço criada!" });
     } catch (err) {
-      console.log(err);
-
       return res.status(500).json({ msg: "Erro interno do servidor." });
     }
   }
@@ -223,7 +219,10 @@ class ServiceOrderController {
       const { id } = req.body;
 
       if (!id)
-        return res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+        return res.json({
+          err: true,
+          msg: "Não foi possivel encontrar serviço",
+        });
 
       const destroy = await ServiceOrder.destroy({
         where: {
@@ -232,11 +231,11 @@ class ServiceOrderController {
       });
 
       if (destroy)
-        return res.json({ err: false, msg: "OS deletada com sucesso!" });
+        return res.json({ err: false, msg: "Serviço deletado com sucesso!" });
 
-      res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+      res.json({ err: true, msg: "Não foi possivel encontrar serviço" });
     } catch (err) {
-      res.json({ err: true, msg: "Não foi possivel encontrar OS" });
+      res.json({ err: true, msg: "Não foi possivel encontrar serviço" });
     }
   }
 
@@ -320,7 +319,6 @@ class ServiceOrderController {
 
       data.serviceValue = data.serviceValue.map((it) => formatCurrency(it));
       data.amountPaid = formatCurrency(data.amountPaid);
-      console.log(data);
 
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
@@ -362,8 +360,6 @@ class ServiceOrderController {
 
       res.json(data);
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro interno do servidor!" });
     }
   }
@@ -398,8 +394,6 @@ class ServiceOrderController {
       data.map((obj) => {
         obj.createdAt = formatDate(obj.createdAt).split(",")[0];
       });
-
-      console.log(data);
 
       res.json(data);
     } catch (err) {
@@ -440,7 +434,7 @@ class ServiceOrderController {
 
       res.json(data);
     } catch (err) {
-      console.log(err);
+      res.status(500).json({ msg: "Erro interno no servidor" });
     }
   }
 
@@ -537,8 +531,6 @@ class ServiceOrderController {
 
       res.json({ services: formattedServices });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao acessar agendamento!" });
     }
   }
@@ -551,7 +543,11 @@ class ServiceOrderController {
         return res.status(500).json({ msg: "Serviço não encontrado!" });
 
       const data = await ServiceOrder.findByPk(id, {
-        attributes: ["step", [col("OwnerReader.full_name"), "owner"]],
+        attributes: [
+          "step",
+          "serviceType",
+          [col("OwnerReader.full_name"), "owner"],
+        ],
 
         include: [
           {
@@ -655,8 +651,6 @@ class ServiceOrderController {
       }
       return res.json({ msg: "Serviço confirmado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao confirmar serviço!" });
     }
   }

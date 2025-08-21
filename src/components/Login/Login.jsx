@@ -1,0 +1,95 @@
+import React, { useEffect } from "react";
+import {
+  StyledForm,
+  Title,
+  SubmitInput,
+  StyledSection,
+  GlobalStyle,
+  Title2,
+  TitleContainer,
+} from "./Login.styled.mjs";
+import FormInputItem from "@components/FormInputItem/FormInputItem";
+import api from "@utils/api.mjs";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@contexts/AuthContext";
+import { toast } from "react-toastify";
+
+const Login = () => {
+  const { setUserLogged, userLogged, setPermissions, permissions } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const cpf = formData.get("cpf");
+    const password = formData.get("password");
+
+    try {
+      const response = await api.post("/login", {
+        cpf,
+        password,
+      });
+
+      if (response.data && !response.data.err) {
+        const name = response.data.employee.name.split(" ")[0].toLowerCase();
+        const { employee, permissions } = response.data;
+
+        toast(
+          `Seja Bem Vindo ${name.charAt(0).toUpperCase() + name.slice(1)}!`
+        );
+
+        setUserLogged(employee);
+        setPermissions(permissions);
+      }
+    } catch (err) {
+      const msg = err.response?.data?.msg;
+
+      if (msg) toast.error(msg);
+    }
+  };
+
+  useEffect(() => {
+    if (permissions && userLogged) navigate(from, { replace: true });
+  }, [permissions, userLogged]);
+
+  return (
+    <>
+      <GlobalStyle />
+      <TitleContainer>
+        <img src="/img/logo.webp" alt="Logo Topodatum" />
+        <div>
+          <Title>GeoSync</Title>
+          <span>Topodatum Topografia LTDA</span>
+        </div>
+      </TitleContainer>
+      <StyledSection>
+        <StyledForm onSubmit={handleSubmitForm}>
+          <Title2>
+            <span>&ndash;</span> Login <span>&ndash;</span>
+          </Title2>
+          <FormInputItem
+            id="cpf"
+            type="text"
+            label="CPF"
+            placeholder="___.___.___-__"
+            mask="000.000.000-00"
+          />
+          <FormInputItem
+            id="password"
+            type="password"
+            label="Senha"
+            eyeIcon={true}
+          />
+
+          <SubmitInput type="submit" value="Entrar" />
+        </StyledForm>
+      </StyledSection>
+    </>
+  );
+};
+
+export default Login;

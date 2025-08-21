@@ -6,20 +6,30 @@ import api from "@utils/api.mjs";
 import { useAuth } from "@contexts/AuthContext";
 import Loading from "@components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "@components/ConfirmDialog/ConfirmDialog";
 
 const Municipalities = () => {
   const [allMunicipalities, setAllMunicipalities] = useState({});
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [toDelete, setToDelete] = useState(null);
   const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
-  const handleDelete = async (id) => {
+  const handleAskDelete = (id) => {
+    setToDelete(id);
+    setOpen(true);
+  };
+
+  const deleteMunicipality = async () => {
+    setBusy(true);
     try {
-      const response = await api.post("/municipality/delete", { id });
+      const response = await api.post("/municipality/delete", { id: toDelete });
 
       if (response.data && !response.data.err) {
         setAllMunicipalities((prev) =>
-          prev.filter((employee) => employee.id !== id)
+          prev.filter((employee) => employee.id !== toDelete)
         );
 
         toast.warn(response.data.msg);
@@ -29,6 +39,10 @@ const Municipalities = () => {
       if (msg) toast.error(msg);
 
       if (err.status == 401) return setUserLogged(null);
+    } finally {
+      setBusy(false);
+      setOpen(false);
+      setToDelete(null);
     }
   };
 
@@ -61,6 +75,21 @@ const Municipalities = () => {
 
   return (
     <section>
+      <ConfirmDialog
+        open={open}
+        title="Excluir Município"
+        description={`Tem certeza que deseja excluir este município? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir Município"
+        cancelLabel="Cancelar"
+        loading={false}
+        onConfirm={() => toDelete && deleteMunicipality()}
+        onCancel={() => {
+          if (!busy) {
+            setOpen(false);
+            setToDelete(null);
+          }
+        }}
+      />
       <TitleContainer>
         <Title>Lista de Municipios</Title>
         <StyledLink to={"/gerenciamento/municipios/cadastrar"}>
@@ -73,7 +102,7 @@ const Municipalities = () => {
         rows={["name"]}
         array={allMunicipalities}
         setArray={setAllMunicipalities}
-        handleDelete={handleDelete}
+        handleDelete={handleAskDelete}
         handleEdit={handleEdit}
       />
     </section>

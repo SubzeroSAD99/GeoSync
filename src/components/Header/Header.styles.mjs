@@ -20,6 +20,7 @@ const TitleContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  color: var(--text-color2);
 
   & span {
     font-size: 0.7rem;

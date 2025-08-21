@@ -5,9 +5,15 @@ import { StyledLink, Title, TitleContainer } from "./Employees.styled.mjs";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loading from "@components/Loading/Loading";
+import ConfirmDialog from "@components/ConfirmDialog/ConfirmDialog.jsx";
 
 const Employees = () => {
   const [allEmployees, setAllEmployees] = useState({});
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [toDelete, setToDelete] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
@@ -20,7 +26,10 @@ const Employees = () => {
 
         objList.sort((a, b) => a.role.localeCompare(b.role));
 
-        response.data && setAllEmployees(objList);
+        if (response.data) {
+          setAllEmployees(objList);
+          setLoading(false);
+        }
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
@@ -35,13 +44,19 @@ const Employees = () => {
     getAllEmployees();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleAskDelete = (id) => {
+    setToDelete(id);
+    setOpen(true);
+  };
+
+  const deleteEmployee = async () => {
+    setBusy(true);
     try {
-      const response = await api.post("/employee/delete", { id });
+      const response = await api.post("/employee/delete", { id: toDelete });
 
       if (response.data && !response.data.err) {
         setAllEmployees((prev) =>
-          prev.filter((employee) => employee.id !== id)
+          prev.filter((employee) => employee.id !== toDelete)
         );
 
         toast.warn(response.data.msg);
@@ -51,6 +66,10 @@ const Employees = () => {
       if (msg) toast.error(msg);
 
       if (err.status == 401) return setUserLogged(null);
+    } finally {
+      setBusy(false);
+      setOpen(false);
+      setToDelete(null);
     }
   };
 
@@ -58,8 +77,25 @@ const Employees = () => {
     navigate(`/gerenciamento/funcionarios/editar/${id}`);
   };
 
+  if (loading) return <Loading />;
+
   return (
     <section>
+      <ConfirmDialog
+        open={open}
+        title="Excluir Funcionário"
+        description={`Tem certeza que deseja excluir este funcionário? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir Funcionário"
+        cancelLabel="Cancelar"
+        loading={false}
+        onConfirm={() => toDelete && deleteEmployee()}
+        onCancel={() => {
+          if (!busy) {
+            setOpen(false);
+            setToDelete(null);
+          }
+        }}
+      />
       <TitleContainer>
         <Title>Lista de Funcionarios</Title>
         <StyledLink to={"/gerenciamento/funcionarios/cadastrar"}>
@@ -72,7 +108,7 @@ const Employees = () => {
         rows={["fullName", "role"]}
         array={allEmployees}
         setArray={setAllEmployees}
-        handleDelete={handleDelete}
+        handleDelete={handleAskDelete}
         handleEdit={handleEdit}
       />
     </section>

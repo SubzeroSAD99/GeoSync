@@ -8,8 +8,6 @@ import {
 } from "./RowTable.styled.mjs";
 
 const evaluateCondition = (condition, ctx) => {
-  console.log(typeof condition);
-
   if (typeof condition === "function") return !!condition(ctx);
   if (condition === undefined) return true;
   return !!condition;

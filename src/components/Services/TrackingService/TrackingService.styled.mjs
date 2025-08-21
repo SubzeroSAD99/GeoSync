@@ -1,63 +1,69 @@
-import styled, { createGlobalStyle, keyframes } from "styled-components";
-import trackingImg from "./img.jpg";
+import styled, { createGlobalStyle, css, keyframes } from "styled-components";
+import { media } from "@utils/Media.styles.mjs";
+
+const CircleAnimation = keyframes`
+  30% {
+    transform: scale(0.5);
+  }
+
+  50% {
+    background: var(--_gradient);
+  }
+  
+  100% {
+    background: var(--_gradient);
+    transform: scale(1);
+  }
+`;
+
+const CheckAnimation = keyframes`
+  to {
+    stroke-dashoffset: 0;
+  }
+`;
+
+const ActualStepAnimetion = keyframes`
+  to {
+    box-shadow: 0px 0px 10px rgba(230, 161, 71, 1);
+  }
+`;
+
+const BarAnimationWidth = keyframes`
+  to {
+    width: calc(
+      (100% - var(--item-w)) * ((var(--_step) - 0.5) / (9 - 1)) + var(--item-w) /
+        2
+    );
+  }
+`;
+
+const BarAnimationHeight = keyframes`
+  to {
+    height: calc(
+      (100% - var(--item-h)) * ((var(--_step) - 0.5) / (9 - 1)) + var(--item-h) /
+        2
+    );
+  }
+`;
 
 const GlobalStyle = createGlobalStyle`
   :root {
-    --_time-line: 0.3s;
-    --_step-check-time: 0.2s;
-    --_step-circle-time: 0.7s;
+    --_time-line: 0.7s;        
+    --_step-circle-time: 0.5s;
   }
 
   #root {
     display: flex;
     justify-content: space-between;
-    background-image: url(${trackingImg});
+    background-image: url("/img/tracking-background.webp");
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
   }
 
   section.Toastify {
     position: fixed;
   }
-`;
-
-const CircleAnimation = keyframes`
-  0% {
-    clip-path: circle(20% at 50% 50%);
-  }
-
-  50% {
-    clip-path: circle(10% at 50% 50%);
-  }
-
-  80% {
-    fill: var(--_color);
-  }
-  
-  100% {
-    fill: var(--_color);
-    clip-path: circle(100% at 50% 50%);
-  }
-`;
-
-const CircleInProgress = keyframes`
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: -800;
-  }
-`;
-
-const CheckAnimation = keyframes`
-    to {
-        stroke-dashoffset: 0;
-    }
-`;
-
-const LineAnimation = keyframes`
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0%   0 0); }
 `;
 
 const StyledHeader = styled.header`
@@ -72,96 +78,243 @@ const StyledMain = styled.main`
   width: 100%;
   padding: 20px;
   gap: 2rem;
+  text-transform: capitalize;
+  color: var(--text-color2);
+`;
 
-  & h2 {
-    text-transform: capitalize;
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  & span {
+    font-size: 0.7rem;
   }
+
+  & > img {
+    width: 3.8rem;
+    filter: brightness(0%) invert(1);
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const Title = styled.h1`
+  color: var(--text-color2);
 `;
 
 const StyledSection = styled.section`
   background-color: transparent;
   box-shadow: none;
-  width: 80%;
+  width: max-content;
   background-color: var(--main-color-op07);
   box-shadow: 0px 0px 5px var(--main-color-op05);
 `;
 
-const StepsGroup = styled.g`
-  fill: var(--text-color);
+const ServiceContainer = styled.div`
+  display: grid;
+  place-items: center;
+  text-transform: capitalize;
 
-  & circle {
-    --_color: green;
-    clip-path: circle(20% at 50% 50%);
-    stroke-width: 0;
-    stroke: green;
-    stroke-dasharray: 50;
-    stroke-dashoffset: 0;
+  & h3 {
+    font-size: 1rem;
+    word-break: break-word;
+    max-width: 18rem;
+    text-align: center;
+  }
+`;
+
+const ListContainer = styled.ul`
+  --item-w: 7.5rem;
+  --item-h: 5rem;
+  --_step: 0;
+  display: flex;
+  position: relative;
+
+  &::after,
+  &::before {
+    content: "";
+    width: 100%;
+    height: 0.5rem;
+    background-color: white;
+    position: absolute;
+    top: 30%;
+    left: 0%;
+    transform: translateY(-50%);
+    border-radius: 20px;
   }
 
-  .step-animation > circle {
-    animation: ${CircleAnimation} var(--_step-circle-time) ease-in-out forwards
-      var(--_step-circle-delay);
+  &::after {
+    background: linear-gradient(
+          to right,
+          var(--_gradient-final-color1, transparent),
+          var(--_gradient-final-color2, transparent)
+        )
+        right / 4rem 100% no-repeat,
+      linear-gradient(to right, rgb(71, 230, 71), rgb(0, 180, 0)) left / 100%
+        100% no-repeat;
+    width: 0px;
+    animation: ${BarAnimationWidth} var(--_time-line) linear forwards;
+  }
 
-    &.in-progress {
-      fill: var(--_color);
-      clip-path: circle(100% at 50% 50%);
-      animation: ${CircleInProgress} 4s alternate infinite !important;
+  ${media(css`
+    flex-direction: column;
+    gap: 1.2rem;
+
+    &::after,
+    &:before {
+      width: 0.5rem;
+      height: 100%;
+      top: 0%;
+      left: 14.8%;
+      transform: translateX(-50%);
     }
-  }
 
-  .step-animation > path {
-    animation: ${CheckAnimation} var(--_step-check-time) linear forwards
-      var(--_step-check-delay);
-  }
+    &::after {
+      background: linear-gradient(
+            to bottom,
+            var(--_gradient-final-color1, transparent),
+            var(--_gradient-final-color2, transparent)
+          )
+          bottom / 100% 4rem no-repeat,
+        linear-gradient(to bottom, rgb(71, 230, 71), rgb(0, 180, 0)) top / 100%
+          100% no-repeat;
+      height: 0px;
+      animation: ${BarAnimationHeight} var(--_time-line) linear forwards;
+    }
+  `)}
 `;
 
-const LinesGroup = styled.g`
-  fill: var(--text-color);
-`;
+const ListItem = styled.li`
+  --circle-delay: 0s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  list-style: none;
+  gap: 0.8rem;
+  width: var(--item-w);
+  z-index: 1;
 
-const FullLinesGroup = styled.g`
-  rect {
-    --_color: green;
-    clip-path: inset(0 100% 0 0);
-    fill: var(--_color);
+  &.active div {
+    animation: ${CircleAnimation} var(--_step-circle-time) ease-in
+      var(--circle-delay) forwards;
   }
 
-  .line-animation {
-    animation: ${LineAnimation} var(--_time-line) linear forwards
-      var(--_time-delay);
+  &.end-frame div:first-child {
+    --_gradient: linear-gradient(
+      to right,
+      rgba(230, 161, 71, 1),
+      rgba(202, 115, 0, 1)
+    );
   }
+
+  &.end-frame div:first-child::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    animation: ${ActualStepAnimetion} 0.5s infinite alternate;
+    border-radius: 50%;
+    border: 1px solid rgba(230, 161, 71, 1);
+  }
+
+  &.end-frame div svg {
+    display: none;
+  }
+
+  &.end-frame div span {
+    display: block;
+  }
+
+  &.end-frame div > span {
+    opacity: 1;
+  }
+
+  &.active div:last-child > span {
+    opacity: 1;
+  }
+
+  &.active svg {
+    animation: ${CheckAnimation} 0.3s linear var(--_step-circle-time) forwards;
+  }
+
+  &.active div svg {
+    stroke-dashoffset: 90;
+  }
+
+  ${media(`
+    & {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+  `)}
 `;
 
-const Text = styled.text`
-  font-style: normal;
-  font-variant: normal;
+const Circle = styled.div`
+  --_gradient: linear-gradient(to right, rgb(71, 230, 71), rgb(0, 180, 0));
+  display: grid;
+  place-items: center;
+  background-color: white;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+  transform: scale(0.7);
+  color: var(--text-color2);
+  font-size: 1.5rem;
   font-weight: bold;
-  font-stretch: condensed;
-  font-size: 37.3333px;
-  font-family: Agency FB;
-  stroke: none;
-  fill: var(--text-color);
-  transition: opacity 0.3s ease-in-out;
+  position: relative;
+
+  & span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    transition-delay: calc(var(--circle-delay) + var(--_step-circle-time));
+  }
+
+  & svg {
+    stroke-dasharray: 90;
+    stroke-dashoffset: 90;
+  }
 `;
 
-const CheckPath = styled.path`
-  stroke: var(--text-color2);
-  stroke-width: 5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 45;
-  stroke-dashoffset: 45;
-  fill: none;
+const StepLabelContainer = styled.div`
+  display: grid;
+  place-items: center;
+  width: 60%;
+
+  & > span {
+    opacity: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: opacity 0.5s ease-in-out;
+    transition-delay: calc(var(--circle-delay) + var(--_step-circle-time));
+  }
 `;
 
 export {
   GlobalStyle,
   StyledHeader,
   StyledMain,
+  TitleContainer,
+  Title,
   StyledSection,
-  StepsGroup,
-  LinesGroup,
-  FullLinesGroup,
-  Text,
-  CheckPath,
+  ServiceContainer,
+  ListContainer,
+  ListItem,
+  Circle,
+  StepLabelContainer,
 };

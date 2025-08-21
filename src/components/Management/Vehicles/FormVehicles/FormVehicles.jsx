@@ -24,8 +24,6 @@ const FormVehicles = ({
         const response = await api.post("employee/getTopographers");
 
         if (response.data) {
-          console.log(response.data);
-
           setAllTopographers(
             response.data.topographers.map((it) => {
               return {

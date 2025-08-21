@@ -46,8 +46,6 @@ class MunicipalityController {
 
       res.status(200).json({ ...municipality });
     } catch (error) {
-      console.log(error);
-
       res.status(500).json({ msg: "Erro interno no servidor" });
     }
   }
@@ -70,8 +68,6 @@ class MunicipalityController {
 
       return res.status(200).json({ msg: "Municipio registrado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 

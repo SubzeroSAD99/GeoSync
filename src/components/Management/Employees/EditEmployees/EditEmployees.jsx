@@ -3,8 +3,10 @@ import { Title } from "../Employees.styled.mjs";
 import FormEmployees from "../FormEmployees/FormEmployees";
 import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
+import { useAuth } from "@contexts/AuthContext";
 
 const EditEmployees = ({ id }) => {
+  const { setUserLogged } = useAuth();
   const [infoEmployee, setInfoEmployee] = useState({});
   const [role, setRole] = useState("CADISTA");
   const allRoles = [
@@ -26,7 +28,11 @@ const EditEmployees = ({ id }) => {
           setRole(response.data.role);
         }
       } catch (err) {
-        console.log(err);
+        const msg = err?.response.data?.msg;
+
+        if (err.status === 401) setUserLogged(null);
+
+        msg && toast.error(msg);
       }
     })();
   }, []);

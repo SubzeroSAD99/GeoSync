@@ -570,4 +570,17 @@ const pipePdfToStream = (data, outStream) => {
   doc.end();
 };
 
-export default pipePdfToStream;
+const pdfToBuffer = (data) =>
+  new Promise((resolve, reject) => {
+    const doc = genPdf(data);
+    const chunks = [];
+
+    doc.on("data", (chunk) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+
+    // IMPORTANTE: finalizar o PDF
+    doc.end();
+  });
+
+export { pipePdfToStream, pdfToBuffer };

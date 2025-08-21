@@ -46,7 +46,7 @@ const Header = () => {
   return (
     <StyledHeader>
       <TitleContainer>
-        <img src={`/img/logo.png`} alt="" srcset="" />
+        <img src="/img/logo.webp" alt="Logo Topodatum" />
         <div>
           <Title>GeoSync</Title>
           <span>Topodatum Topografia LTDA</span>

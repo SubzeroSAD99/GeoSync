@@ -63,8 +63,6 @@ class ServiceTypeController {
         .status(200)
         .json({ msg: "Tipo de serviço registrado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({
         msg: ServiceTypeController.verifyErrDb(err.parent?.constraint),
       });
@@ -196,8 +194,6 @@ class ServiceTypeController {
 
   static verifyErrDb(err) {
     let msg = "Erro interno no servidor!";
-
-    console.log(err);
 
     switch (err) {
       case "service_types_name_key":

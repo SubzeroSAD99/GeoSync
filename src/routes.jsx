@@ -1,5 +1,4 @@
 import HomePage from "./pages/Services/HomePage.jsx";
-import Loading from "./components/Loading/Loading.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 // Services
@@ -13,7 +12,7 @@ import TrackingServicePage from "./pages/Services/TrackingServicePage";
 import EmployeesPage from "./pages/Management/Employees/EmployeesPage.jsx";
 import RegisterEmployeesPage from "./pages/Management/Employees/RegisterEmployeesPage.jsx";
 import EditEmployeesPage from "./pages/Management/Employees/EditEmployeesPage.jsx";
-import LoginPage from "./pages/Management/Employees/LoginPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
 
 // Municipalities
 import MunicipalitiesPage from "./pages/Management/Municipalities/MunicipalitiesPage.jsx";

@@ -16,8 +16,6 @@ const RegisterServices = () => {
   useEffect(() => {
     const data = state?.data;
 
-    console.log(data);
-
     setStartingMDate(data?.measurementDate ?? "");
     setTopographer(data?.topographer ?? "");
   }, []);

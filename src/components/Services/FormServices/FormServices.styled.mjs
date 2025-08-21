@@ -21,6 +21,10 @@ const FinishedServiceContainer = styled.div`
   & input {
     cursor: pointer;
   }
+
+  & input[type="checkbox"] {
+    accent-color: var(--main-color);
+  }
 `;
 
 const StyledButton = styled.button`

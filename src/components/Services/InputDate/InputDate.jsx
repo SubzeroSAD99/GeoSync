@@ -33,8 +33,6 @@ const InputDate = ({ value }) => {
   const [date, setDate] = useState(value || "");
 
   useEffect(() => {
-    console.log(value);
-
     if (value) setDate(value);
   }, [value]);
 

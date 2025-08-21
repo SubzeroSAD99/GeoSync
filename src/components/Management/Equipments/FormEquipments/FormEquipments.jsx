@@ -15,9 +15,6 @@ const FormEquipments = ({
   color,
   btnSubmitValue,
 }) => {
-  useEffect(() => {
-    console.log(serialNumber);
-  }, []);
   return (
     <StyledForm onSubmit={handleSubmit}>
       <Container>

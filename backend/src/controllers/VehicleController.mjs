@@ -43,8 +43,6 @@ class VehicleController {
 
       return res.status(200).json({ msg: "Veiculo registrado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       res
         .status(500)
         .json({ msg: VehicleController.verifyErrDb(err.parent.constrain) });
@@ -115,8 +113,6 @@ class VehicleController {
 
       res.status(200).json({ ...vehicles });
     } catch (error) {
-      console.log(error);
-
       res.status(500).json({ msg: "Erro interno no servidor" });
     }
   }

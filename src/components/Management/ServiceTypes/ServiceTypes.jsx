@@ -6,20 +6,30 @@ import { toast } from "react-toastify";
 import api from "@utils/api.mjs";
 import { StyledLink, Title, TitleContainer } from "./ServiceTypes.styled.mjs";
 import Table from "@components/Table/Table";
+import ConfirmDialog from "@components/ConfirmDialog/ConfirmDialog";
 
 const ServiceTypes = () => {
   const [allServiceTypes, setAllServiceTypes] = useState();
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [toDelete, setToDelete] = useState(null);
   const { setUserLogged } = useAuth();
   const navigate = useNavigate();
 
-  const handleDelete = async (id) => {
+  const handleAskDelete = (id) => {
+    setToDelete(id);
+    setOpen(true);
+  };
+
+  const deleteServiceType = async () => {
+    setBusy(true);
     try {
-      const response = await api.post("/serviceType/delete", { id });
+      const response = await api.post("/serviceType/delete", { id: toDelete });
 
       if (response.data && !response.data.err) {
         setAllServiceTypes((prev) =>
-          prev.filter((clients) => clients.id !== id)
+          prev.filter((clients) => clients.id !== toDelete)
         );
 
         toast.warn(response.data.msg);
@@ -29,6 +39,10 @@ const ServiceTypes = () => {
       if (msg) toast.error(msg);
 
       if (err.status == 401) return setUserLogged(null);
+    } finally {
+      setBusy(false);
+      setOpen(false);
+      setToDelete(null);
     }
   };
 
@@ -48,8 +62,6 @@ const ServiceTypes = () => {
           setAllServiceTypes(objList.sort());
         }
       } catch (err) {
-        console.log(err);
-
         const msg = err?.response?.data?.msg;
 
         if (err.status == 401) return setUserLogged(null);
@@ -63,6 +75,21 @@ const ServiceTypes = () => {
 
   return (
     <section>
+      <ConfirmDialog
+        open={open}
+        title="Excluir Tipo de Serviço"
+        description={`Tem certeza que deseja excluir este tipo de serviço? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir Tipo de Serviço"
+        cancelLabel="Cancelar"
+        loading={false}
+        onConfirm={() => toDelete && deleteServiceType()}
+        onCancel={() => {
+          if (!busy) {
+            setOpen(false);
+            setToDelete(null);
+          }
+        }}
+      />
       <TitleContainer>
         <Title>Lista de Tipos de Serviços</Title>
         <StyledLink to={"/gerenciamento/tipos-de-servicos/cadastrar"}>
@@ -75,7 +102,7 @@ const ServiceTypes = () => {
         rows={["name"]}
         array={allServiceTypes}
         setArray={setAllServiceTypes}
-        handleDelete={handleDelete}
+        handleDelete={handleAskDelete}
         handleEdit={handleEdit}
       />
     </section>

@@ -8,9 +8,11 @@ import {
   faReceipt,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import Loading from "@components/Loading/Loading";
 
 const Os = () => {
   const [allServices, setAllServices] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { setUserLogged } = useAuth();
 
   useEffect(() => {
@@ -18,7 +20,10 @@ const Os = () => {
       try {
         const response = await api.post("/service/getAll");
 
-        if (response.data) setAllServices(response.data);
+        if (response.data) {
+          setAllServices(response.data);
+          setLoading(false);
+        }
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
@@ -101,6 +106,8 @@ const Os = () => {
       }
     })();
   };
+
+  if (loading) <Loading />;
 
   return (
     <TableServices

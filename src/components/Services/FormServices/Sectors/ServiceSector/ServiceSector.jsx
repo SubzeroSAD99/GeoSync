@@ -102,10 +102,6 @@ const ServiceSector = ({
   });
 
   useEffect(() => {
-    console.log(infoTable);
-  }, [infoTable]);
-
-  useEffect(() => {
     // Service Types
     (async () => {
       try {

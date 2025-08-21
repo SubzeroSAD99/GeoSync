@@ -175,7 +175,6 @@ class ClientController {
 
       res.json({ clients: formattedClients });
     } catch (err) {
-      console.log(err);
       res.status(500).json({ msg: "Erro ao localizar clientes!" });
     }
   }
