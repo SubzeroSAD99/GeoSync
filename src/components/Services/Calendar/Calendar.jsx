@@ -20,7 +20,13 @@ import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const Calendar = ({ topographer, events, setEvents, setViewScheduleDay }) => {
+const Calendar = ({
+  uid,
+  topographer,
+  events,
+  setEvents,
+  setViewScheduleDay,
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [holidays, setHolidays] = useState([]);
   const year = currentDate.getFullYear();
@@ -147,7 +153,7 @@ const Calendar = ({ topographer, events, setEvents, setViewScheduleDay }) => {
   }, [year, month]);
 
   return (
-    <CalendarContainer>
+    <CalendarContainer key={uid}>
       <CalendarHeader>
         <div>
           <StyledButton onClick={goToPrevMonth}>

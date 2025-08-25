@@ -121,23 +121,28 @@ const ScheduleServices = () => {
               </thead>
               <tbody>
                 {eventsByTopographer[selected.topographer][selected.day].map(
-                  ({
-                    id,
-                    serviceType,
-                    owner,
-                    contractor,
-                    guide,
-                    municipality,
-                    locality,
-                    measurementHour,
-                    internalObs,
-                    location,
-                    confirmed,
-                  }) => (
-                    <tr key={id}>
+                  (
+                    {
+                      id,
+                      serviceType,
+                      owner,
+                      contractor,
+                      guide,
+                      municipality,
+                      locality,
+                      measurementHour,
+                      internalObs,
+                      location,
+                      confirmed,
+                    },
+                    idx
+                  ) => (
+                    <tr key={id + idx}>
                       <StyledTd>
-                        {serviceType.map((it) => (
-                          <p style={{ padding: "2px" }}>{it}</p>
+                        {serviceType.map((it, index) => (
+                          <p key={it + index} style={{ padding: "2px" }}>
+                            {it}
+                          </p>
                         ))}
                       </StyledTd>
                       <StyledTd>{owner}</StyledTd>
@@ -145,7 +150,7 @@ const ScheduleServices = () => {
                       <StyledTd>{guide}</StyledTd>
                       <StyledTd>
                         {municipality.map((it, index) => (
-                          <p style={{ padding: "2px" }}>
+                          <p key={it + index} style={{ padding: "2px" }}>
                             {it}
                             {locality[index] && ` / ${locality[index]}`}
                           </p>
@@ -191,9 +196,9 @@ const ScheduleServices = () => {
       ) : (
         <></>
       )}
-      {topographers.map((topographer) => (
+      {topographers?.map((topographer, idx) => (
         <Calendar
-          key={topographer.id}
+          key={topographer.id + idx}
           topographer={topographer}
           events={eventsByTopographer[topographer.id] || {}}
           setEvents={setEventsFor(topographer)}
