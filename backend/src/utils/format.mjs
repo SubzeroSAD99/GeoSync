@@ -42,11 +42,11 @@ const parseCurrency = (value) => {
 };
 
 const toTitleCase = (str) => {
-  return str
-    .toLowerCase()
-    .replace(/\b\w+\b/g, (word) =>
-      word.length > 2 ? word[0].toUpperCase() + word.slice(1) : word
-    );
+  return str.toLowerCase().replace(
+    /\p{L}+/gu,
+    (
+      word // \p{L} = qualquer letra (Unicode)
+    ) => (word.length > 2 ? word[0].toUpperCase() + word.slice(1) : word)
+  );
 };
-
 export { formatCurrency, formatDate, formatPhone, parseCurrency, toTitleCase };

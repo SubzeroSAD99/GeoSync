@@ -92,14 +92,7 @@ class EmployeeController {
         raw: true,
       });
 
-      const allTopographers = topographers.map(({ id, fullName }) => {
-        return {
-          id: generateToken({ id }),
-          fullName,
-        };
-      });
-
-      res.json({ topographers: allTopographers });
+      res.json({ topographers });
     } catch (err) {
       res.status(500).json({ msg: "Erro interno no servidor!" });
     }

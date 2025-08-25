@@ -1,6 +1,11 @@
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
-import { formatDate, formatCurrency, parseCurrency } from "../utils/format.mjs";
+import {
+  formatDate,
+  formatCurrency,
+  parseCurrency,
+  toTitleCase,
+} from "../utils/format.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { col, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
@@ -488,7 +493,7 @@ class ServiceOrderController {
             [Op.lt]: end, // < YYYY-MM+1-01
           },
           finished: false,
-          topographer: verifyToken(topographer)?.id,
+          topographer,
         },
 
         order: [["measurementDate", "ASC"]],
@@ -512,7 +517,7 @@ class ServiceOrderController {
           confirmed,
         }) => {
           return {
-            id: generateToken({ id }),
+            id,
             serviceType,
             owner,
             contractor,
@@ -570,41 +575,52 @@ class ServiceOrderController {
     try {
       const { id } = req.body;
 
-      const decoded = verifyToken(id);
-
       const order = await ServiceOrder.findOne({
-        where: { id: decoded.id },
+        where: { id },
         attributes: [
           "id",
+          "serviceType",
           "cadist",
+          "measurementDate",
+          "measurementHour",
           "topographer",
           "owner",
           "contractor",
           "guide",
+          "locality",
+          "municipality",
+          "location",
+          "externalObs",
           "confirmed",
         ],
         include: [
           {
             association: "TopographerReader",
-            attributes: ["phoneNumber"],
+            attributes: ["fullName", "phoneNumber"],
+            include: [
+              {
+                association: "TopographerVehicle",
+                attributes: ["name", "year", "plate", "color"],
+              },
+            ],
           },
 
           {
             association: "CadistReader",
-            attributes: ["phoneNumber"],
+            attributes: ["fullName", "phoneNumber"],
           },
 
           {
             association: "OwnerReader",
-            attributes: ["phoneNumber"],
+            attributes: ["fullName", "phoneNumber"],
           },
           {
             association: "ContractorReader",
-            attributes: ["phoneNumber"],
+            attributes: ["fullName", "phoneNumber"],
           },
           {
             association: "GuideReader",
-            attributes: ["phoneNumber"],
+            attributes: ["fullName", "phoneNumber"],
           },
         ],
       });
@@ -616,41 +632,73 @@ class ServiceOrderController {
       order.confirmed = true;
       await order.save();
 
+      const topographerName = order.TopographerReader?.fullName;
       const topographerPhone = order.TopographerReader?.phoneNumber;
+      const vehicleInfo = {
+        ...order.TopographerReader.TopographerVehicle[0].dataValues,
+      };
+
       const cadistPhone = order.CadistReader?.phoneNumber;
+
+      const ownerName = order.OwnerReader?.fullName;
       const ownerPhone = order.OwnerReader?.phoneNumber;
+
+      const contractorName = order.ContractorReader?.fullName;
       const contractorPhone = order.ContractorReader?.phoneNumber;
+
+      const guideName = order.GuideReader?.fullName;
       const guidePhone = order.GuideReader?.phoneNumber;
 
       try {
+        const splitedHour = order.measurementHour?.slice(0, -3);
+
+        const message = ServiceOrderController.getMessage({
+          date: formatDate(order.measurementDate).split(",")[0],
+          hour: [
+            splitedHour,
+            ServiceOrderController.addMinutesToTime(splitedHour, 30),
+          ],
+          day: ServiceOrderController.getDay(order.measurementDate),
+          topographer: topographerName,
+          topographerNumber: topographerPhone,
+          vehicleInfo,
+          services: {
+            types: order.serviceType,
+            municipalities: order.municipality,
+            localities: order.locality,
+            locations: order.location,
+          },
+          shift: ServiceOrderController.getShift(splitedHour),
+          client: ownerName,
+          contractor: contractorName,
+          guide: guideName,
+          externalObs: order.externalObs,
+          locationLink: order.location,
+        });
+
         if (topographerPhone)
-          await WhatsappController.sendMessage(
-            topographerPhone,
-            "Serviço agendado!"
-          );
+          await WhatsappController.sendMessage(topographerPhone, message);
 
         if (cadistPhone)
-          await WhatsappController.sendMessage(
-            cadistPhone,
-            "Serviço agendado!"
-          );
+          await WhatsappController.sendMessage(cadistPhone, message);
 
         if (ownerPhone)
-          await WhatsappController.sendMessage(ownerPhone, "Serviço agendado!");
+          await WhatsappController.sendMessage(ownerPhone, message);
 
         if (contractorPhone)
-          await WhatsappController.sendMessage(
-            contractorPhone,
-            "Serviço agendado!"
-          );
+          await WhatsappController.sendMessage(contractorPhone, message);
 
         if (guidePhone)
-          await WhatsappController.sendMessage(guidePhone, "Serviço agendado!");
+          await WhatsappController.sendMessage(guidePhone, message);
       } catch (err) {
+        console.log(err);
+
         return res.json({ warn: true, msg: "Erro ao enviar mensagens!" });
       }
       return res.json({ msg: "Serviço confirmado com sucesso!" });
     } catch (err) {
+      console.log(err);
+
       res.status(500).json({ msg: "Erro ao confirmar serviço!" });
     }
   }
@@ -688,6 +736,128 @@ class ServiceOrderController {
       totalOS: formatCurrency(totalOS),
       dateNow: new Date().toLocaleDateString("pt-BR"),
     };
+  }
+
+  static getDay(dateStr) {
+    // dataStr no formato YYYY-MM-DD
+    const [year, month, day] = dateStr.split("-").map(Number);
+
+    // new Date(year, monthIndex, day) → mês é 0–11
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    return new Intl.DateTimeFormat("pt-BR", {
+      weekday: "long",
+      timeZone: "UTC",
+    }).format(date);
+  }
+
+  static addMinutesToTime(timeStr, minutesToAdd) {
+    if (!timeStr) return "";
+
+    console.log(timeStr);
+
+    // Quebra a string "HH:MM"
+    const [h, m] = timeStr.split(":").map(Number);
+
+    // Cria uma data base (dia fictício, só usamos hora/minuto)
+    const date = new Date(0, 0, 0, h, m);
+
+    // Soma os minutos
+    date.setMinutes(date.getMinutes() + minutesToAdd);
+
+    // Formata de volta para "HH:MM"
+    const hh = String(date.getHours()).padStart(2, "0");
+    const mm = String(date.getMinutes()).padStart(2, "0");
+
+    return `${hh}:${mm}`;
+  }
+
+  static getShift(timeStr) {
+    const [h, m] = timeStr.split(":").map(Number);
+
+    if (h >= 5 && h < 12) {
+      return "MANHÃ";
+    } else if (h >= 12 && h < 18) {
+      return "TARDE";
+    } else if (h >= 18 && h <= 23) {
+      return "NOITE";
+    } else {
+      return "MADRUGADA";
+    }
+  }
+
+  static getMessage({
+    date,
+    day,
+    hour,
+    topographer,
+    topographerNumber,
+    vehicleInfo,
+    services,
+    shift,
+    client,
+    contractor,
+    guide,
+    externalObs,
+  }) {
+    let serviceTypes = "";
+    let location = "";
+    let urlLocation = "";
+
+    services.types?.map((it, index) => {
+      if (it) {
+        const serviceLocation = `${services?.municipalities[
+          index
+        ]?.toUpperCase()} ${
+          services?.localities[index]
+            ? `/ ${services?.localities[index]?.toUpperCase()}`
+            : ""
+        }`;
+
+        serviceTypes += `*SERVIÇO ${index + 1}:* ${it.toUpperCase()}`;
+        location += `*LOCAL ${index + 1}:* ${serviceLocation}`;
+        urlLocation += `*LOCALIZAÇÃO DA OBRA ${index + 1}:* ${
+          services?.locations[index] || ""
+        }`;
+
+        if (index + 1 !== services.types?.length) {
+          serviceTypes += "\n";
+          location += "\n";
+          urlLocation += "\n";
+        }
+      }
+    });
+
+    return `
+      *CONFIRMAÇÃO DE PRESTAÇÃO DE SERVIÇO*
+
+      *DATA:* ${date} (${day?.toUpperCase()})
+      *HORÁRIO:* ${hour[0]} ~ ${hour[1]} (${shift})
+      *TOPOGRAFO:* ${topographer.toUpperCase()}
+      *AUXILIAR:* ${topographer === "jose anilo lopes" ? "GEAN" : "MARCOS"}
+      *VEICULO:* ${vehicleInfo.name.toUpperCase()} ${
+      vehicleInfo.year
+    } ${vehicleInfo.color?.toUpperCase()} - PLACA ${vehicleInfo.plate}
+      ${serviceTypes}
+      ${location}
+      *CLIENTE:* ${client?.toUpperCase()}
+      *CONTRATANTE:* ${contractor?.toUpperCase() || ""}
+      *GUIA:* ${guide?.toUpperCase() || ""}
+      *OBS.:* ${externalObs}
+      ${urlLocation}
+      *OBS.2:* Tolerância de atraso do cliente: 10 ~ 20 minutos  
+
+      Segue o contato do medidor que irá realizar o serviço. O horário pode variar, pois podem ocorrer imprevistos e atrasos no serviço de cada cliente.
+
+      *${topographerNumber} (TOPOGRAFO ${topographer.toUpperCase()})*
+      Basta clicar em cima do número 👆🏼 que será redirecionado para a conversar com a equipe de campo.
+
+      TOPODATUM TOPOGRAFIA LTDA deseja um bom trabalho
+    `
+      .split("\n") // quebra em linhas
+      .map((line) => line.trim()) // tira os espaços extras
+      .join("\n") // junta de novo
+      .trim();
   }
 }
 

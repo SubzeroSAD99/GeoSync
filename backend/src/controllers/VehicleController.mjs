@@ -19,7 +19,7 @@ const schema = Joi.object({
       "string.pattern.base": "Placa do veiculo inválido!",
     }),
   color: Joi.string().lowercase().optional().empty(""),
-  topographer: Joi.string().empty("", "SELECIONE", "selecione"),
+  topographer: Joi.number().empty("").allow(null).default(null),
 });
 
 class VehicleController {
@@ -32,8 +32,6 @@ class VehicleController {
         msg: error.details[0].message,
       });
     }
-
-    value.topographer = verifyToken(value.topographer)?.id ?? null;
 
     try {
       const vehicles = await Vehicle.create({ ...value });
@@ -59,8 +57,6 @@ class VehicleController {
     if (error) {
       return res.status(500).json({ msg: error.details[0].message });
     }
-
-    value.topographer = verifyToken(value.topographer)?.id ?? null;
 
     try {
       const vehicles = await Vehicle.update(value, {
@@ -107,9 +103,6 @@ class VehicleController {
 
       if (!vehicles)
         return res.status(500).json({ msg: "Veiculo não encontrado!" });
-
-      vehicles.topographer =
-        generateToken({ id: vehicles?.topographer }) ?? null;
 
       res.status(200).json({ ...vehicles });
     } catch (error) {

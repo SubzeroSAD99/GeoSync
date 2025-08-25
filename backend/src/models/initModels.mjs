@@ -129,7 +129,7 @@ Vehicle.belongsTo(Employee, {
   as: "TopographerReader",
 });
 
-Employee.hasMany(ServiceOrder, {
+Employee.hasMany(Vehicle, {
   foreignKey: "topographer",
   as: "TopographerVehicle",
 });
