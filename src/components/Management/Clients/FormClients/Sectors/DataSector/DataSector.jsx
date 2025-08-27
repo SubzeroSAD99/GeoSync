@@ -76,14 +76,7 @@ const DataSector = ({
               }
             />
 
-            <FormInputItem
-              id="rg"
-              type="text"
-              label="RG"
-              mask="00.000.000-0"
-              placeholder="__.__.___-__"
-              valueInput={rg}
-            />
+            <FormInputItem id="rg" type="text" label="RG" valueInput={rg} />
 
             <SelectItem
               title="Orgão Emissor"

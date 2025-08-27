@@ -13,6 +13,11 @@ const fullPerms = [
     actions: ["create", "read", "update", "delete"],
     resource: "financial",
   },
+
+  {
+    actions: ["create", "read", "update", "delete"],
+    resource: "file",
+  },
 ];
 
 const permissions = {
@@ -20,7 +25,13 @@ const permissions = {
   "AUX. ADMINISTRATIVO": fullPerms,
   SOCIO: fullPerms,
 
-  CADISTA: [{ actions: ["read", "update"], resource: "service" }],
+  CADISTA: [
+    { actions: ["read", "update"], resource: "service" },
+    {
+      actions: ["create", "read"],
+      resource: "file",
+    },
+  ],
 
   TOPOGRAFO: [{ actions: ["read", "update", "delete"], resource: "service" }],
   "AUX. TOPOGRAFO": [

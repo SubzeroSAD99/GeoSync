@@ -7,6 +7,7 @@ import {
   GlobalStyle,
   Title2,
   TitleContainer,
+  Background,
 } from "./Login.styled.mjs";
 import FormInputItem from "@components/FormInputItem/FormInputItem";
 import api from "@utils/api.mjs";
@@ -59,6 +60,7 @@ const Login = () => {
   return (
     <>
       <GlobalStyle />
+      <Background src="/img/tracking-background.webp" alt="Logo Topodatum" />
       <TitleContainer>
         <img src="/img/logo.webp" alt="Logo Topodatum" />
         <div>

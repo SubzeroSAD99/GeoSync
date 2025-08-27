@@ -11,6 +11,7 @@ import vehicleRouter from "./routes/vehicleRouter.mjs";
 import financialRouter from "./routes/financialRouter.mjs";
 import serviceTypeRouter from "./routes/serviceTypeRouter.mjs";
 import budgetRouter from "./routes/budgetRouter.mjs";
+import fileRouter from "./routes/fileRouter.mjs";
 
 import { authenticate } from "./middlewares/authMiddleware.mjs";
 import initAll from "./models/initModels.mjs";
@@ -48,6 +49,7 @@ app.use("/vehicle", vehicleRouter);
 app.use("/financial", financialRouter);
 app.use("/serviceType", serviceTypeRouter);
 app.use("/budget", budgetRouter);
+app.use("/file", fileRouter);
 
 app.listen(PORT, () => {
   initAll().then(() => {

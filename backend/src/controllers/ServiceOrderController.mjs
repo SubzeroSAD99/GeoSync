@@ -1,22 +1,19 @@
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
-import {
-  formatDate,
-  formatCurrency,
-  parseCurrency,
-  toTitleCase,
-} from "../utils/format.mjs";
+import { formatDate, formatCurrency } from "../utils/format.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { col, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
+import FileController from "./FileController.mjs";
 
 const registerSchema = Joi.object({
   //#region ServiceSchema
-  code: Joi.array().items(
-    Joi.string().trim().empty("").allow(null).default(null)
-  ),
+  code: Joi.array()
+    .items(Joi.string().trim().empty("").allow(null).default(null))
+    .single(),
   serviceType: Joi.array()
     .items(Joi.string().lowercase().trim().required().empty(""))
+    .single()
     .messages({
       "any.required": "Por favor, selecione um tipo de serviço.",
     }),
@@ -29,36 +26,41 @@ const registerSchema = Joi.object({
         .allow(null)
         .default(null)
     )
+    .single()
     .messages({
       "string.pattern.currency":
         "O valor deve estar no formato monetário correto!",
     }),
-  step: Joi.array().items(
-    Joi.string().lowercase().trim().empty("").default("agendado")
-  ),
+  step: Joi.array()
+    .items(Joi.string().lowercase().trim().empty("").default("agendado"))
+    .single(),
   quantity: Joi.array()
     .items(Joi.number().min(1).default(1).empty(["", null]))
+    .single()
     .messages({
       "number.min": "A quantidade deve ser maior ou igual a 1",
       "number.base": "A quantidade deve ser um número válido",
     }),
   municipality: Joi.array()
     .items(Joi.string().lowercase().trim().required().empty([""]))
+    .single()
     .messages({
       "any.required": "Por favor, selecione um municipio!.",
     }),
-  locality: Joi.array().items(
-    Joi.string()
-      .lowercase()
-      .trim()
-      .optional()
-      .empty("")
-      .allow(null)
-      .default(null)
-  ),
-  location: Joi.array().items(
-    Joi.string().trim().optional().empty("").allow(null).default(null)
-  ),
+  locality: Joi.array()
+    .items(
+      Joi.string()
+        .lowercase()
+        .trim()
+        .optional()
+        .empty("")
+        .allow(null)
+        .default(null)
+    )
+    .single(),
+  location: Joi.array()
+    .items(Joi.string().trim().optional().empty("").allow(null).default(null))
+    .single(),
   //#endregion
 
   //#region PriorityPendingSchema
@@ -106,19 +108,9 @@ const registerSchema = Joi.object({
   //#endregion
 
   //#region ResponsibilitiesSchema
-  cadist: Joi.string().trim().empty("").allow(null).default(null).optional(),
-  schedulingResp: Joi.string()
-    .trim()
-    .empty("")
-    .allow(null)
-    .default(null)
-    .optional(),
-  processingResp: Joi.string()
-    .trim()
-    .empty("")
-    .allow(null)
-    .default(null)
-    .optional(),
+  cadist: Joi.number().empty("").allow(null).default(null).optional(),
+  schedulingResp: Joi.number().empty("").allow(null).default(null).optional(),
+  processingResp: Joi.number().empty("").allow(null).default(null).optional(),
   //#endregion
 
   //#region FinantialSchema
@@ -183,18 +175,26 @@ class ServiceOrderController {
   static async register(req, res) {
     const { error, value } = registerSchema.validate(req.body);
 
+    const internalFiles = Array.isArray(req.files?.internalFile)
+      ? req.files.internalFile
+      : req.files?.internalFile
+      ? [req.files.internalFile]
+      : [];
+
+    const clientFiles = Array.isArray(req.files?.clientFile)
+      ? req.files.clientFile
+      : req.files?.clientFile
+      ? [req.files.clientFile]
+      : [];
+
     if (error) {
+      await FileController.cleanupTmpFiles(req.files);
+
       return res.status(400).json({
         field: error.details[0].path[0],
         msg: error.details[0].message,
       });
     }
-
-    value.cadist = verifyToken(value.cadist)?.id ?? null;
-    value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
-    value.processingResp = verifyToken(value.processingResp)?.id ?? null;
-
-    value.topographer = verifyToken(value.topographer)?.id ?? null;
 
     value.serviceValue = value.serviceValue.map((it) =>
       ServiceOrderController.parseCurrency(it)
@@ -213,8 +213,55 @@ class ServiceOrderController {
       if (!order)
         return res.status(400).json({ msg: "Erro ao criar serviço!" });
 
+      const orderInfo = await ServiceOrder.findByPk(order.id, {
+        attributes: [
+          [col("OwnerReader.full_name"), "ownerFullName"],
+          [col("CadistReader.phone_number"), "cadistPhoneNumber"],
+        ],
+        include: [
+          {
+            association: "CadistReader",
+            attributes: [],
+          },
+          {
+            association: "OwnerReader",
+            attributes: [],
+          },
+        ],
+        raw: true,
+      });
+
+      const msg = ServiceOrderController.getCadistMsg({
+        ownerFullName: orderInfo?.ownerFullName,
+        serviceTypes: value.serviceType,
+        codes: value.code,
+      });
+
+      if (orderInfo?.cadistPhoneNumber)
+        await WhatsappController.sendMessage(orderInfo?.cadistPhoneNumber, msg);
+
+      try {
+        await FileController.validateAndMoveMany(
+          internalFiles,
+          order.id,
+          "interno"
+        );
+        await FileController.validateAndMoveMany(
+          clientFiles,
+          order.id,
+          "externo"
+        );
+      } catch (error) {
+        if (error.msg) return res.status(400).json({ msg: error.msg });
+        return res.status(500).json({ msg: "Erro interno do servidor." });
+      }
+
       return res.status(200).json({ msg: "Ordem de serviço criada!" });
     } catch (err) {
+      if (error.msg) return res.status(400).json({ msg: error.msg });
+
+      await FileController.cleanupTmpFiles(req.files);
+
       return res.status(500).json({ msg: "Erro interno do servidor." });
     }
   }
@@ -247,12 +294,25 @@ class ServiceOrderController {
   static async update(req, res) {
     try {
       const { id } = req.body;
+      const internalFiles = Array.isArray(req.files?.internalFile)
+        ? req.files.internalFile
+        : req.files?.internalFile
+        ? [req.files.internalFile]
+        : [];
+
+      const clientFiles = Array.isArray(req.files?.clientFile)
+        ? req.files.clientFile
+        : req.files?.clientFile
+        ? [req.files.clientFile]
+        : [];
 
       delete req.body.id;
 
       const { error, value } = registerSchema.validate(req.body);
 
       if (error) {
+        await FileController.cleanupTmpFiles(req.files);
+
         return res.status(400).json({
           field: error.details[0].path[0],
           msg: error.details[0].message,
@@ -261,9 +321,15 @@ class ServiceOrderController {
 
       delete value.confirmed;
 
-      value.cadist = verifyToken(value.cadist)?.id ?? null;
-      value.schedulingResp = verifyToken(value.schedulingResp)?.id ?? null;
-      value.processingResp = verifyToken(value.processingResp)?.id ?? null;
+      const prev = await ServiceOrder.findByPk(id, {
+        attributes: ["cadist"],
+        raw: true,
+      });
+
+      if (!prev) {
+        await FileController.cleanupTmpFiles(req.files);
+        return res.status(404).json({ msg: "Serviço não encontrado!" });
+      }
 
       value.serviceValue = value.serviceValue.map((it) =>
         ServiceOrderController.parseCurrency(it)
@@ -271,7 +337,6 @@ class ServiceOrderController {
 
       value.amountPaid = ServiceOrderController.parseCurrency(value.amountPaid);
 
-      value.topographer = verifyToken(value.topographer)?.id ?? null;
       value.measurementDate =
         value?.measurementDate?.replace(
           /(\d{2})\/(\d{2})\/(\d{4})/,
@@ -285,9 +350,49 @@ class ServiceOrderController {
         omitNull: false,
       });
 
-      if (row) return res.json({ msg: "Serviço atualizado com sucesso!" });
-      res.status(400).json({ msg: "Erro ao atualizar o serviço!" });
+      if (!row)
+        return res.status(400).json({ msg: "Erro ao atualizar o serviço!" });
+
+      const cadistChanged = (prev.cadist ?? null) !== (value.cadist ?? null);
+
+      if (cadistChanged && value.cadist) {
+        const orderInfo = await ServiceOrder.findByPk(id, {
+          attributes: [
+            [col("OwnerReader.full_name"), "ownerFullName"],
+            [col("CadistReader.phone_number"), "cadistPhoneNumber"],
+          ],
+          include: [
+            { association: "CadistReader", attributes: [] },
+            { association: "OwnerReader", attributes: [] },
+          ],
+          raw: true,
+        });
+
+        if (orderInfo?.cadistPhoneNumber) {
+          const msg = ServiceOrderController.getCadistMsg({
+            ownerFullName: orderInfo.ownerFullName,
+            serviceTypes: value.serviceType ?? req.body.serviceType,
+            codes: value.code ?? req.body.code,
+          });
+
+          await WhatsappController.sendMessage(
+            orderInfo.cadistPhoneNumber,
+            msg
+          );
+        }
+      }
+
+      try {
+        await FileController.validateAndMoveMany(internalFiles, id, "interno");
+        await FileController.validateAndMoveMany(clientFiles, id, "externo");
+      } catch (error) {
+        if (error.msg) return res.status(400).json({ msg: error.msg });
+        return res.status(500).json({ msg: "Erro interno do servidor." });
+      }
+
+      res.json({ msg: "Serviço atualizado com sucesso!" });
     } catch (err) {
+      await FileController.cleanupTmpFiles(req.files);
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
   }
@@ -316,18 +421,20 @@ class ServiceOrderController {
 
       data.measurementHour = data?.measurementHour?.slice(0, -3);
 
-      data.cadist = generateToken({ id: data.cadist });
-      data.schedulingResp = generateToken({ id: data.schedulingResp });
-      data.processingResp = generateToken({ id: data.processingResp });
-
-      data.topographer = generateToken({ id: data.topographer });
-
       data.serviceValue = data.serviceValue.map((it) => formatCurrency(it));
       data.amountPaid = formatCurrency(data.amountPaid);
 
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
-      res.json({ service: data });
+      let files = {};
+
+      try {
+        files = await FileController.getById(id);
+      } catch (err) {
+        return res.status(500).json({ msg: "Erro ao ler anexos" });
+      }
+
+      res.json({ service: data, files });
     } catch (err) {
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
@@ -563,11 +670,29 @@ class ServiceOrderController {
         raw: true,
       });
 
-      if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
+      if (!data)
+        return res.status(400).json({ msg: "Serviço não encontrado!" });
 
       res.json({ service: data });
     } catch (err) {
       res.status(400).json({ msg: "Erro interno no servidor!" });
+    }
+  }
+
+  static async getPaymentSituation(id) {
+    try {
+      if (isNaN(id)) return null;
+
+      const status = await ServiceOrder.findByPk(id, {
+        attributes: ["paymentSituation"],
+        raw: true,
+      });
+
+      if (!status) return null;
+
+      return status.paymentSituation;
+    } catch (err) {
+      return null;
     }
   }
 
@@ -580,7 +705,6 @@ class ServiceOrderController {
         attributes: [
           "id",
           "serviceType",
-          "cadist",
           "measurementDate",
           "measurementHour",
           "topographer",
@@ -603,11 +727,6 @@ class ServiceOrderController {
                 attributes: ["name", "year", "plate", "color"],
               },
             ],
-          },
-
-          {
-            association: "CadistReader",
-            attributes: ["fullName", "phoneNumber"],
           },
 
           {
@@ -637,8 +756,6 @@ class ServiceOrderController {
       const vehicleInfo = {
         ...order.TopographerReader.TopographerVehicle[0].dataValues,
       };
-
-      const cadistPhone = order.CadistReader?.phoneNumber;
 
       const ownerName = order.OwnerReader?.fullName;
       const ownerPhone = order.OwnerReader?.phoneNumber;
@@ -679,9 +796,6 @@ class ServiceOrderController {
         if (topographerPhone)
           await WhatsappController.sendMessage(topographerPhone, message);
 
-        if (cadistPhone)
-          await WhatsappController.sendMessage(cadistPhone, message);
-
         if (ownerPhone)
           await WhatsappController.sendMessage(ownerPhone, message);
 
@@ -691,14 +805,10 @@ class ServiceOrderController {
         if (guidePhone)
           await WhatsappController.sendMessage(guidePhone, message);
       } catch (err) {
-        console.log(err);
-
         return res.json({ warn: true, msg: "Erro ao enviar mensagens!" });
       }
       return res.json({ msg: "Serviço confirmado com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao confirmar serviço!" });
     }
   }
@@ -753,8 +863,6 @@ class ServiceOrderController {
 
   static addMinutesToTime(timeStr, minutesToAdd) {
     if (!timeStr) return "";
-
-    console.log(timeStr);
 
     // Quebra a string "HH:MM"
     const [h, m] = timeStr.split(":").map(Number);
@@ -854,6 +962,20 @@ class ServiceOrderController {
 
       TOPODATUM TOPOGRAFIA LTDA deseja um bom trabalho
     `
+      .split("\n") // quebra em linhas
+      .map((line) => line.trim()) // tira os espaços extras
+      .join("\n") // junta de novo
+      .trim();
+  }
+
+  static getCadistMsg({ ownerFullName, serviceTypes, codes }) {
+    return `
+        Olá, temos serviço disponível!
+
+        *Proprietário:* ${ownerFullName.toUpperCase()}
+        *Tipos de Serviços:* ${serviceTypes.join(" / ").toUpperCase()}
+        *Códigos de serviço:* ${codes.join(" / ")}
+      `
       .split("\n") // quebra em linhas
       .map((line) => line.trim()) // tira os espaços extras
       .join("\n") // junta de novo

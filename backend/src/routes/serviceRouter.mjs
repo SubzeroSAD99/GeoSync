@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ServiceOrderController from "../controllers/ServiceOrderController.mjs";
 import { authorize } from "../middlewares/authMiddleware.mjs";
+import { upload } from "../middlewares/upload.mjs";
 
 const router = Router();
 
@@ -13,11 +14,13 @@ router.post(
 router.post(
   "/register",
   authorize("service", "create"),
+  upload.fields([{ name: "internalFile" }, { name: "clientFile" }]),
   ServiceOrderController.register
 );
 
 router.post(
   "/edit",
+  upload.fields([{ name: "internalFile" }, { name: "clientFile" }]),
   authorize("service", "update"),
   ServiceOrderController.update
 );

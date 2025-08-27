@@ -5,9 +5,10 @@ import { Title } from "./EditServices.styled.mjs";
 import { useAuth } from "@contexts/AuthContext";
 import { toast } from "react-toastify";
 
-const EditServices = (id) => {
+const EditServices = ({ id }) => {
   const { setUserLogged } = useAuth();
   const [serviceInfo, setServiceInfo] = useState({});
+  const [files, setFiles] = useState({});
   const [errors, setErrors] = useState("");
 
   const handleSubmit = async (e) => {
@@ -44,8 +45,20 @@ const EditServices = (id) => {
       data[field] = formData.getAll(field);
     });
 
+    const newForm = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => newForm.append(key, v ?? "")); // repete a mesma chave
+      } else {
+        newForm.append(key, value ?? "");
+      }
+    });
+
+    newForm.append("id", id);
+
     try {
-      const response = await api.post("/service/edit", { ...data, ...id });
+      const response = await api.post("/service/edit", newForm);
 
       if (response.data) toast.success(response.data.msg);
     } catch (err) {
@@ -64,9 +77,12 @@ const EditServices = (id) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await api.post("/service/getOne", id);
+        const response = await api.post("/service/getOne", { id });
 
-        if (response.data) setServiceInfo(response.data.service);
+        if (response.data) {
+          setServiceInfo(response.data.service);
+          setFiles(response.data.files);
+        }
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
@@ -86,6 +102,7 @@ const EditServices = (id) => {
       <FormServices
         handleSubmit={handleSubmit}
         {...serviceInfo}
+        files={files}
         errors={errors}
         textBtnSubmit={"Salvar Alterações"}
       />

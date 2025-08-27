@@ -441,8 +441,6 @@ class FinancialController {
 
       return res.json({ msg: "Cobrança feita com sucesso!" });
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro ao fazer cobrança" });
     }
   }

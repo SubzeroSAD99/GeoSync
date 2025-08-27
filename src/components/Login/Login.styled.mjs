@@ -8,15 +8,19 @@ const GlobalStyle = createGlobalStyle`
 
   #root {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    background-image: url("/img/tracking-background.webp");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
+    align-items: center;
     gap: 1rem;
   }
+`;
+
+const Background = styled.img`
+  position: fixed;
+  inset: 0px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 `;
 
 const TitleContainer = styled.div`
@@ -27,6 +31,7 @@ const TitleContainer = styled.div`
   gap: 0.5rem;
   color: var(--text-color2);
   font-size: 1.5rem;
+  z-index: 1;
 
   & span {
     font-size: 0.9rem;
@@ -55,6 +60,7 @@ const StyledSection = styled.section`
   align-items: center;
   width: 100%;
   padding: 20px;
+  z-index: 1;
 `;
 
 const Title2 = styled.h2`
@@ -99,6 +105,7 @@ const SubmitInput = styled.input`
 
 export {
   GlobalStyle,
+  Background,
   TitleContainer,
   Title,
   StyledSection,

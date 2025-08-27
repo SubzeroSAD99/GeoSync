@@ -68,15 +68,7 @@ class EmployeeController {
         raw: true,
       });
 
-      const allEmployees = employees.map(({ id, fullName, role }) => {
-        return {
-          id: generateToken({ id }),
-          fullName,
-          role,
-        };
-      });
-
-      res.json({ employees: allEmployees });
+      res.json({ employees });
     } catch (err) {
       res.status(500).json({ err: "Erro ao localizar cadistas!" });
     }

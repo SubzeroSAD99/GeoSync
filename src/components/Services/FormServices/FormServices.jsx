@@ -64,6 +64,7 @@ const FormServices = ({
 
   internalObs,
   externalObs,
+  files,
 
   handleSubmit,
   textBtnSubmit,
@@ -255,7 +256,11 @@ const FormServices = ({
         payer={payer}
       />
 
-      <ExtrasSector internalObs={internalObs} externalObs={externalObs} />
+      <ExtrasSector
+        internalObs={internalObs}
+        externalObs={externalObs}
+        files={files}
+      />
 
       <StyledButton type="submit">{textBtnSubmit}</StyledButton>
     </StyledForm>

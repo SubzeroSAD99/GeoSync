@@ -52,15 +52,9 @@ const FormInputItem = memo(
             style={{ textTransform: "uppercase" }}
             dispatch={Array.isArray(mask) && dispatch}
             value={value}
-            onAccept={(val, maskRef) => {
-              if (maskRef.unmaskedValue === "") {
-                setValue("");
-                onChange && onChange("", setValue);
-                return;
-              }
-
-              setValue(val);
-              onChange && onChange(val, setValue);
+            onAccept={(val) => {
+              setValue(val ?? "");
+              onChange && onChange(val ?? "", setValue);
             }}
             unmask={false}
             overwrite={true}

@@ -51,35 +51,33 @@ const GlobalStyle = createGlobalStyle`
     --_time-line: 0.7s;        
     --_step-circle-time: 0.5s;
   }
+`;
 
-  #root {
-    display: flex;
-    justify-content: space-between;
-    background-image: url("/img/tracking-background.webp");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-  }
-
-  section.Toastify {
-    position: fixed;
-  }
+const Background = styled.img`
+  position: fixed;
+  inset: 0px;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 `;
 
 const StyledHeader = styled.header`
   background-color: var(--main-color);
   text-align: center;
+  z-index: 1;
 `;
 
 const StyledMain = styled.main`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 1rem;
   gap: 2rem;
   text-transform: capitalize;
   color: var(--text-color2);
+  z-index: 1;
 `;
 
 const TitleContainer = styled.div`
@@ -91,6 +89,7 @@ const TitleContainer = styled.div`
 
   & span {
     font-size: 0.7rem;
+    color: var(--text-color2);
   }
 
   & > img {
@@ -196,7 +195,7 @@ const ListItem = styled.li`
   --circle-delay: 0s;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   list-style: none;
   gap: 0.8rem;
@@ -290,9 +289,10 @@ const Circle = styled.div`
 `;
 
 const StepLabelContainer = styled.div`
+  align-self: center;
   display: grid;
   place-items: center;
-  width: 60%;
+  width: 100%;
 
   & > span {
     opacity: 0;
@@ -303,10 +303,58 @@ const StepLabelContainer = styled.div`
     transition: opacity 0.5s ease-in-out;
     transition-delay: calc(var(--circle-delay) + var(--_step-circle-time));
   }
+
+  ${media(`
+    & {
+      width: 60%;
+    }
+  `)}
+`;
+
+const Footer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1;
+`;
+
+const FilesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.4rem;
+  background: linear-gradient(to right, #001172bd, #00083334);
+  width: 100%;
+  max-width: 70rem;
+  box-shadow: 0px 0px 5px #00083334;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: var(--text-color2);
+
+  & button {
+    background-color: var(--main-color) !important;
+    background-color: #1d81d3ff !important;
+    box-shadow: none !important;
+    font-size: 1.2rem;
+    padding: 0.2rem;
+  }
+`;
+
+const File = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  gap: 1rem;
+  color: var(--text-color2);
 `;
 
 export {
   GlobalStyle,
+  Background,
   StyledHeader,
   StyledMain,
   TitleContainer,
@@ -317,4 +365,7 @@ export {
   ListItem,
   Circle,
   StepLabelContainer,
+  Footer,
+  FilesContainer,
+  File,
 };

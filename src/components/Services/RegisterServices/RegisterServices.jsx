@@ -55,8 +55,18 @@ const RegisterServices = () => {
       data[field] = formData.getAll(field);
     });
 
+    const newForm = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => newForm.append(key, v ?? "")); // repete a mesma chave
+      } else {
+        newForm.append(key, value ?? "");
+      }
+    });
+
     try {
-      const response = await api.post("/service/register", data);
+      const response = await api.post("/service/register", newForm);
 
       if (response.data) toast.success(response.data.msg);
     } catch (err) {
