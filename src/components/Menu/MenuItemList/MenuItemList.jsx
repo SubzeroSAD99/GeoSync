@@ -21,23 +21,28 @@ const MenuItemList = ({
   setIsActive,
   expandMenu,
   setExpandMenu,
+  isMobile,
   index,
 }) => {
   const location = useLocation();
   const isOpen = isActive.includes(index) && expandMenu;
 
-  return (
-    <StyledMenuItemList
-      onClick={() => {
-        setIsActive((prev) => {
-          return prev.includes(index)
-            ? prev.filter((it) => it !== index || !expandMenu)
-            : [...prev, index];
-        });
+  const handleClick = () => {
+    setIsActive((prev) => {
+      const already = prev.includes(index);
 
-        !expandMenu && setExpandMenu(true);
-      }}
-    >
+      if (isMobile) {
+        return already ? [] : [index];
+      }
+
+      return already ? prev.filter((i) => i !== index) : [...prev, index];
+    });
+
+    if (!expandMenu) setExpandMenu(true);
+  };
+
+  return (
+    <StyledMenuItemList onClick={handleClick}>
       <div className={location.pathname.includes(redirect) ? "selected" : ""}>
         <StyledButtonTitle>
           <OptionsContainer>

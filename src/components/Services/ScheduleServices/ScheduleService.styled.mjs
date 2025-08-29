@@ -68,7 +68,7 @@ const StyledButton = styled.button`
 `;
 
 const StyledFontAwesome = styled(FontAwesomeIcon)`
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: rgb(0, 223, 0);
 `;
 

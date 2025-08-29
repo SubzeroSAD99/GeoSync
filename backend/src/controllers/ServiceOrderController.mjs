@@ -258,7 +258,7 @@ class ServiceOrderController {
 
       return res.status(200).json({ msg: "Ordem de serviço criada!" });
     } catch (err) {
-      if (error.msg) return res.status(400).json({ msg: error.msg });
+      if (error?.msg) return res.status(400).json({ msg: error.msg });
 
       await FileController.cleanupTmpFiles(req.files);
 
@@ -972,9 +972,9 @@ class ServiceOrderController {
     return `
         Olá, temos serviço disponível!
 
-        *Proprietário:* ${ownerFullName.toUpperCase()}
-        *Tipos de Serviços:* ${serviceTypes.join(" / ").toUpperCase()}
-        *Códigos de serviço:* ${codes.join(" / ")}
+        *Proprietário:* ${ownerFullName?.toUpperCase()}
+        *Tipos de Serviços:* ${serviceTypes?.join(" / ").toUpperCase()}
+        *Códigos de serviço:* ${codes?.join(" / ")}
       `
       .split("\n") // quebra em linhas
       .map((line) => line.trim()) // tira os espaços extras

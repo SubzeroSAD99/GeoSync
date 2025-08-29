@@ -1,15 +1,7 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const AnimationShowSubMenu = keyframes`
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
-`;
+import { media } from "@utils/Media.styles.mjs";
 
 const StyledMenuItemList = styled.li`
   list-style: none;
@@ -50,6 +42,18 @@ const StyledButtonTitle = styled.button`
   box-shadow: none !important;
   padding: 10px;
   font-size: 1.2rem;
+
+  ${media(`
+    justify-content: center;
+
+    & div > svg {
+      font-size: 2rem;
+    }
+
+    & p, & > svg {
+      display: none;
+    }
+  `)}
 `;
 
 const OptionsContainer = styled.div`
@@ -78,12 +82,29 @@ const SubmenuContainer = styled.div`
   display: grid;
   grid-template-rows: ${({ open }) => (open ? "1fr" : "0fr")};
   transition: grid-template-rows 0.2s ease;
+
+  ${media(css`
+    position: absolute;
+    bottom: 3rem;
+    left: 0px;
+    width: 100%;
+    background-color: var(--main-color);
+  `)}
 `;
 
 const SubList = styled.ul`
+  display: flex;
+  flex-direction: column;
   font-size: 0.9rem;
   padding-left: 20px;
   overflow: hidden;
+
+  ${media(css`
+    font-size: 1.3rem;
+    gap: 1rem;
+    padding: 0px;
+    z-index: 13232;
+  `)}
 `;
 
 export {

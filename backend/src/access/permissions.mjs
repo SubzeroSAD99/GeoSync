@@ -1,6 +1,6 @@
 const fullPerms = [
   {
-    actions: ["create", "read", "update", "delete", "schedule"],
+    actions: ["create", "read", "update", "delete", "viewSchedule", "schedule"],
     resource: "service",
   },
 
@@ -33,9 +33,9 @@ const permissions = {
     },
   ],
 
-  TOPOGRAFO: [{ actions: ["read", "update", "delete"], resource: "service" }],
+  TOPOGRAFO: [{ actions: ["viewSchedule", "read"], resource: "service" }],
   "AUX. TOPOGRAFO": [
-    { actions: ["read", "update", "delete"], resource: "service" },
+    { actions: ["viewSchedule", "read"], resource: "service" },
   ],
 };
 

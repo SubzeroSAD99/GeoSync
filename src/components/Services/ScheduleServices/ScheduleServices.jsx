@@ -18,19 +18,29 @@ import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import { useAuth } from "@contexts/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useCanAccess from "@/hooks/useCanAccess.mjs";
 
 const ScheduleServices = () => {
   const [eventsByTopographer, setEventsByTopographer] = useState({});
   const [selected, setSelected] = useState({ day: "", topographer: "" });
   const [topographers, setTopographers] = useState([]);
-  const { setUserLogged } = useAuth();
+  const { userLogged, setUserLogged } = useAuth();
+  const canAccess = useCanAccess();
 
   useEffect(() => {
     (async () => {
       try {
         const response = await api.post("/employee/getTopographers");
 
-        if (response.data) setTopographers(response.data.topographers);
+        if (response.data) {
+          if (userLogged.role === "TOPOGRAFO") {
+            const topographer = response.data.topographers.filter(
+              (it) => it.fullName === userLogged.name
+            );
+
+            setTopographers(topographer);
+          } else setTopographers(response.data.topographers);
+        }
       } catch (err) {
         const msg = err?.response?.data?.msg;
 
@@ -98,6 +108,8 @@ const ScheduleServices = () => {
     }
   };
 
+  const conditionAccess = canAccess("service", "schedule");
+
   return (
     <section style={{ gap: "40px" }}>
       {selected.day ? (
@@ -116,7 +128,7 @@ const ScheduleServices = () => {
                   <StyledTh>Horario</StyledTh>
                   <StyledTh>Obs</StyledTh>
                   <StyledTh>Localização</StyledTh>
-                  <StyledTh>Confirmar</StyledTh>
+                  {conditionAccess && <StyledTh>Confirmar</StyledTh>}
                 </tr>
               </thead>
               <tbody>
@@ -159,33 +171,42 @@ const ScheduleServices = () => {
                       <StyledTd>{measurementHour}</StyledTd>
                       <StyledTd>{internalObs}</StyledTd>
                       <StyledTd>
-                        {location ? (
-                          <a
-                            href={location}
-                            target="_blank"
-                            style={{
-                              backgroundColor: "transparent",
-                              boxShadow: "none",
-                              color: "var(--highlight-main-color)",
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faLocationDot} />
-                          </a>
-                        ) : null}
+                        {location.length > 0
+                          ? location.map(
+                              (it, index) =>
+                                it && (
+                                  <a
+                                    key={`${it}${index}`}
+                                    href={it}
+                                    target="_blank"
+                                    style={{
+                                      backgroundColor: "transparent",
+                                      boxShadow: "none",
+                                      color: "var(--highlight-main-color)",
+                                      fontSize: "1.5rem",
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faLocationDot} />
+                                  </a>
+                                )
+                            )
+                          : null}
                       </StyledTd>
-                      <StyledTd>
-                        {!confirmed ? (
-                          <StyledButton
-                            onClick={() => {
-                              confirmService(id);
-                            }}
-                          >
-                            <StyledFontAwesome icon={faSquareCheck} />
-                          </StyledButton>
-                        ) : (
-                          <StyledFontAwesome icon={faCheck} />
-                        )}
-                      </StyledTd>
+                      {conditionAccess && (
+                        <StyledTd>
+                          {!confirmed ? (
+                            <StyledButton
+                              onClick={() => {
+                                confirmService(id);
+                              }}
+                            >
+                              <StyledFontAwesome icon={faSquareCheck} />
+                            </StyledButton>
+                          ) : (
+                            <StyledFontAwesome icon={faCheck} />
+                          )}
+                        </StyledTd>
+                      )}
                     </tr>
                   )
                 )}

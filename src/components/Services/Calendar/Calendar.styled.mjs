@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 const CalendarContainer = styled.div`
-  width: 50%;
+  width: 100%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   overflow-x: auto;
@@ -49,7 +50,7 @@ const CalendarCell = styled.div`
   border-right: 1px solid var(--table-even-color);
   border-bottom: 1px solid var(--table-even-color);
   padding: clamp(4px, 1vw, 8px);
-  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-size: clamp(1.3rem, 2vw, 1.3rem);
   text-align: center;
   overflow: hidden;
   height: 80px;

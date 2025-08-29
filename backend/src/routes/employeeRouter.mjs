@@ -8,7 +8,7 @@ router.post("/getAll", EmployeeController.getAll);
 
 router.post(
   "/getTopographers",
-  authorize("management", "read"),
+  authorize("service", "viewSchedule"),
   EmployeeController.getAllTopographers
 );
 

@@ -16,7 +16,6 @@ const TitleContainer = styled.div`
 const Title = styled.h2`
   border-bottom: 2px solid var(--main-color);
   width: max-content;
-  grid-column: 2;
 `;
 
 const FilterContainer = styled.div`
@@ -33,9 +32,11 @@ const ServicesContainer = styled.div`
   padding: 10px;
   overflow-x: auto;
   width: 100%;
+  max-width: 100%;
 `;
 
 const StyledTable = styled.table`
+  table-layout: auto;
   border-collapse: collapse;
   width: 100%;
 `;

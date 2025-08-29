@@ -15,19 +15,16 @@ const StyledMenu = styled.nav`
   align-self: start;
   justify-self: start;
   padding-right: 5px;
-  transition: width 0.3s ease;
 
   ${media(`
-    z-index: 1000;
-    transform-origin: top right;
-    left: inherit;
-    top: 28px;
-    right: 10px;
-    height: max-content;
-    min-height: 200px;
-    border-radius: 10px;
-    border-top-right-radius: 0px;
-  `)}
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    height: var(--mobile-menu-h);
+    width: 100%;
+    transition: width 0.3s ease;
+    z-index: 1;
+    `)}
 `;
 
 const StyledList = styled.ul`
@@ -35,6 +32,13 @@ const StyledList = styled.ul`
   top: 0px;
   left: 0px;
   overflow: hidden;
+
+  ${media(`
+    position: static;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+  `)}
 `;
 
 const ItemShowHide = styled.li`
@@ -45,14 +49,20 @@ const ItemShowHide = styled.li`
   align-items: center;
   padding: 8px 0px;
 
-  & > button {
+  & button {
     box-shadow: none !important;
     background-color: transparent;
   }
 
-  & > button > svg {
+  & button > svg {
     font-size: 1.3rem !important;
   }
+
+  ${media(`
+    & {
+      display: none;
+      }
+  `)}
 `;
 
 const StyledFontAwesome = styled(FontAwesomeIcon)`

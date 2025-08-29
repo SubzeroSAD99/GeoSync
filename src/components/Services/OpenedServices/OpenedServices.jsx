@@ -113,8 +113,8 @@ const Section = () => {
         ]}
         actions={[
           {
-            condition: canAccess("service", "delete"),
             buttonInfo: {
+              condition: canAccess("service", "delete"),
               icon: faTrash,
               label: "Excluir",
               color: "#ff0000",
@@ -123,8 +123,8 @@ const Section = () => {
           },
 
           {
-            condition: canAccess("service", "update"),
             buttonInfo: {
+              condition: canAccess("service", "update"),
               icon: faEdit,
               label: "Editar",
               color: "#e48900",

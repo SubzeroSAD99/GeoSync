@@ -32,6 +32,7 @@ const MenuList = (props) => {
         padding: "0px",
         maxHeight: "none",
         overscrollBehavior: "contain",
+        zIndex: 0,
       }}
     >
       <List

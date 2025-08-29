@@ -81,7 +81,7 @@ const privateRoutes = [
       {
         path: "agendamento",
         element: <ScheduleServicesPage />,
-        meta: { resource: "service", action: "schedule" },
+        meta: { resource: "service", action: "viewSchedule" },
       },
     ],
   },

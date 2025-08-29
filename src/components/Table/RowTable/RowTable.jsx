@@ -13,12 +13,12 @@ import {
   StyledTd,
 } from "./RowTable.styled.mjs";
 
-const RowTable = ({ key, rows, obj, onDelete, onEdit }) => {
+const RowTable = ({ rows, obj, onDelete, onEdit }) => {
   return (
-    <tr key={key}>
+    <tr>
       {rows.map((it, index) => (
-        <>
-          <StyledTd key={`${it}-${index}`}>
+        <React.Fragment key={`${it}-${index}`}>
+          <StyledTd>
             {it === "role" && (
               <FontAwesomeIcon
                 icon={
@@ -38,7 +38,7 @@ const RowTable = ({ key, rows, obj, onDelete, onEdit }) => {
 
             {obj[it]}
           </StyledTd>
-        </>
+        </React.Fragment>
       ))}
 
       <StyledTd>

@@ -19,6 +19,7 @@ import { useAuth } from "@contexts/AuthContext.jsx";
 import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import axios from "axios";
+import useCanAccess from "@/hooks/useCanAccess.mjs";
 
 const Calendar = ({
   uid,
@@ -33,6 +34,9 @@ const Calendar = ({
   const month = currentDate.getMonth();
   const { setUserLogged } = useAuth();
   const navigate = useNavigate();
+  const canAccess = useCanAccess();
+
+  const conditionRegisterService = canAccess("service", "create");
 
   const goToPrevMonth = () => {
     setCurrentDate(
@@ -84,14 +88,16 @@ const Calendar = ({
   };
 
   const redirectSchedule = (day) => {
-    navigate(`/servicos/cadastrar`, {
-      state: {
-        data: {
-          measurementDate: `${day}-${month + 1}-${year}`,
-          topographer: topographer.fullName,
+    if (conditionRegisterService) {
+      navigate(`/servicos/cadastrar`, {
+        state: {
+          data: {
+            measurementDate: `${day}-${month + 1}-${year}`,
+            topographer: topographer.fullName,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   const days = getDaysArray();

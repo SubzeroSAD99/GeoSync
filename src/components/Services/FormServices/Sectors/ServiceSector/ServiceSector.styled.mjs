@@ -16,15 +16,17 @@ const TitleContainer = styled.div`
 
 const TableContainer = styled.div`
   position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 50%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   background-color: rgba(0, 0, 0, 0.9);
   grid-gap: 20px;
   padding: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 1rem;
   z-index: 1;
 
   & > div:nth-child(1) {

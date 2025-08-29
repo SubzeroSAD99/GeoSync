@@ -8,6 +8,8 @@
   --text-color: #000000;
   --text-color2: #ffffff;
   --table-even-color: rgba(207, 205, 205);
+
+  --mobile-menu-h: 3rem;
 }
 
 body.dark {
@@ -23,12 +25,6 @@ body.dark {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
-}
-
-html {
-  /* Evita o problema com o Combobox */
-  overflow-y: auto !important;
-  padding: 0px !important;
 }
 
 html,

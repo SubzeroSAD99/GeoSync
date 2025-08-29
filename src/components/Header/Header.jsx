@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  StyledFontAwesome,
+  StyledButton,
   StyledHeader,
   Title,
   TitleContainer,
@@ -13,7 +13,6 @@ import {
   faMoon,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
-import { useUI } from "@contexts/UIContext";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,9 +21,9 @@ import { toast } from "react-toastify";
 import api from "@utils/api.mjs";
 
 const Header = () => {
-  const isMediaQuerie = useMediaQuery({ query: "(max-width: 768px)" });
-  const { setMenuOpen } = useUI();
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const { userLogged, setUserLogged } = useAuth();
+  const [menuUserOpen, setMenuUserOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
@@ -52,23 +51,27 @@ const Header = () => {
           <span>Topodatum Topografia LTDA</span>
         </div>
       </TitleContainer>
-      <UserContainer>
+      <UserContainer $menuUserOpen={menuUserOpen}>
         <span>{userLogged.name?.toUpperCase()}</span>
 
         <button type="button" onClick={toggleTheme}>
           <FontAwesomeIcon icon={theme === "light" ? faSun : faMoon} />
+          <span>Alterar Tema</span>
         </button>
 
         <button type="button" onClick={logout}>
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
+          <span>Sair</span>
         </button>
       </UserContainer>
 
-      {isMediaQuerie && (
-        <StyledFontAwesome
-          icon={faBars}
-          onClick={() => setMenuOpen((prev) => !prev)}
-        />
+      {isMobile && (
+        <StyledButton
+          type="button"
+          onClick={() => setMenuUserOpen(!menuUserOpen)}
+        >
+          <FontAwesomeIcon icon={faBars} />
+        </StyledButton>
       )}
     </StyledHeader>
   );

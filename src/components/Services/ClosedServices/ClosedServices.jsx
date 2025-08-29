@@ -112,22 +112,22 @@ const ClosedServices = () => {
         ]}
         actions={[
           {
-            condition: canAccess("service", "delete"),
             buttonInfo: {
               icon: faTrash,
               label: "Excluir",
               color: "#ff0000",
               click: handleAskDelete,
+              condition: canAccess("service", "delete"),
             },
           },
 
           {
-            condition: canAccess("service", "update"),
             buttonInfo: {
               icon: faEdit,
               label: "Editar",
               color: "#e48900",
               click: handleEdit,
+              condition: canAccess("service", "update"),
             },
           },
 

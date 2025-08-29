@@ -51,13 +51,13 @@ router.post(
 
 router.post(
   "/getAllOfMonth",
-  authorize("service", "read"),
+  authorize("service", "viewSchedule"),
   ServiceOrderController.getAllOpenByMonth
 );
 
 router.post(
   "/confirm",
-  authorize("service", "update"),
+  authorize("service", "schedule"),
   ServiceOrderController.confirm
 );
 

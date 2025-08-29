@@ -24,9 +24,8 @@ import {
   faMoneyCheckDollar,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
-import { useUI } from "@contexts/UIContext.jsx";
-import { useMediaQuery } from "react-responsive";
 import useCanAccess from "@/hooks/useCanAccess.mjs";
+import { useMediaQuery } from "react-responsive";
 
 const Menu = () => {
   const canAccess = useCanAccess();
@@ -60,7 +59,7 @@ const Menu = () => {
           label: "Agendamento",
           icon: faCalendarAlt,
           redirect: "/servicos/agendamento",
-          condition: canAccess("service", "schedule"),
+          condition: canAccess("service", "viewSchedule"),
         },
       ],
     },
@@ -127,39 +126,28 @@ const Menu = () => {
     },
   ];
 
-  const { isMenuOpen, setMenuOpen } = useUI();
   const [expandMenu, setExpandMenu] = useState(true);
   const [isActive, setIsActive] = useState([0]);
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
-  const isMedia = useMediaQuery({ query: "(max-width: 768px)" });
+  useEffect(() => {
+    if (isMobile) {
+      setIsActive((prev) => (prev.length ? [prev[0]] : []));
+      setExpandMenu(true);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsActive([]);
+    }
+  }, [location.pathname]);
 
   // Cria uma referência para o menu
   const menuRef = useRef(null);
 
-  useEffect(() => {
-    if (!isMedia) return;
-
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
-    };
-  }, [isMedia, setMenuOpen]);
-
   return (
-    <StyledMenu
-      key={`menu-${isMedia ? "mobile" : "desktop"}`}
-      style={!expandMenu ? { width: "40px" } : {}}
-      ref={menuRef}
-    >
+    <StyledMenu style={!expandMenu ? { width: "40px" } : {}} ref={menuRef}>
       <StyledList>
         <ItemShowHide>
           <button
@@ -185,6 +173,7 @@ const Menu = () => {
               setIsActive={setIsActive}
               expandMenu={expandMenu}
               setExpandMenu={setExpandMenu}
+              isMobile={isMobile}
             />
           ) : null;
         })}

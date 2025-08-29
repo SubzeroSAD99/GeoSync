@@ -85,10 +85,14 @@ const TableServices = ({
     <section>
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "1rem",
           width: "100%",
-          gridGap: "20px",
+          flexWrap: "wrap",
+          fontSize: "0.95rem",
         }}
       >
         <Title>{title}</Title>
@@ -96,9 +100,7 @@ const TableServices = ({
         {shortcut && (
           <button
             style={{
-              padding: "0px 5px",
-              gridColumn: 3,
-              justifySelf: "end",
+              padding: "5px",
             }}
             type="button"
             onClick={() => {
