@@ -516,6 +516,8 @@ class ServiceOrderController {
 
   static async getAllOpen(req, res) {
     try {
+      const { cpf, role } = req.employee;
+
       const rows = await ServiceOrder.findAll({
         where: { finished: false },
         attributes: { exclude: ["updatedAt"] },
@@ -526,6 +528,7 @@ class ServiceOrderController {
             as: "cadists",
             attributes: ["fullName"],
             through: { attributes: [] },
+            ...(role === "cadista" ? { where: { cpf } } : {}),
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -559,6 +562,7 @@ class ServiceOrderController {
             as: "cadists",
             attributes: ["fullName"],
             through: { attributes: [] },
+            ...(role === "cadista" ? { where: { id } } : {}),
           },
         ],
         order: [["createdAt", "DESC"]],

@@ -33,15 +33,11 @@ const RowTable = ({ id, item, options, actions = [] }) => {
               "municipality",
               "cadists",
             ].includes(it) ? (
-            item[it].map((it, idx) => {
-              console.log(item);
-
-              return (
-                <p key={`${it}item${idx}`} style={{ padding: "5px 0px" }}>
-                  {it}
-                </p>
-              );
-            })
+            item[it].map((it, idx) => (
+              <p key={`${it}item${idx}`} style={{ padding: "5px 0px" }}>
+                {it}
+              </p>
+            ))
           ) : (
             item[it]
           )}
