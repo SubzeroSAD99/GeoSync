@@ -6,6 +6,7 @@ import Equipment from "./Equipment.mjs";
 import Vehicle from "./Vehicle.mjs";
 import ServiceType from "./ServiceType.mjs";
 import Budget from "./Budget.mjs";
+import ServiceOrderCadist from "./ServiceOrderCadist.mjs";
 
 // Topografo
 ServiceOrder.belongsTo(Employee, {
@@ -16,18 +17,6 @@ ServiceOrder.belongsTo(Employee, {
 Employee.hasMany(ServiceOrder, {
   foreignKey: "topographer", // coluna do ServiceOrder
   as: "TopographerOrders",
-});
-// ------------------------------------
-
-// Cadista
-Employee.hasMany(ServiceOrder, {
-  foreignKey: "cadist",
-  as: "CadistOrders",
-});
-
-ServiceOrder.belongsTo(Employee, {
-  foreignKey: "cadist",
-  as: "CadistReader",
 });
 // ------------------------------------
 
@@ -135,6 +124,38 @@ Employee.hasMany(Vehicle, {
 });
 // ------------------------------------
 
+// Ordens de Serviço por cadista
+ServiceOrder.belongsToMany(Employee, {
+  through: ServiceOrderCadist,
+  foreignKey: {
+    name: "serviceOrderId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  },
+  otherKey: {
+    name: "cadistId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  },
+  as: "cadists",
+});
+
+Employee.belongsToMany(ServiceOrder, {
+  through: ServiceOrderCadist,
+  foreignKey: {
+    name: "cadistId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  },
+  otherKey: {
+    name: "serviceOrderId",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  },
+  as: "serviceOrders",
+});
+// ------------------------------------
+
 const initAll = async () => {
   await Promise.all([
     await Employee.sync({ force: false }),
@@ -145,6 +166,7 @@ const initAll = async () => {
     await ServiceOrder.sync({ force: false }),
     await ServiceType.sync({ force: false }),
     await Budget.sync({ force: false }),
+    await ServiceOrderCadist.sync({ force: false }),
   ]);
 };
 

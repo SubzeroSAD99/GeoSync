@@ -53,7 +53,7 @@ const FormServices = ({
   locality,
   location,
 
-  cadist,
+  cadists,
   schedulingResp,
   processingResp,
 
@@ -241,7 +241,7 @@ const FormServices = ({
 
       <ResponsibilitiesSector
         employees={employees}
-        cadist={cadist}
+        cadists={cadists}
         schedulingResp={schedulingResp}
         processingResp={processingResp}
         errors={errors}

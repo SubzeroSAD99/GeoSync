@@ -48,6 +48,41 @@ const MenuList = (props) => {
   );
 };
 
+function toUpperSafe(v) {
+  return v == null ? "" : String(v).toUpperCase();
+}
+function findMatchInOptions(optList, token) {
+  const up = toUpperSafe(token);
+  return (
+    optList.find(
+      (o) => toUpperSafe(o.value) === up || toUpperSafe(o.label) === up
+    ) || null
+  );
+}
+
+function normalizeDefaultValue({ options, select, isMulti }) {
+  if (!select && select !== 0) return isMulti ? [] : null;
+
+  if (isMulti) {
+    if (Array.isArray(select)) {
+      return select
+        .map((item) =>
+          typeof item === "object" && item !== null && "label" in item
+            ? item
+            : findMatchInOptions(options, item)
+        )
+        .filter(Boolean);
+    }
+    const m = findMatchInOptions(options, select);
+    return m ? [m] : [];
+  } else {
+    if (typeof select === "object" && select !== null && "label" in select) {
+      return select;
+    }
+    return findMatchInOptions(options, select);
+  }
+}
+
 const SelectItem = ({
   options,
   title,
@@ -55,28 +90,34 @@ const SelectItem = ({
   required,
   select,
   placeholder,
+  isMulti,
   onChange,
   btnInfo,
   error,
 }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(isMulti ? [] : null);
   const containerRef = useRef();
 
   useEffect(() => {
-    if (select != null) {
-      const match = options.find(
-        (opt) =>
-          String(opt.label).toUpperCase() === String(select).toUpperCase() ||
-          String(opt.value).toUpperCase() === String(select).toUpperCase()
-      );
-      setSelectedOption(match || null);
-    }
-  }, [select, options]);
+    const normalized = normalizeDefaultValue({ options, select, isMulti });
+
+    if (isMulti) console.log(select);
+
+    setSelectedOption(normalized);
+  }, [select, options, isMulti]);
 
   const handleChange = (opt) => {
-    setSelectedOption(opt);
+    const next = isMulti ? opt || [] : opt || null;
+    setSelectedOption(next);
 
-    onChange && onChange(opt?.label, setSelectedOption);
+    if (onChange) {
+      if (isMulti) {
+        const labels = (next || []).map((o) => o?.label);
+        onChange(labels, setSelectedOption);
+      } else {
+        onChange(next?.label ?? null, setSelectedOption);
+      }
+    }
 
     if (containerRef.current) containerRef.current.style.border = "";
   };
@@ -102,6 +143,7 @@ const SelectItem = ({
         placeholder={placeholder ?? "SELECIONE..."}
         isSearchable
         isClearable
+        isMulti={isMulti}
         menuShouldBlockScroll={false}
         components={{ MenuList }}
         styles={{

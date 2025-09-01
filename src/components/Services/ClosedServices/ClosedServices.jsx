@@ -104,7 +104,7 @@ const ClosedServices = () => {
         options={[
           { header: "Proprietário", column: "owner" },
           { header: "Tipo de Serviço", column: "serviceType" },
-          { header: "Cadista", column: "cadist" },
+          { header: "Cadista", column: "cadists" },
           { header: "Município", column: "municipality" },
           { header: "Prioridade", column: "priority" },
           { header: "Status", column: "finished" },

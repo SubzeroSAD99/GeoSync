@@ -26,14 +26,22 @@ const RowTable = ({ id, item, options, actions = [] }) => {
             >
               {it === "finished" ? (item[it] ? "FECHADO" : "ABERTO") : item[it]}
             </HighlightContainer>
-          ) : ["serviceType", "step", "serviceValue", "municipality"].includes(
-              it
-            ) ? (
-            item[it].map((it, idx) => (
-              <p key={`${it}item${idx}`} style={{ padding: "5px 0px" }}>
-                {it}
-              </p>
-            ))
+          ) : [
+              "serviceType",
+              "step",
+              "serviceValue",
+              "municipality",
+              "cadists",
+            ].includes(it) ? (
+            item[it].map((it, idx) => {
+              console.log(item);
+
+              return (
+                <p key={`${it}item${idx}`} style={{ padding: "5px 0px" }}>
+                  {it}
+                </p>
+              );
+            })
           ) : (
             item[it]
           )}

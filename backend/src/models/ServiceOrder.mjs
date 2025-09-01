@@ -118,11 +118,6 @@ ServiceOrder.init(
       allowNull: true,
     },
 
-    cadist: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-
     quantity: {
       type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,

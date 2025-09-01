@@ -25,6 +25,8 @@ const Section = () => {
         const response = await api.post("/service/getAllOpen");
 
         if (response.data) {
+          console.log(response.data);
+
           setAllServices(response.data);
           setLoading(false);
         }
@@ -97,7 +99,7 @@ const Section = () => {
           { label: "Código", column: "code" },
           { label: "Proprietário", column: "owner" },
           { label: "Tipo de Serviço", column: "serviceType" },
-          { label: "Cadista", column: "cadist" },
+          { label: "Cadista", column: "cadists" },
           { label: "Município", column: "municipality" },
           { label: "Prioridade", column: "priority" },
         ]}
@@ -105,7 +107,7 @@ const Section = () => {
           { header: "Cod.", column: "code" },
           { header: "Proprietário", column: "owner" },
           { header: "Tipo de Serviço", column: "serviceType" },
-          { header: "Cadista", column: "cadist" },
+          { header: "Cadista", column: "cadists" },
           { header: "Município", column: "municipality" },
           { header: "Prioridade", column: "priority" },
           { header: "Status", column: "finished" },

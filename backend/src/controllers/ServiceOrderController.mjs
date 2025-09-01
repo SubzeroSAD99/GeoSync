@@ -1,10 +1,11 @@
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
 import { formatDate, formatCurrency } from "../utils/format.mjs";
-import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { col, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
 import FileController from "./FileController.mjs";
+import db from "../db/db.mjs";
+import Employee from "../models/Employee.mjs";
 
 const registerSchema = Joi.object({
   //#region ServiceSchema
@@ -108,7 +109,9 @@ const registerSchema = Joi.object({
   //#endregion
 
   //#region ResponsibilitiesSchema
-  cadist: Joi.number().empty("").allow(null).default(null).optional(),
+  cadist: Joi.array()
+    .items(Joi.number().empty("").allow(null).default(null).optional())
+    .single(),
   schedulingResp: Joi.number().empty("").allow(null).default(null).optional(),
   processingResp: Joi.number().empty("").allow(null).default(null).optional(),
   //#endregion
@@ -207,38 +210,59 @@ class ServiceOrderController {
       "$3-$2-$1"
     );
 
-    try {
-      const order = await ServiceOrder.create(value);
+    const cadistIds = Array.isArray(value.cadist) ? value.cadist : [];
+    delete value.cadist;
 
-      if (!order)
+    let t;
+    try {
+      t = await db.transaction();
+
+      const order = await ServiceOrder.create(value, { transaction: t });
+
+      if (!order) {
+        await t.rollback();
+        await FileController.cleanupTmpFiles(req.files);
         return res.status(400).json({ msg: "Erro ao criar serviço!" });
+      }
+
+      if (cadistIds.length) {
+        // opção A: via through helper
+        await order.addCadists(cadistIds, {
+          transaction: t,
+        });
+      }
 
       const orderInfo = await ServiceOrder.findByPk(order.id, {
-        attributes: [
-          [col("OwnerReader.full_name"), "ownerFullName"],
-          [col("CadistReader.phone_number"), "cadistPhoneNumber"],
-        ],
+        attributes: [[col("OwnerReader.full_name"), "ownerFullName"]],
         include: [
+          { association: "OwnerReader", attributes: [] },
           {
-            association: "CadistReader",
-            attributes: [],
-          },
-          {
-            association: "OwnerReader",
-            attributes: [],
+            model: Employee,
+            as: "cadists",
+            attributes: ["phoneNumber"],
           },
         ],
-        raw: true,
+        transaction: t,
       });
 
+      console.log(orderInfo);
+
       const msg = ServiceOrderController.getCadistMsg({
-        ownerFullName: orderInfo?.ownerFullName,
+        ownerFullName:
+          orderInfo?.get?.("ownerFullName") ?? orderInfo?.ownerFullName,
         serviceTypes: value.serviceType,
         codes: value.code,
       });
 
-      if (orderInfo?.cadistPhoneNumber)
-        await WhatsappController.sendMessage(orderInfo?.cadistPhoneNumber, msg);
+      await t.commit();
+
+      const phones =
+        orderInfo?.cadists?.map((e) => e.phoneNumber).filter(Boolean) ?? [];
+      for (const phone of phones) {
+        try {
+          await WhatsappController.sendMessage(phone, msg);
+        } catch (e) {}
+      }
 
       try {
         await FileController.validateAndMoveMany(
@@ -258,8 +282,8 @@ class ServiceOrderController {
 
       return res.status(200).json({ msg: "Ordem de serviço criada!" });
     } catch (err) {
-      if (error?.msg) return res.status(400).json({ msg: error.msg });
-
+      if (t) await t.rollback();
+      console.log(err);
       await FileController.cleanupTmpFiles(req.files);
 
       return res.status(500).json({ msg: "Erro interno do servidor." });
@@ -285,9 +309,11 @@ class ServiceOrderController {
       if (destroy)
         return res.json({ err: false, msg: "Serviço deletado com sucesso!" });
 
-      res.json({ err: true, msg: "Não foi possivel encontrar serviço" });
+      res
+        .status(500)
+        .json({ err: true, msg: "Não foi possivel encontrar serviço" });
     } catch (err) {
-      res.json({ err: true, msg: "Não foi possivel encontrar serviço" });
+      res.status(500).json({ err: true, msg: "Erro interno do servidor" });
     }
   }
 
@@ -321,12 +347,8 @@ class ServiceOrderController {
 
       delete value.confirmed;
 
-      const prev = await ServiceOrder.findByPk(id, {
-        attributes: ["cadist"],
-        raw: true,
-      });
-
-      if (!prev) {
+      const order = await ServiceOrder.findByPk(id);
+      if (!order) {
         await FileController.cleanupTmpFiles(req.files);
         return res.status(404).json({ msg: "Serviço não encontrado!" });
       }
@@ -343,42 +365,49 @@ class ServiceOrderController {
           "$3-$2-$1"
         ) ?? null;
 
-      const row = await ServiceOrder.update(value, {
-        where: {
-          id,
-        },
+      const [affected] = await ServiceOrder.update(value, {
+        where: { id },
         omitNull: false,
       });
 
-      if (!row)
+      if (!affected)
         return res.status(400).json({ msg: "Erro ao atualizar o serviço!" });
 
-      const cadistChanged = (prev.cadist ?? null) !== (value.cadist ?? null);
-
-      if (cadistChanged && value.cadist) {
-        const orderInfo = await ServiceOrder.findByPk(id, {
-          attributes: [
-            [col("OwnerReader.full_name"), "ownerFullName"],
-            [col("CadistReader.phone_number"), "cadistPhoneNumber"],
-          ],
-          include: [
-            { association: "CadistReader", attributes: [] },
-            { association: "OwnerReader", attributes: [] },
-          ],
-          raw: true,
+      if (Array.isArray(value.cadist)) {
+        const prevCadists = await order.getCadists({
+          attributes: ["id", "phoneNumber"],
         });
+        const prevIds = new Set(prevCadists.map((c) => c.id));
+        await order.setCadists(value.cadist);
 
-        if (orderInfo?.cadistPhoneNumber) {
+        const addedIds = value.cadist.filter((id) => !prevIds.has(Number(id)));
+        if (addedIds.length) {
+          const orderInfo = await ServiceOrder.findByPk(id, {
+            include: [
+              { association: "OwnerReader", attributes: ["fullName"] },
+              {
+                model: Employee,
+                as: "cadists",
+                attributes: ["id", "phoneNumber"],
+              },
+            ],
+          });
+          const ownerFullName = orderInfo?.OwnerReader?.fullName;
           const msg = ServiceOrderController.getCadistMsg({
-            ownerFullName: orderInfo.ownerFullName,
+            ownerFullName,
             serviceTypes: value.serviceType ?? req.body.serviceType,
             codes: value.code ?? req.body.code,
           });
-
-          await WhatsappController.sendMessage(
-            orderInfo.cadistPhoneNumber,
-            msg
-          );
+          const phones =
+            orderInfo?.cadists
+              ?.filter((c) => addedIds.includes(c.id))
+              .map((c) => c.phoneNumber)
+              .filter(Boolean) ?? [];
+          for (const phone of phones) {
+            try {
+              await WhatsappController.sendMessage(phone, msg);
+            } catch (_) {}
+          }
         }
       }
 
@@ -405,10 +434,16 @@ class ServiceOrderController {
 
     try {
       const data = await ServiceOrder.findByPk(id, {
-        attributes: {
-          exclude: ["confirmed", "id"],
-        },
-        raw: true,
+        attributes: { exclude: ["confirmed"] }, // mantemos id para servir de chave em anexos/retorno se quiser
+        include: [
+          { association: "OwnerReader", attributes: ["fullName"] },
+          {
+            model: Employee,
+            as: "cadists",
+            attributes: ["id", "fullName"],
+            through: { attributes: [] },
+          },
+        ],
       });
 
       if (!data)
@@ -434,7 +469,14 @@ class ServiceOrderController {
         return res.status(500).json({ msg: "Erro ao ler anexos" });
       }
 
-      res.json({ service: data, files });
+      const owner = data?.OwnerReader?.fullName ?? null;
+      const cadists = (data?.cadists ?? []).map((c) => ({
+        id: c.id,
+        name: c.fullName,
+        phone: c.phoneNumber,
+      }));
+
+      res.json({ service: { ...data.toJSON(), owner, cadists }, files });
     } catch (err) {
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
@@ -442,34 +484,30 @@ class ServiceOrderController {
 
   static async getAll(req, res) {
     try {
-      const data = await ServiceOrder.findAll({
-        attributes: {
-          exclude: ["cadist", "topographer", "updatedAt"],
-          include: [
-            [col("CadistReader.full_name"), "cadist"],
-            [col("OwnerReader.full_name"), "owner"],
-          ],
-        },
+      const rows = await ServiceOrder.findAll({
+        attributes: { exclude: ["updatedAt"] },
         include: [
+          { association: "OwnerReader", attributes: ["fullName"] },
           {
-            association: "CadistReader",
-            // esvaziar os atributos aqui, senão eles voltam duplicados
-            attributes: [],
-          },
-          {
-            association: "OwnerReader",
-            attributes: [],
+            model: Employee,
+            as: "cadists",
+            attributes: ["fullName"],
+            through: { attributes: [] },
           },
         ],
-        raw: true,
+        order: [["createdAt", "DESC"]],
       });
 
-      data.map((obj) => {
-        obj.serviceValue = obj.serviceValue.map((it) => formatCurrency(it));
-
-        obj.amountPaid = formatCurrency(obj.amountPaid);
+      const data = rows.map((r) => {
+        const json = r.toJSON();
+        return {
+          ...json,
+          owner: json.OwnerReader?.fullName ?? null,
+          cadists: (json.cadists ?? []).map((c) => c.fullName).join(", "),
+          serviceValue: (json.serviceValue ?? []).map((v) => formatCurrency(v)),
+          amountPaid: formatCurrency(json.amountPaid),
+        };
       });
-
       res.json(data);
     } catch (err) {
       res.status(500).json({ msg: "Erro interno do servidor!" });
@@ -478,33 +516,29 @@ class ServiceOrderController {
 
   static async getAllOpen(req, res) {
     try {
-      const data = await ServiceOrder.findAll({
-        where: {
-          finished: false,
-        },
-        attributes: {
-          exclude: ["cadist", "topographer", "updatedAt"],
-          include: [
-            [col("CadistReader.full_name"), "cadist"],
-            [col("OwnerReader.full_name"), "owner"],
-          ],
-        },
+      const rows = await ServiceOrder.findAll({
+        where: { finished: false },
+        attributes: { exclude: ["updatedAt"] },
         include: [
+          { association: "OwnerReader", attributes: ["fullName"] },
           {
-            association: "CadistReader",
-            // esvaziar os atributos aqui, senão eles voltam duplicados
-            attributes: [],
-          },
-          {
-            association: "OwnerReader",
-            attributes: [],
+            model: Employee,
+            as: "cadists",
+            attributes: ["fullName"],
+            through: { attributes: [] },
           },
         ],
-        raw: true,
+        order: [["createdAt", "DESC"]],
       });
 
-      data.map((obj) => {
-        obj.createdAt = formatDate(obj.createdAt).split(",")[0];
+      const data = rows.map((r) => {
+        const json = r.toJSON();
+        return {
+          ...json,
+          owner: json.OwnerReader?.fullName ?? null,
+          cadists: (json.cadists ?? []).map((c) => c.fullName),
+          createdAt: formatDate(json.createdAt).split(",")[0],
+        };
       });
 
       res.json(data);
@@ -515,38 +549,34 @@ class ServiceOrderController {
 
   static async getAllClosed(req, res) {
     try {
-      const data = await ServiceOrder.findAll({
-        where: {
-          finished: true,
-        },
-        attributes: {
-          exclude: ["cadist", "topographer", "updatedAt"],
-          include: [
-            [col("CadistReader.full_name"), "cadist"],
-            [col("OwnerReader.full_name"), "owner"],
-          ],
-        },
+      const rows = await ServiceOrder.findAll({
+        where: { finished: true },
+        attributes: { exclude: ["updatedAt"] },
         include: [
+          { association: "OwnerReader", attributes: ["fullName"] },
           {
-            association: "CadistReader",
-            // esvaziar os atributos aqui, senão eles voltam duplicados
-            attributes: [],
-          },
-          {
-            association: "OwnerReader",
-            attributes: [],
+            model: Employee,
+            as: "cadists",
+            attributes: ["fullName"],
+            through: { attributes: [] },
           },
         ],
-        raw: true,
+        order: [["createdAt", "DESC"]],
       });
 
-      data.map((obj) => {
-        obj.createdAt = formatDate(obj.createdAt).split(",")[0];
+      const data = rows.map((r) => {
+        const json = r.toJSON();
+        return {
+          ...json,
+          owner: json.OwnerReader?.fullName ?? null,
+          cadists: (json.cadists ?? []).map((c) => c.fullName),
+          createdAt: formatDate(json.createdAt).split(",")[0],
+        };
       });
 
       res.json(data);
     } catch (err) {
-      res.status(500).json({ msg: "Erro interno no servidor" });
+      res.status(500).json({ msg: "Erro interno do servidor!" });
     }
   }
 
