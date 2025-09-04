@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   faCompassDrafting,
+  faCopy,
   faDownload,
   faEarthAmericas,
   faFile,
@@ -23,9 +24,13 @@ import {
   File,
   FilesContainer,
   Footer,
+  FormPayer,
   GlobalStyle,
   ListContainer,
   ListItem,
+  PaymentInfo,
+  QrContainer,
+  QrCopyPasteContainer,
   ServiceContainer,
   StepLabelContainer,
   StyledHeader,
@@ -37,9 +42,10 @@ import {
 import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { io } from "socket.io-client";
+import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
 
 const EXT_ICON_MAP = {
-  // CAD (não há "file-dwg" oficial; usar um genérico visualmente coerente)
   dwg: faCompassDrafting,
   dxf: faCompassDrafting,
   kml: faEarthAmericas,
@@ -92,9 +98,46 @@ const getExt = (name = "") => {
   return last === n ? "" : last;
 };
 
+const copyToClipboard = async (text) => {
+  if (!text) return false;
+
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (_) {}
+  }
+
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-9999px";
+    textarea.style.opacity = "0";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    const ok = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return ok;
+  } catch {
+    return false;
+  }
+};
+
 const TrackingService = ({ id }) => {
   const [service, setService] = useState({});
+  const [qrCodeInfo, setQrCodeInfo] = useState({});
   const [files, setFiles] = useState([]);
+  const [needPayment, setNeedPayment] = useState(false);
+  const [socketRef, setSocketRef] = useState(null);
+  const [confirmPayment, setConfirmPayment] = useState(false);
 
   const STEPS = [
     "agendado",
@@ -112,6 +155,113 @@ const TrackingService = ({ id }) => {
     const ext = getExt(filename);
     return EXT_ICON_MAP[ext] || faFile;
   }, []);
+
+  const downloadFile = async (fileName) => {
+    try {
+      const response = await api.post(
+        "/file/downloadFile",
+        { id, fileName },
+        { responseType: "blob" }
+      );
+
+      if (response.data) {
+        const url = window.URL.createObjectURL(response.data);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (err) {
+      switch (err.status) {
+        case 403:
+          setNeedPayment(true);
+          toast.warning("Efetue o pagamento");
+          break;
+
+        case 404:
+          toast.error("Arquivo não encontrado");
+          break;
+        default:
+          toast.error("Erro interno no servidor!");
+          break;
+      }
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const toastId = toast.loading("Gerando Qrcode...");
+
+    (async () => {
+      try {
+        const form = e.target;
+
+        const formData = new FormData(form);
+
+        const email = formData.get("email");
+
+        const response = await api.post("/payment/generate", {
+          id,
+          email,
+        });
+
+        if (response.data) {
+          toast.update(toastId, {
+            render: "Qrcode gerado com sucesso!",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+          });
+          setQrCodeInfo(response.data);
+          setNeedPayment(false);
+          const { paymentId } = response.data;
+          if (paymentId) startRealtimeForPayment(paymentId);
+        }
+      } catch (err) {
+        const msg = err?.response?.data?.msg;
+
+        if (msg)
+          toast.update(toastId, {
+            render: msg,
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        else {
+          toast.update(toastId, {
+            render: "Erro ao gerar qrcode",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        }
+      }
+    })();
+  };
+
+  const handleCopySpan = async () => {
+    const text = qrCodeInfo.qr_code ?? "";
+    const ok = await copyToClipboard(text);
+
+    if (ok) {
+      toast.success("Copiado para a área de transferência!");
+    } else {
+      toast.error("Não foi possível copiar.");
+    }
+  };
+
+  useEffect(() => {
+    const isQrCodeInfo = Object.keys(qrCodeInfo).length > 0;
+    if (!isQrCodeInfo && socketRef) {
+      try {
+        socketRef.disconnect();
+      } catch {}
+      setSocketRef(null);
+    }
+  }, [qrCodeInfo, socketRef]);
 
   useEffect(() => {
     (async () => {
@@ -146,39 +296,40 @@ const TrackingService = ({ id }) => {
     })();
   }, []);
 
-  const downloadFile = async (fileName) => {
-    try {
-      const response = await api.post(
-        "/file/downloadFile",
-        { id, fileName },
-        { responseType: "blob" }
-      );
-
-      if (response.data) {
-        const url = window.URL.createObjectURL(response.data);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+  const startRealtimeForPayment = useCallback(
+    (paymentId) => {
+      // evita conexões múltiplas
+      if (socketRef) {
+        try {
+          socketRef.disconnect();
+        } catch {}
+        setSocketRef(null);
       }
-    } catch (err) {
-      switch (err.status) {
-        case 403:
-          toast.warning("Efetue o pagamento");
-          break;
 
-        case 404:
-          toast.error("Arquivo não encontrado");
-          break;
-        default:
-          toast.error("Erro interno no servidor!");
-          break;
-      }
-    }
-  };
+      const socket = io(import.meta.env.VITE_BACKEND_URL, {
+        transports: ["websocket"],
+        withCredentials: false,
+      });
+
+      socket.on("connect", () => {
+        socket.emit("join:payment", String(paymentId));
+      });
+
+      socket.on("payment:approved", () => {
+        setConfirmPayment(true);
+        setQrCodeInfo({});
+        setCurrentPaymentId(null);
+
+        try {
+          socket.disconnect();
+        } catch {}
+        setSocketRef(null);
+      });
+
+      setSocketRef(socket);
+    },
+    [socketRef]
+  );
 
   return (
     <>
@@ -305,6 +456,62 @@ const TrackingService = ({ id }) => {
           </StyledSection>
         </StyledMain>
       )}
+      {needPayment && Object.keys(qrCodeInfo).length === 0 && (
+        <PaymentInfo
+          role="presentation"
+          onClick={() => setNeedPayment(false)}
+          aria-hidden={false}
+        >
+          <FormPayer
+            method="post"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={handleSubmit}
+          >
+            <h2>Precisamos da Sua Confirmação</h2>
+            <div>
+              <label htmlFor="payerEmail">
+                Email do Pagador <span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="payerEmail"
+                placeholder="Digite seu email"
+                required
+              />
+            </div>
+
+            <button type="submit">Gerar Qrcode</button>
+          </FormPayer>
+        </PaymentInfo>
+      )}
+
+      {Object.keys(qrCodeInfo).length > 0 && (
+        <QrContainer onClick={() => setQrCodeInfo({})}>
+          <div onClick={(e) => e.stopPropagation()}>
+            <h2>Efetue o Pagamento</h2>
+            <img
+              src={`data:image/png;base64, ${qrCodeInfo.qr_code_base64}`}
+              alt="Qrcode"
+            />
+            <QrCopyPasteContainer>
+              <span>{qrCodeInfo.qr_code}</span>
+              <button type="button" onClick={handleCopySpan}>
+                <FontAwesomeIcon icon={faCopy} />
+              </button>
+            </QrCopyPasteContainer>
+          </div>
+        </QrContainer>
+      )}
+
+      <PaymentSuccess
+        open={confirmPayment}
+        onClose={() => setConfirmPayment(false)}
+        title="Pagamento confirmado!"
+        autoCloseMs={5000}
+      />
     </>
   );
 };

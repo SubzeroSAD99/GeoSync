@@ -147,6 +147,11 @@ ServiceOrder.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+
+    creator: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     sequelize,

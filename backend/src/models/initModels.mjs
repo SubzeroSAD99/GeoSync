@@ -156,6 +156,18 @@ Employee.belongsToMany(ServiceOrder, {
 });
 // ------------------------------------
 
+// Criador
+ServiceOrder.belongsTo(Employee, {
+  foreignKey: "creator",
+  as: "CreatorReader",
+});
+
+Employee.hasMany(ServiceOrder, {
+  foreignKey: "creator",
+  as: "CreatorOrder",
+});
+// ------------------------------------
+
 const initAll = async () => {
   await Promise.all([
     await Employee.sync({ force: false }),

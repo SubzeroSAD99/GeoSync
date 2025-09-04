@@ -15,6 +15,7 @@ const StyledMenu = styled.nav`
   align-self: start;
   justify-self: start;
   padding-right: 5px;
+  transition: width 0.2s ease;
 
   ${media(`
     position: fixed;

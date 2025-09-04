@@ -1,7 +1,7 @@
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
 import { formatDate, formatCurrency } from "../utils/format.mjs";
-import { col, Op } from "sequelize";
+import { col, literal, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
 import FileController from "./FileController.mjs";
 import db from "../db/db.mjs";
@@ -210,8 +210,12 @@ class ServiceOrderController {
       "$3-$2-$1"
     );
 
-    const cadistIds = Array.isArray(value.cadist) ? value.cadist : [];
+    const cadistIds = Array.isArray(value.cadist)
+      ? value.cadist.filter(Number.isFinite)
+      : [];
     delete value.cadist;
+
+    value.creator = req.employee.id;
 
     let t;
     try {
@@ -244,8 +248,6 @@ class ServiceOrderController {
         ],
         transaction: t,
       });
-
-      console.log(orderInfo);
 
       const msg = ServiceOrderController.getCadistMsg({
         ownerFullName:
@@ -283,7 +285,6 @@ class ServiceOrderController {
       return res.status(200).json({ msg: "Ordem de serviço criada!" });
     } catch (err) {
       if (t) await t.rollback();
-      console.log(err);
       await FileController.cleanupTmpFiles(req.files);
 
       return res.status(500).json({ msg: "Erro interno do servidor." });
@@ -378,7 +379,7 @@ class ServiceOrderController {
           attributes: ["id", "phoneNumber"],
         });
         const prevIds = new Set(prevCadists.map((c) => c.id));
-        await order.setCadists(value.cadist);
+        await order.setCadists(value.cadist.filter(Number.isFinite));
 
         const addedIds = value.cadist.filter((id) => !prevIds.has(Number(id)));
         if (addedIds.length) {
@@ -426,6 +427,21 @@ class ServiceOrderController {
     }
   }
 
+  static async updatePaymentSituation(id, amountPaid) {
+    return await ServiceOrder.update(
+      {
+        paymentSituation: "pago",
+        amountPaid: literal(`COALESCE(amount_paid, 0) + ${amountPaid}`),
+      },
+      {
+        where: {
+          id,
+          paymentSituation: { [Op.ne]: "pago" },
+        },
+      }
+    );
+  }
+
   static async getById(req, res) {
     const { id } = req.body;
 
@@ -449,15 +465,21 @@ class ServiceOrderController {
       if (!data)
         return res.status(500).json({ msg: "Serviço não encontrado!" });
 
-      data.measurementDate = data?.measurementDate?.replace(
-        /(\d){4}-(\d){2}-(\d){2}/,
-        "$3/$2/$1"
+      const service = data.get({ plain: true });
+
+      service.measurementDate =
+        service?.measurementDate?.replace(
+          /(\d{4})-(\d{2})-(\d{2})/,
+          "$3/$2/$1"
+        ) ?? null;
+
+      service.measurementHour = service?.measurementHour?.slice(0, 5);
+
+      service.serviceValue = service.serviceValue?.map((v) =>
+        formatCurrency(v)
       );
 
-      data.measurementHour = data?.measurementHour?.slice(0, -3);
-
-      data.serviceValue = data.serviceValue.map((it) => formatCurrency(it));
-      data.amountPaid = formatCurrency(data.amountPaid);
+      service.amountPaid = formatCurrency(service.amountPaid);
 
       if (!data) res.status(400).json({ msg: "Serviço não encontrado!" });
 
@@ -469,14 +491,14 @@ class ServiceOrderController {
         return res.status(500).json({ msg: "Erro ao ler anexos" });
       }
 
-      const owner = data?.OwnerReader?.fullName ?? null;
-      const cadists = (data?.cadists ?? []).map((c) => ({
+      const owner = service?.OwnerReader?.fullName ?? null;
+      const cadists = (service?.cadists ?? []).map((c) => ({
         id: c.id,
         name: c.fullName,
         phone: c.phoneNumber,
       }));
 
-      res.json({ service: { ...data.toJSON(), owner, cadists }, files });
+      res.json({ service: { ...service, owner, cadists }, files });
     } catch (err) {
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }
@@ -552,6 +574,8 @@ class ServiceOrderController {
 
   static async getAllClosed(req, res) {
     try {
+      const { cpf, role } = req.employee;
+
       const rows = await ServiceOrder.findAll({
         where: { finished: true },
         attributes: { exclude: ["updatedAt"] },
@@ -562,7 +586,7 @@ class ServiceOrderController {
             as: "cadists",
             attributes: ["fullName"],
             through: { attributes: [] },
-            ...(role === "cadista" ? { where: { id } } : {}),
+            ...(role === "cadista" ? { where: { cpf } } : {}),
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -718,13 +742,18 @@ class ServiceOrderController {
       if (isNaN(id)) return null;
 
       const status = await ServiceOrder.findByPk(id, {
-        attributes: ["paymentSituation"],
+        attributes: [
+          "paymentSituation",
+          "amountPaid",
+          "serviceValue",
+          "quantity",
+        ],
         raw: true,
       });
 
       if (!status) return null;
 
-      return status.paymentSituation;
+      return status;
     } catch (err) {
       return null;
     }

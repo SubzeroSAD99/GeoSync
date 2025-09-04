@@ -352,6 +352,152 @@ const File = styled.div`
   color: var(--text-color2);
 `;
 
+const PaymentInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  gap: 1rem;
+  z-index: 1000;
+
+  & h2 {
+    width: 100%;
+    position: relative;
+    padding: 0.3rem 1rem;
+    margin-bottom: 1rem;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      background-color: var(--main-color);
+      height: 100%;
+      width: 8px;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+    }
+  }
+`;
+
+const FormPayer = styled.form`
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 5px;
+  gap: 1rem;
+
+  & div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  & input {
+    background-color: transparent;
+    border: 1px solid white;
+    border-radius: 0.2rem;
+    padding: 0.5rem;
+    outline: none;
+    color: var(--text-color2);
+    font-size: 1.1rem;
+  }
+
+  & button {
+    border: 1px solid white;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+  }
+`;
+
+const QrContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  gap: 1rem;
+  z-index: 1000;
+
+  & h2 {
+    width: 100%;
+    position: relative;
+    padding: 0.3rem 1rem;
+    margin-bottom: 1rem;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      background-color: var(--main-color);
+      height: 100%;
+      width: 8px;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+    }
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 5px;
+    gap: 1rem;
+  }
+
+  & img {
+    width: 50%;
+    outline: 2px solid var(--highlight-main-color);
+  }
+`;
+
+const QrCopyPasteContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--highlight-main-color);
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+
+  & button {
+    flex: 0 0 auto;
+    padding: 0.5rem;
+  }
+
+  & span {
+    flex: 1 1 auto;
+    min-width: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+`;
+
 export {
   GlobalStyle,
   Background,
@@ -368,4 +514,8 @@ export {
   Footer,
   FilesContainer,
   File,
+  PaymentInfo,
+  FormPayer,
+  QrContainer,
+  QrCopyPasteContainer,
 };

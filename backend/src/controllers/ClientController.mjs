@@ -63,13 +63,7 @@ const schema = Joi.object({
 
   rg: Joi.string().when("personType", {
     is: "natural",
-    then: Joi.string()
-      .trim()
-      .pattern(/^\d{2}\.\d{3}\.\d{3}-\d{1}$/)
-      .empty("")
-      .messages({
-        "string.pattern.base": "O RG deve estar no formato 00.000.000-0.",
-      }),
+    then: Joi.string().trim().empty(""),
     otherwise: Joi.forbidden().messages({
       "any.unknown": "O campo RG não deve ser preenchido para pessoa jurídica.",
     }),

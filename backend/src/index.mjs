@@ -1,3 +1,4 @@
+import http from "http";
 import express from "express";
 
 // Routers
@@ -12,32 +13,48 @@ import financialRouter from "./routes/financialRouter.mjs";
 import serviceTypeRouter from "./routes/serviceTypeRouter.mjs";
 import budgetRouter from "./routes/budgetRouter.mjs";
 import fileRouter from "./routes/fileRouter.mjs";
+import paymentRouter from "./routes/paymentRouter.mjs";
 
 import { authenticate } from "./middlewares/authMiddleware.mjs";
 import initAll from "./models/initModels.mjs";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import { startSock } from "./services/whatsappServices.mjs";
 import path from "path";
+import MercadoPagoClient from "./config/MercadoPagoClient.mjs";
+import MercadoPagoController from "./controllers/MercadoPagoController.mjs";
+import SocketServer from "./sockets/SocketServer.mjs";
 
 const app = express();
 const PORT = 9999;
 
 startSock().catch(console.error);
 
+const corsOrigins = "http://192.168.100.141:5173";
+
+app.disable("x-powered-by");
+app.use(compression());
 app.use(
   cors({
-    origin: "http://192.168.100.141:5173",
+    origin: corsOrigins,
     credentials: true,
   })
 );
 
 app.use(express.static(path.join(import.meta.dirname, "public")));
 
+app.post(
+  "/payment/webhookMp",
+  express.raw({ type: "application/json" }),
+  MercadoPagoController.webhook
+);
+
 app.use(cookieParser());
 app.use(express.json());
 
 app.use("/", mainRouter);
+app.use("/payment", paymentRouter);
 
 app.use(authenticate);
 app.use("/service", serviceRouter);
@@ -51,9 +68,16 @@ app.use("/serviceType", serviceTypeRouter);
 app.use("/budget", budgetRouter);
 app.use("/file", fileRouter);
 
-app.listen(PORT, () => {
-  initAll().then(() => {
-    console.log("\x1b[32m✔\x1b[0m Banco de Dados Sincronizado com Sucesso!");
-    console.log(`\x1b[32m✔\x1b[0m Servidor Backend Rodando em ${PORT}.`);
-  });
+const server = http.createServer(app);
+
+SocketServer.init(server, { corsOrigins });
+
+server.listen(PORT, async () => {
+  await initAll();
+  console.log("\x1b[32m✔\x1b[0m Banco de Dados Sincronizado com Sucesso!");
+
+  await MercadoPagoClient.init();
+  console.log("\x1b[32m✔\x1b[0m MercadoPago Configurado com Sucesso!");
+
+  console.log(`\x1b[32m✔\x1b[0m Servidor Backend Rodando em ${PORT}.`);
 });

@@ -25,8 +25,6 @@ const Section = () => {
         const response = await api.post("/service/getAllOpen");
 
         if (response.data) {
-          console.log(response.data);
-
           setAllServices(response.data);
           setLoading(false);
         }

@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import { fileTypeFromFile } from "file-type";
 import ServiceOrderController from "./ServiceOrderController.mjs";
 import { log } from "util";
+import MercadoPagoController from "./MercadoPagoController.mjs";
 
 const ALLOWED_MIME = new Set([
   // Imagens
@@ -152,7 +153,7 @@ class FileController {
 
       if (!situation) return res.status(500).json();
 
-      if (situation !== "pago") return res.status(403).json();
+      if (situation.paymentSituation !== "pago") return res.status(403).json();
 
       res.download(safePath);
     } catch (err) {

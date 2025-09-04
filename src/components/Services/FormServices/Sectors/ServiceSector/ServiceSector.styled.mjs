@@ -22,11 +22,13 @@ const TableContainer = styled.div`
   height: 50%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
   grid-gap: 20px;
   padding: 10px;
   transform: translate(-50%, -50%);
-  border-radius: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
   z-index: 1;
 
   & > div:nth-child(1) {

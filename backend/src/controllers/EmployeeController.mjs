@@ -94,23 +94,16 @@ class EmployeeController {
     const { id } = req.body;
 
     try {
-      const decoded = verifyToken(id);
-
-      if (!decoded)
-        res.status(500).json({ msg: "Funcionario não encontrado!" });
-
       const employee = await Employee.findOne({
+        attributes: {
+          exclude: ["id", "password", "createdAt", "updatedAt"],
+        },
         raw: true,
-        where: { id: decoded.id },
+        where: { id },
       });
 
       if (!employee)
         return res.status(500).json({ msg: "Funcionario não encontrado!" });
-
-      delete employee.id;
-      delete employee.password;
-      delete employee.createdAt;
-      delete employee.updatedAt;
 
       res.status(200).json({ ...employee });
     } catch (error) {
@@ -126,7 +119,7 @@ class EmployeeController {
         const employee = await Employee.findOne({
           raw: true,
           where: { cpf: cpfFormatted },
-          attributes: ["fullName", "cpf", "role", "phoneNumber"],
+          attributes: ["id", "fullName", "cpf", "role", "phoneNumber"],
         });
 
         if (!employee) resolve(false);
@@ -183,13 +176,8 @@ class EmployeeController {
     if (error) return res.status(500).json({ msg: error.details[0] });
 
     try {
-      const decoded = verifyToken(id);
-
-      if (!decoded)
-        res.status(400).json({ msg: "Funcionario não encontrado!" });
-
       const employee = await Employee.update(value, {
-        where: { id: decoded.id },
+        where: { id },
       });
 
       if (!employee)

@@ -57,6 +57,7 @@ class FinancialController {
             "discount",
             "createdAt",
             "externalObs",
+            "creator",
           ],
           include: [
             [col("OwnerReader.full_name"), "owner"],
@@ -66,11 +67,19 @@ class FinancialController {
             [col("OwnerReader.city"), "ownerCity"],
             [col("OwnerReader.cep"), "ownerCep"],
             [col("OwnerReader.phone_number"), "ownerPhoneNumber"],
+            [col("CreatorReader.full_name"), "creatorName"],
+            [col("CreatorReader.role"), "creatorRole"],
+            [col("CreatorReader.phone_number"), "creatorPhone"],
           ],
         },
         include: [
           {
             association: "OwnerReader",
+            attributes: [],
+          },
+
+          {
+            association: "CreatorReader",
             attributes: [],
           },
         ],
@@ -131,9 +140,9 @@ class FinancialController {
             amountPaid: order.amountPaid,
           },
           responsible: {
-            name: req.employee?.fullName?.toUpperCase(),
-            role: toTitleCase(req.employee?.role),
-            phoneNumber: formatPhone(req.employee?.phoneNumber),
+            name: order.creatorName?.toUpperCase(),
+            role: toTitleCase(order.creatorRole),
+            phoneNumber: formatPhone(order.creatorPhone),
           },
           obs: order.externalObs?.toUpperCase(),
         },
@@ -330,6 +339,7 @@ class FinancialController {
             "discount",
             "createdAt",
             "externalObs",
+            "creator",
           ],
           include: [
             [col("OwnerReader.full_name"), "owner"],
@@ -339,11 +349,19 @@ class FinancialController {
             [col("OwnerReader.city"), "ownerCity"],
             [col("OwnerReader.cep"), "ownerCep"],
             [col("OwnerReader.phone_number"), "ownerPhoneNumber"],
+            [col("CreatorReader.full_name"), "creatorName"],
+            [col("CreatorReader.role"), "creatorRole"],
+            [col("CreatorReader.phone_number"), "creatorPhone"],
           ],
         },
         include: [
           {
             association: "OwnerReader",
+            attributes: [],
+          },
+
+          {
+            association: "CreatorReader",
             attributes: [],
           },
         ],
@@ -414,9 +432,9 @@ class FinancialController {
           amountPaid: order.amountPaid,
         },
         responsible: {
-          name: req.employee?.fullName?.toUpperCase(),
-          role: toTitleCase(req.employee?.role),
-          phoneNumber: formatPhone(req.employee?.phoneNumber),
+          name: order.creatorName?.toUpperCase(),
+          role: toTitleCase(order.creatorRole),
+          phoneNumber: formatPhone(order.creatorPhone),
         },
         obs: order.externalObs?.toUpperCase(),
       });
@@ -436,7 +454,7 @@ class FinancialController {
         ownerPhone,
         pdfBuffer,
         "application/pdf",
-        `${id} - OS.pdf`
+        `${id} - ${order.owner?.toUpperCase()}.pdf`
       );
 
       return res.json({ msg: "Cobrança feita com sucesso!" });

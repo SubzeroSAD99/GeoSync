@@ -101,8 +101,6 @@ const SelectItem = ({
   useEffect(() => {
     const normalized = normalizeDefaultValue({ options, select, isMulti });
 
-    if (isMulti) console.log(select);
-
     setSelectedOption(normalized);
   }, [select, options, isMulti]);
 
