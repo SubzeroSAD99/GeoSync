@@ -49,7 +49,7 @@ ServiceOrder.init(
     },
 
     pending: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
 

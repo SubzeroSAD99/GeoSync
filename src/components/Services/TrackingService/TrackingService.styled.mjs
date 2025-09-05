@@ -115,6 +115,16 @@ const StyledSection = styled.section`
   width: max-content;
   background-color: var(--main-color-op07);
   box-shadow: 0px 0px 5px var(--main-color-op05);
+  position: relative;
+`;
+
+const StyledButton = styled.button`
+  background-color: transparent !important;
+  box-shadow: none !important;
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  font-size: 1.2rem;
 `;
 
 const ServiceContainer = styled.div`
@@ -317,6 +327,7 @@ const Footer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  gap: 1rem;
   z-index: 1;
 `;
 
@@ -339,6 +350,39 @@ const FilesContainer = styled.div`
     box-shadow: none !important;
     font-size: 1.2rem;
     padding: 0.2rem;
+  }
+
+  & p {
+    word-break: break-word;
+  }
+`;
+
+const PendingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.4rem;
+  background: linear-gradient(to right, #720d00bd, #33000034);
+  width: 100%;
+  max-width: 70rem;
+  box-shadow: 0px 0px 5px #00083334;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: var(--text-color2);
+
+  & ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    list-style: decimal;
+    padding: 0px 1rem;
+  }
+
+  & li {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-style: italic;
+    word-break: break-word;
   }
 `;
 
@@ -506,12 +550,14 @@ export {
   TitleContainer,
   Title,
   StyledSection,
+  StyledButton,
   ServiceContainer,
   ListContainer,
   ListItem,
   Circle,
   StepLabelContainer,
   Footer,
+  PendingContainer,
   FilesContainer,
   File,
   PaymentInfo,

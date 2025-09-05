@@ -3,10 +3,11 @@ import { Server } from "socket.io";
 class SocketServer {
   static #io = null;
 
-  static init(httpServer, { corsOrigins = [] } = {}) {
+  static init(httpServer, { corsOrigins = [], path = "/socket.io" } = {}) {
     if (this.#io) return this.#io;
 
     this.#io = new Server(httpServer, {
+      path,
       cors: { origin: corsOrigins, credentials: false },
       transports: ["websocket", "polling"],
     });

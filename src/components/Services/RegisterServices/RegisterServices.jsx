@@ -22,6 +22,7 @@ const RegisterServices = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Cadastrando Serviço...");
     const form = e.target;
 
     const formData = new FormData(form);
@@ -68,13 +69,25 @@ const RegisterServices = () => {
     try {
       const response = await api.post("/service/register", newForm);
 
-      if (response.data) toast.success(response.data.msg);
+      if (response.data)
+        toast.update(toastId, {
+          render: response.data.msg,
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
     } catch (err) {
       const field = err.response?.data?.field;
       const msg = err.response?.data?.msg;
 
       if (field) setErrors(field);
-      if (msg) toast.error(msg);
+      if (msg)
+        toast.update(toastId, {
+          render: msg,
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
 
       if (err.status === 401) setUserLogged(null);
     }

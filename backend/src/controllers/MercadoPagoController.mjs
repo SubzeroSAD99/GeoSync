@@ -69,6 +69,14 @@ class MercadoPagoController {
       if (!ts || !v1 || !requestId || !resourceId || !MP_WEBHOOK_SECRET)
         return res.sendStatus(400);
 
+      const tsSec = Math.floor(Number(ts) / 1000);
+      const nowSec = Math.floor(Date.now() / 1000);
+      const tolerance = 300; // 5 minutos de tolerância
+
+      if (Math.abs(nowSec - tsSec) > tolerance) {
+        return res.sendStatus(401);
+      }
+
       // Montando manifesto
       const manifest = `id:${resourceId};request-id:${requestId};ts:${ts};`;
 

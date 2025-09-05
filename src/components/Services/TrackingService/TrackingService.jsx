@@ -1,5 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
+  faCircleExclamation,
+  faCircleQuestion,
   faCompassDrafting,
   faCopy,
   faDownload,
@@ -15,8 +23,8 @@ import {
   faFileVideo,
   faFileWord,
   faFileZipper,
+  faMessage,
   faPaperclip,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Background,
@@ -29,10 +37,12 @@ import {
   ListContainer,
   ListItem,
   PaymentInfo,
+  PendingContainer,
   QrContainer,
   QrCopyPasteContainer,
   ServiceContainer,
   StepLabelContainer,
+  StyledButton,
   StyledHeader,
   StyledMain,
   StyledSection,
@@ -44,6 +54,8 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { io } from "socket.io-client";
 import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
+import debounce from "lodash.debounce";
+import StepInfo from "./StepInfo/StepInfo";
 
 const EXT_ICON_MAP = {
   dwg: faCompassDrafting,
@@ -138,6 +150,9 @@ const TrackingService = ({ id }) => {
   const [needPayment, setNeedPayment] = useState(false);
   const [socketRef, setSocketRef] = useState(null);
   const [confirmPayment, setConfirmPayment] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [observation, setObservation] = useState("");
+  const [pending, setPending] = useState([]);
 
   const STEPS = [
     "agendado",
@@ -150,11 +165,6 @@ const TrackingService = ({ id }) => {
     "retirada",
     "finalizado",
   ];
-
-  const getIcon = useCallback((filename) => {
-    const ext = getExt(filename);
-    return EXT_ICON_MAP[ext] || faFile;
-  }, []);
 
   const downloadFile = async (fileName) => {
     try {
@@ -253,6 +263,36 @@ const TrackingService = ({ id }) => {
     }
   };
 
+  const debouncedHandleSubmit = useMemo(
+    () =>
+      debounce(
+        (e) => {
+          if (e.persist) e.persist();
+          handleSubmit(e);
+        },
+        1000,
+        { leading: true, trailing: false }
+      ),
+    [handleSubmit]
+  );
+
+  const debouncedDownloadFile = useMemo(
+    () =>
+      debounce(
+        (fileName) => {
+          downloadFile(fileName);
+        },
+        1000,
+        { leading: true, trailing: false }
+      ),
+    [downloadFile]
+  );
+
+  const getIcon = useCallback((filename) => {
+    const ext = getExt(filename);
+    return EXT_ICON_MAP[ext] || faFile;
+  }, []);
+
   useEffect(() => {
     const isQrCodeInfo = Object.keys(qrCodeInfo).length > 0;
     if (!isQrCodeInfo && socketRef) {
@@ -270,6 +310,11 @@ const TrackingService = ({ id }) => {
 
         if (response.data) {
           setService(response.data.service);
+          setObservation(response.data.observation || "");
+
+          const pending = response.data.pending.filter(Boolean);
+
+          setPending(pending || "");
         }
       } catch (err) {
         const msg = err?.response?.data?.msg;
@@ -307,6 +352,7 @@ const TrackingService = ({ id }) => {
       }
 
       const socket = io(import.meta.env.VITE_BACKEND_URL, {
+        path: "/socket.io",
         transports: ["websocket"],
         withCredentials: false,
       });
@@ -357,6 +403,13 @@ const TrackingService = ({ id }) => {
 
               return (
                 <StyledSection key={it + idx}>
+                  <StyledButton
+                    type="button"
+                    title="Informações das etapas"
+                    onClick={() => setInfoOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faCircleQuestion} />
+                  </StyledButton>
                   <ServiceContainer>
                     <h3>{it.toUpperCase()}</h3>
                   </ServiceContainer>
@@ -411,6 +464,30 @@ const TrackingService = ({ id }) => {
             })}
           </StyledMain>
           <Footer>
+            {observation && (
+              <FilesContainer>
+                <h2>
+                  <FontAwesomeIcon icon={faMessage} /> Observação
+                </h2>
+
+                <p>{observation}</p>
+              </FilesContainer>
+            )}
+
+            {pending.length > 0 && (
+              <PendingContainer>
+                <h2>
+                  <FontAwesomeIcon icon={faCircleExclamation} /> Pendências
+                </h2>
+
+                <ul>
+                  {pending.map((it) => (
+                    <li>{it}</li>
+                  ))}
+                </ul>
+              </PendingContainer>
+            )}
+
             {files?.length > 0 && (
               <>
                 <FilesContainer>
@@ -427,7 +504,7 @@ const TrackingService = ({ id }) => {
                         <button
                           type="button"
                           onClick={() => {
-                            downloadFile(it);
+                            debouncedDownloadFile(it);
                           }}
                         >
                           <FontAwesomeIcon icon={faDownload} />
@@ -467,7 +544,7 @@ const TrackingService = ({ id }) => {
             role="dialog"
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
-            onSubmit={handleSubmit}
+            onSubmit={debouncedHandleSubmit}
           >
             <h2>Precisamos da Sua Confirmação</h2>
             <div>
@@ -512,6 +589,8 @@ const TrackingService = ({ id }) => {
         title="Pagamento confirmado!"
         autoCloseMs={5000}
       />
+
+      <StepInfo open={infoOpen} setOpen={setInfoOpen} />
     </>
   );
 };

@@ -1,11 +1,15 @@
 import Joi from "joi";
 import ServiceOrder from "../models/ServiceOrder.mjs";
-import { formatDate, formatCurrency } from "../utils/format.mjs";
+import { formatDate, formatCurrency, toTitleCase } from "../utils/format.mjs";
 import { col, literal, Op } from "sequelize";
 import WhatsappController from "./WhatsappController.mjs";
 import FileController from "./FileController.mjs";
 import db from "../db/db.mjs";
 import Employee from "../models/Employee.mjs";
+import { configDotenv } from "dotenv";
+configDotenv();
+
+const FRONT_END_URL = process.env.CORS_ORIGINS;
 
 const registerSchema = Joi.object({
   //#region ServiceSchema
@@ -71,7 +75,9 @@ const registerSchema = Joi.object({
     .empty("")
     .default("normal"),
 
-  pending: Joi.string().lowercase().allow(null).default(null).empty(""),
+  pending: Joi.array()
+    .items(Joi.string().lowercase().allow(null).default(null).empty(""))
+    .single(),
   //#endregion
 
   //#region OwnershipSchema
@@ -412,6 +418,61 @@ class ServiceOrderController {
         }
       }
 
+      if (value.step.length) {
+        const addedSteps = value.step.filter((it) => !order.step.includes(it));
+
+        if (addedSteps.length) {
+          try {
+            const clientsInfo = await ServiceOrder.findByPk(id, {
+              include: [
+                {
+                  association: "OwnerReader",
+                  attributes: ["fullName", "phoneNumber"],
+                },
+                {
+                  association: "ContractorReader",
+                  attributes: ["fullName", "phoneNumber"],
+                },
+              ],
+              attributes: [],
+              raw: true,
+            });
+
+            const clients = [
+              {
+                name: clientsInfo["OwnerReader.fullName"],
+                phoneNumber: clientsInfo["OwnerReader.phoneNumber"],
+              },
+
+              {
+                name: clientsInfo["ContractorReader.fullName"],
+                phoneNumber: clientsInfo["ContractorReader.phoneNumber"],
+              },
+            ];
+
+            for (const client of clients) {
+              if (client.phoneNumber) {
+                const msg = `
+                Olá, *${toTitleCase(client?.name)}*.
+                O seu serviço avançou para uma nova etapa. Clique no link abaixo para acompanhar o andamento do processo:
+
+                ${FRONT_END_URL}/servicos/rastreamento/${id}`
+                  .split("\n")
+                  .map((line) => line.trim())
+                  .join("\n")
+                  .trim();
+
+                try {
+                  await WhatsappController.sendMessage(client.phoneNumber, msg);
+                } catch (_) {}
+              }
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
       try {
         await FileController.validateAndMoveMany(internalFiles, id, "interno");
         await FileController.validateAndMoveMany(clientFiles, id, "externo");
@@ -716,6 +777,8 @@ class ServiceOrderController {
         attributes: [
           "step",
           "serviceType",
+          "externalObs",
+          "pending",
           [col("OwnerReader.full_name"), "owner"],
         ],
 
@@ -731,7 +794,13 @@ class ServiceOrderController {
       if (!data)
         return res.status(400).json({ msg: "Serviço não encontrado!" });
 
-      res.json({ service: data });
+      const observation = data?.externalObs;
+      const pending = data?.pending;
+
+      delete data.observation;
+      delete data.pending;
+
+      res.json({ service: data, observation, pending });
     } catch (err) {
       res.status(400).json({ msg: "Erro interno no servidor!" });
     }

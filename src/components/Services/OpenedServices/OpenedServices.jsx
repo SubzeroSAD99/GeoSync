@@ -29,7 +29,10 @@ const Section = () => {
           setLoading(false);
         }
       } catch (err) {
+        const msg = err?.response?.data?.msg;
         if (err.status == 401) return setUserLogged(null);
+
+        if (msg) toast.error(msg);
       }
     })();
   }, []);
