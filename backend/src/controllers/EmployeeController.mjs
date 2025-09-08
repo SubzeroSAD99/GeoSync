@@ -2,6 +2,7 @@ import permissions from "../access/permissions.mjs";
 import Employee from "../models/Employee.mjs";
 import { generateToken, verifyToken } from "../utils/Token.mjs";
 import { registerSchema, updateSchema } from "../utils/employeeSchema.mjs";
+import argon2 from "argon2";
 
 class EmployeeController {
   static async login(req, res) {
@@ -17,7 +18,9 @@ class EmployeeController {
 
       const dbPass = employee.getDataValue("password");
 
-      if (dbPass !== password)
+      const ok = await argon2.verify(dbPass, password);
+
+      if (!ok)
         return res.status(500).json({ msg: "CPF e/ou senha incorretos!" });
 
       const payload = {
@@ -190,9 +193,9 @@ class EmployeeController {
       if (err.name !== "SequelizeUniqueConstraintError")
         return res.status(500).json({ msg: "Erro interno do servidor." });
 
-      err.parent.constraint === "employees_cpf_key"
-        ? res.status(500).json({ msg: "CPF ja registrado!" })
-        : res.status(500).json({ msg: "Email ja registrado!" });
+      if (err.parent.constraint === "employees_cpf_key")
+        res.status(500).json({ msg: "CPF ja registrado!" });
+      else res.status(500).json({ msg: "Telefone ja registrado!" });
     }
   }
 

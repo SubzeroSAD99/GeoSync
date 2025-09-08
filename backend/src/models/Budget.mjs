@@ -74,6 +74,11 @@ Budget.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+
+    creator: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     sequelize,

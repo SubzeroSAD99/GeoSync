@@ -24,6 +24,7 @@ class MercadoPagoController {
           .json({ msg: "Serviço ja esta com pagamento em dia" });
 
       let amountCents = 0;
+      const { discount } = situation;
 
       for (let [index, value] of situation.serviceValue.entries()) {
         if (value) {
@@ -33,14 +34,22 @@ class MercadoPagoController {
         }
       }
 
+      let discountedCents = amountCents;
+
+      if (discount && !isNaN(discount)) {
+        const pct = Number(discount) / 100;
+        discountedCents = Math.round(discountedCents * (1 - pct));
+      }
+
       // subtrai o que já foi pago (também convertido em centavos)
       const paidCents = Math.round(Number(situation.amountPaid) * 100);
-      amountCents -= paidCents;
+      amountCents = discountedCents - paidCents;
+
+      if (isFinite(amountCents) && amountCents <= 0)
+        throw new Error("Valor inválido");
 
       // transforma de volta em reais só quando precisar exibir/enviar
       const amount = amountCents / 100;
-
-      if (isFinite(amount) && amount <= 0) throw new Error("Valor inválido");
 
       const data = await MercadoPagoService.createPix({
         amount,
@@ -68,14 +77,6 @@ class MercadoPagoController {
 
       if (!ts || !v1 || !requestId || !resourceId || !MP_WEBHOOK_SECRET)
         return res.sendStatus(400);
-
-      const tsSec = Math.floor(Number(ts) / 1000);
-      const nowSec = Math.floor(Date.now() / 1000);
-      const tolerance = 300; // 5 minutos de tolerância
-
-      if (Math.abs(nowSec - tsSec) > tolerance) {
-        return res.sendStatus(401);
-      }
 
       // Montando manifesto
       const manifest = `id:${resourceId};request-id:${requestId};ts:${ts};`;

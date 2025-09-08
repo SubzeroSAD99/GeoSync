@@ -161,8 +161,6 @@ const ServiceSector = ({
     step,
     quantity,
     municipality,
-    locality,
-    location,
     createService,
   ]);
 

@@ -101,6 +101,7 @@ const Clients = () => {
         columns={["Nome", "Telefone"]}
         rows={["fullName", "phoneNumber"]}
         array={allClients}
+        filterByPhone={true}
         setArray={setAllClients}
         handleDelete={handleAskDelete}
         handleEdit={handleEdit}

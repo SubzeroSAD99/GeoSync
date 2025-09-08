@@ -23,13 +23,7 @@ const ResponsibilitiesSector = ({
 
   return (
     <>
-      <div>
-        <h3>Responsáveis</h3>
-        <span style={{ fontSize: "0.9rem" }}>
-          (Se o proprietário for ao mesmo tempo o guia e o contratante, deixe os
-          campos correspondentes em branco)
-        </span>
-      </div>
+      <h3>Responsáveis</h3>
 
       <Container>
         <SelectItem

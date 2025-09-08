@@ -2,6 +2,8 @@ import Joi from "joi";
 import Budget from "../models/Budget.mjs";
 import { formatCurrency, parseCurrency } from "../utils/format.mjs";
 import { col, Op } from "sequelize";
+import db from "../db/db.mjs";
+import ServiceOrder from "../models/ServiceOrder.mjs";
 
 const registerSchema = Joi.object({
   //#region ServiceSchema
@@ -106,6 +108,7 @@ class BudgetController {
     value.serviceValue = value.serviceValue.map((it) => parseCurrency(it));
 
     try {
+      value.creator = req.employee?.id;
       const order = await Budget.create(value);
 
       if (!order)
@@ -221,6 +224,36 @@ class BudgetController {
       res.json(data);
     } catch (err) {
       res.status(500).json({ msg: "Erro interno do servidor!" });
+    }
+  }
+
+  static async convertToOs(req, res) {
+    const { id } = req.body;
+
+    try {
+      await db.transaction(async (t) => {
+        const budget = await Budget.findByPk(id, { transaction: t });
+        if (!budget)
+          return res.status(500).json({ msg: "Orçamento não encontrado!" });
+
+        const src = budget.get({ plain: true });
+        const destAttrs = Object.keys(ServiceOrder.getAttributes());
+        const pk = ServiceOrder.primaryKeyAttribute || "id";
+
+        const payload = {};
+        for (const k of destAttrs)
+          if (k !== pk && k in src) payload[k] = src[k];
+
+        delete payload.createdAt;
+        delete payload.updatedAt;
+
+        await ServiceOrder.create(payload, { transaction: t });
+        await budget.destroy({ transaction: t });
+
+        res.json({ msg: "Orçamento convertido com sucesso!" });
+      });
+    } catch (error) {
+      res.status(500).json({ msg: "Erro ao converter orçamento!" });
     }
   }
 }

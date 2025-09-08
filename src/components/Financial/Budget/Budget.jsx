@@ -88,7 +88,7 @@ const Budget = () => {
   const handleClickConvert = async (id) => {
     (async () => {
       try {
-        const response = await api.post("/financial/convertToOs", { id });
+        const response = await api.post("/budget/convertToOs", { id });
 
         if (response.data) {
           setAllBudget((prev) => prev.filter((it) => it.id !== id));

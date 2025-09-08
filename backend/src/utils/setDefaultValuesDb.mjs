@@ -713,6 +713,9 @@ const data = XLSX.utils.sheet_to_json(spreadsheet);
   });
 })();
 
-Employee.bulkCreate(EMPLOYEES, { ignoreDuplicates: true });
+Employee.bulkCreate(EMPLOYEES, {
+  ignoreDuplicates: true,
+  individualHooks: true,
+});
 Municipality.bulkCreate(MUNICIPALITIES, { ignoreDuplicates: true });
 Equipment.bulkCreate(EQUIPMENTS, { ignoreDuplicates: true });

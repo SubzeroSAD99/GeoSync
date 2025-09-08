@@ -6,7 +6,7 @@ const router = Router();
 
 router.post(
   "/getAll",
-  authorize("management", "read"),
+  authorize("service", "read"),
   ServiceTypeController.getAll
 );
 

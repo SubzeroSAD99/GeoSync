@@ -5,12 +5,6 @@ import { authorize } from "../middlewares/authMiddleware.mjs";
 const router = Router();
 
 router.post(
-  "/convertToOs",
-  authorize("financial", "create"),
-  FinancialController.convertToOs
-);
-
-router.post(
   "/genPdfOs",
   authorize("financial", "create"),
   FinancialController.genPdfOs

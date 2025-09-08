@@ -5,40 +5,9 @@ import { pipePdfToStream, pdfToBuffer } from "../utils/genPdf.mjs";
 import { toTitleCase } from "../utils/format.mjs";
 import pipeReceiptToStream from "../utils/genReceipt.mjs";
 import Budget from "../models/Budget.mjs";
-import db from "../db/db.mjs";
 import WhatsappContolller from "./WhatsappController.mjs";
 
 class FinancialController {
-  static async convertToOs(req, res) {
-    const { id } = req.body;
-
-    try {
-      await db.transaction(async (t) => {
-        const budget = await Budget.findByPk(id, { transaction: t });
-        if (!budget)
-          return res.status(500).json({ msg: "Orçamento não encontrado!" });
-
-        const src = budget.get({ plain: true });
-        const destAttrs = Object.keys(ServiceOrder.getAttributes());
-        const pk = ServiceOrder.primaryKeyAttribute || "id";
-
-        const payload = {};
-        for (const k of destAttrs)
-          if (k !== pk && k in src) payload[k] = src[k];
-
-        delete payload.createdAt;
-        delete payload.updatedAt;
-
-        await ServiceOrder.create(payload, { transaction: t });
-        await budget.destroy({ transaction: t });
-
-        res.json({ msg: "Orçamento convertido com sucesso!" });
-      });
-    } catch (error) {
-      res.status(500).json({ msg: "Erro ao converter orçamento!" });
-    }
-  }
-
   static async genPdfOs(req, res) {
     try {
       const { id } = req.body;

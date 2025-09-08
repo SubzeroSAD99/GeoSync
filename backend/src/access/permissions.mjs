@@ -18,6 +18,11 @@ const fullPerms = [
     actions: ["create", "read", "update", "delete"],
     resource: "file",
   },
+
+  {
+    actions: ["create", "read", "update", "delete"],
+    resource: "budget",
+  },
 ];
 
 const permissions = {

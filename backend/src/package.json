@@ -10,6 +10,7 @@
   "description": "",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
+    "argon2": "^0.44.0",
     "bcrypt": "^5.1.1",
     "big.js": "^7.0.1",
     "compression": "^1.8.1",

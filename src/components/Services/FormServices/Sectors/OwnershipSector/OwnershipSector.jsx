@@ -5,7 +5,13 @@ import { Container } from "../Sectors.styled.mjs";
 const OwnershipSector = ({ owners, owner, contractor, guide, errors }) => {
   return (
     <>
-      <h3>Contratação e Propriedade</h3>
+      <div>
+        <h3>Contratação e Propriedade</h3>
+        <span style={{ fontSize: "0.9rem" }}>
+          (Se o proprietário for ao mesmo tempo o guia e o contratante, deixe os
+          campos correspondentes em branco)
+        </span>
+      </div>
 
       <Container>
         <SelectItem

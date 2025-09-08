@@ -16,7 +16,14 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Table = ({ array = [], columns, rows, handleEdit, handleDelete }) => {
+const Table = ({
+  array = [],
+  filterByPhone,
+  columns,
+  rows,
+  handleEdit,
+  handleDelete,
+}) => {
   const [filters, setFilters] = useState({});
   const [tablePage, setTablePage] = useState(1);
   const TOTAL_ITEMS_PAGE = import.meta.env.VITE_TABLE_TOTAL_ITEMS;
@@ -55,6 +62,15 @@ const Table = ({ array = [], columns, rows, handleEdit, handleDelete }) => {
         column={rows[0]}
         onChange={setFilters}
       />
+
+      {filterByPhone && (
+        <FilterBar
+          label="Telefone"
+          filters={filters}
+          column={rows[1]}
+          onChange={setFilters}
+        />
+      )}
 
       <TableContainer>
         <StyledTable>

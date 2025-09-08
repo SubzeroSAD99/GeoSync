@@ -166,6 +166,16 @@ Employee.hasMany(ServiceOrder, {
   foreignKey: "creator",
   as: "CreatorOrder",
 });
+
+Budget.belongsTo(Employee, {
+  foreignKey: "creator",
+  as: "CreatorReader",
+});
+
+Employee.hasMany(Budget, {
+  foreignKey: "creator",
+  as: "CreatorBudget",
+});
 // ------------------------------------
 
 const initAll = async () => {

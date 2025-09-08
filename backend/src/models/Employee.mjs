@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/db.mjs";
+import argon2 from "argon2";
 
 class Employee extends Model {}
 
@@ -51,5 +52,11 @@ Employee.init(
     timestamps: true,
   }
 );
+
+Employee.addHook("beforeSave", async (employee) => {
+  if (employee.changed("password")) {
+    employee.password = await argon2.hash(employee.password);
+  }
+});
 
 export default Employee;

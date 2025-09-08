@@ -67,7 +67,7 @@ const EditEmployees = ({ id }) => {
       <FormEmployees
         {...infoEmployee}
         handleSubmit={handleSubmit}
-        options={allRoles.filter((it) => it.label !== role.toUpperCase())}
+        options={allRoles}
         role={role}
         btnSubmitValue={"Salvar Alterações"}
       />

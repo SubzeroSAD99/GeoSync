@@ -467,9 +467,7 @@ class ServiceOrderController {
                 } catch (_) {}
               }
             }
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (_) {}
         }
       }
 
@@ -599,19 +597,27 @@ class ServiceOrderController {
 
   static async getAllOpen(req, res) {
     try {
-      const { cpf, role } = req.employee;
+      const { id, cpf, role } = req.employee;
 
       const rows = await ServiceOrder.findAll({
-        where: { finished: false },
+        where: {
+          finished: false,
+          ...(role === "cadista"
+            ? {
+                [Op.or]: [
+                  { "$cadists.cpf$": cpf }, // aparece se for cadista
+                  { processing_resp: id },
+                ],
+              }
+            : {}),
+        },
         attributes: { exclude: ["updatedAt"] },
         include: [
-          { association: "OwnerReader", attributes: ["fullName"] },
           {
-            model: Employee,
-            as: "cadists",
+            association: "cadists",
             attributes: ["fullName"],
             through: { attributes: [] },
-            ...(role === "cadista" ? { where: { cpf } } : {}),
+            required: false,
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -629,6 +635,8 @@ class ServiceOrderController {
 
       res.json(data);
     } catch (err) {
+      console.log(err);
+
       res.status(500).json({ msg: "Erro interno do servidor!" });
     }
   }
@@ -816,6 +824,7 @@ class ServiceOrderController {
           "amountPaid",
           "serviceValue",
           "quantity",
+          "discount",
         ],
         raw: true,
       });

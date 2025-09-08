@@ -27,7 +27,7 @@ const ServiceItem = memo(
     return (
       <Container>
         <InputSector
-          id={`code`}
+          id="code"
           defaultValue={code}
           type="text"
           label="Código"
@@ -66,7 +66,7 @@ const ServiceItem = memo(
         />
 
         <InputSector
-          id={`quantity`}
+          id="quantity"
           type="number"
           label="Quantidade"
           defaultValue={quantity}
@@ -91,10 +91,10 @@ const ServiceItem = memo(
         />
 
         <InputSector
-          id={`locality`}
+          id="locality"
           type="text"
           label="Localidade"
-          value={locality}
+          defaultValue={locality}
           onChange={(e) => updateService(id, "locality", e.currentTarget.value)}
           placeholder="DIGITE A LOCALIDADE"
           uppercase
@@ -104,7 +104,7 @@ const ServiceItem = memo(
           id={`location`}
           type="url"
           label="Link"
-          value={location}
+          defaultValue={location}
           onChange={(e) => updateService(id, "location", e.currentTarget.value)}
           placeholder="COLE A URL DE LOCALIZAÇÃO"
         />

@@ -160,7 +160,7 @@ const TrackingService = ({ id }) => {
     "processado",
     "confecção",
     "impresso",
-    "concluido",
+    "concluído",
     "entrega",
     "retirada",
     "finalizado",

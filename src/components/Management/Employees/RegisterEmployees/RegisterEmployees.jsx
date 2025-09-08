@@ -44,7 +44,7 @@ const RegisterEmployees = () => {
           { label: "aux. topografo" },
         ]}
         role="cadista"
-        btnSubmitValue={"Cadastrar"}
+        btnSubmitValue="Cadastrar"
       />
     </section>
   );
