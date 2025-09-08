@@ -39,6 +39,7 @@ const InputText = ({ label, id, defaultValue }) => {
           spellCheck={false}
           placeholder="R$ 0,00"
           maxLength={18}
+          id={id}
           name={id}
           onChange={(e) => {
             let digits = e.currentTarget.value.replace(/\D/g, "");

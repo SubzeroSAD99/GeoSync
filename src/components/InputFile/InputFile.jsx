@@ -151,6 +151,7 @@ const InputFile = ({ id, label, files }) => {
         .rar,.7z
         "
         name={id}
+        id={id}
         multiple={true}
       />
 

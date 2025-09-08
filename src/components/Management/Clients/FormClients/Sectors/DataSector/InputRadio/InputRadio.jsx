@@ -15,6 +15,7 @@ const InputRadio = ({ title, value, setValue, options = [], span }) => {
             value={id}
             checked={value === id}
             onClick={() => setValue(id)}
+            readOnly
           />
           <label htmlFor={id}>{label}</label>
         </div>

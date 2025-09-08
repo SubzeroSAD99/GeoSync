@@ -66,6 +66,7 @@ const InputDiscount = ({
       <StyledInput
         style={{ width: "50%" }}
         type="text"
+        id="displayDiscount"
         value={valueWithDiscount}
         maxLength={18}
         onChange={(e) => {

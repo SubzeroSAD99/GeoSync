@@ -64,7 +64,11 @@ const FormInputItem = memo(
             placeholder={""}
             maxLength={maxLength}
             onFocus={(e) => (e.target.placeholder = placeholder)}
-            onBlur={(e) => (e.target.placeholder = "")}
+            onBlur={(e) => {
+              console.log(e);
+
+              e.target.placeholder = "";
+            }}
             {
               ...(isCurrency
                 ? {

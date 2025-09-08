@@ -103,11 +103,11 @@ const FormServiceTypes = ({
         <FormInputItem id="name" type="text" label="Nome" valueInput={name} />
 
         <InputContainer>
-          <label htmlFor="ha">Hectares</label>
+          <label htmlFor="ha1">Hectares</label>
           <StyledInput
             ref={ha1Ref}
             type="text"
-            id="ha"
+            id="ha1"
             name="ha"
             placeholder="de"
           />
@@ -115,7 +115,7 @@ const FormServiceTypes = ({
           <StyledInput
             ref={ha2Ref}
             type="text"
-            id="ha"
+            id="ha2"
             name="ha"
             placeholder="ate"
           />
@@ -124,6 +124,7 @@ const FormServiceTypes = ({
         <InputMultiSelect
           type="text"
           label="Adicionar Valor"
+          id="values"
           name="values"
           setAllValues={setAllValues}
           allValues={allValues}

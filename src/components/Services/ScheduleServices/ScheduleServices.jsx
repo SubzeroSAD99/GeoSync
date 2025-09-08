@@ -219,7 +219,7 @@ const ScheduleServices = () => {
       )}
       {topographers?.map((topographer, idx) => (
         <Calendar
-          key={topographer.id + idx}
+          key={`${topographer.id}${idx}`}
           topographer={topographer}
           events={eventsByTopographer[topographer.id] || {}}
           setEvents={setEventsFor(topographer)}
