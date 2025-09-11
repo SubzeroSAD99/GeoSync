@@ -14,13 +14,21 @@ router.post(
 router.post(
   "/register",
   authorize("service", "create"),
-  upload.fields([{ name: "internalFile" }, { name: "clientFile" }]),
+  upload.fields([
+    { name: "internalFile" },
+    { name: "clientFile" },
+    { name: "proofPaymentFile" },
+  ]),
   ServiceOrderController.register
 );
 
 router.post(
   "/edit",
-  upload.fields([{ name: "internalFile" }, { name: "clientFile" }]),
+  upload.fields([
+    { name: "internalFile" },
+    { name: "clientFile" },
+    { name: "proofPaymentFile" },
+  ]),
   authorize("service", "update"),
   ServiceOrderController.update
 );

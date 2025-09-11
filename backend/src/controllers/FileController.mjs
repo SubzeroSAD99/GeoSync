@@ -2,8 +2,6 @@ import path from "path";
 import fs from "fs/promises";
 import { fileTypeFromFile } from "file-type";
 import ServiceOrderController from "./ServiceOrderController.mjs";
-import { log } from "util";
-import MercadoPagoController from "./MercadoPagoController.mjs";
 
 const ALLOWED_MIME = new Set([
   // Imagens
@@ -83,10 +81,10 @@ class FileController {
   }
 
   static async getById(id) {
-    const result = { internal: [], external: [] };
+    const result = { internal: [], external: [], proofPayment: [] };
 
     // percorre cada subpasta em série (poderia ser Promise.all)
-    for (const folder of ["interno", "externo"]) {
+    for (const folder of ["interno", "externo", "comprovantes"]) {
       const dirPath = path.join(UPLOAD_DIR, String(id), folder);
 
       try {
@@ -103,7 +101,8 @@ class FileController {
         });
 
       if (folder === "interno") result.internal.push(...files);
-      else result.external.push(...files);
+      else if (folder === "externo") result.external.push(...files);
+      else result.proofPayment.push(...files);
     }
 
     return result;
@@ -187,6 +186,7 @@ class FileController {
 
   static async validateAndMoveMany(files = [], id, type) {
     if (!files?.length) return [];
+
     const moved = [];
     try {
       const results = [];

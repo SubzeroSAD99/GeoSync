@@ -40,11 +40,13 @@ const FormInputItem = memo(
             name={id}
             type={passwordVisible ? "text" : "password"}
             value={value}
+            placeholder=""
             onChange={(e) => {
               setValue(e.target.value);
               onChange && onChange(e.target.value, setValue);
             }}
-            placeholder={placeholder}
+            onFocus={(e) => (e.target.placeholder = placeholder)}
+            onBlur={(e) => (e.target.placeholder = "")}
             maxLength={maxLength}
           />
         ) : (
@@ -61,14 +63,10 @@ const FormInputItem = memo(
             id={id}
             name={id}
             type={type}
-            placeholder={""}
+            placeholder=""
             maxLength={maxLength}
             onFocus={(e) => (e.target.placeholder = placeholder)}
-            onBlur={(e) => {
-              console.log(e);
-
-              e.target.placeholder = "";
-            }}
+            onBlur={(e) => (e.target.placeholder = "")}
             {
               ...(isCurrency
                 ? {

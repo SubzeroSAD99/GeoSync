@@ -25,6 +25,7 @@ import {
 import { toast } from "react-toastify";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import api from "@utils/api.mjs";
+import ConfirmDialog from "./../ConfirmDialog/ConfirmDialog";
 
 const EXT_ICON_MAP = {
   // CAD (não há "file-dwg" oficial; usar um genérico visualmente coerente)
@@ -83,6 +84,9 @@ const getExt = (name = "") => {
 const InputFile = ({ id, label, files }) => {
   const { setUserLogged } = useAuth();
   const [localFiles, setLocalFiles] = useState(files ?? {});
+  const [toDelete, setToDelete] = useState({});
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => setLocalFiles(files ?? {}), [files]);
 
@@ -115,13 +119,16 @@ const InputFile = ({ id, label, files }) => {
     }
   };
 
-  const deleteFile = async (path) => {
+  const deleteFile = async () => {
+    setBusy(true);
     try {
-      const response = await api.post("/file/delete", { filePath: path });
+      const response = await api.post("/file/delete", {
+        filePath: toDelete.path,
+      });
 
       if (response.data) {
         toast.success(response.data.msg);
-        setLocalFiles((prev) => prev.filter((f) => f.path !== path));
+        setLocalFiles((prev) => prev.filter((f) => f.path !== toDelete.path));
       }
     } catch (err) {
       const msg = err?.response?.data?.msg;
@@ -129,7 +136,16 @@ const InputFile = ({ id, label, files }) => {
       if (err.status === 401) setUserLogged(null);
 
       toast.error(msg);
+    } finally {
+      setBusy(false);
+      setOpen(false);
+      setToDelete({});
     }
+  };
+
+  const handleAskDelete = (file) => {
+    setToDelete(file);
+    setOpen(true);
   };
 
   const getIcon = useCallback((filename) => {
@@ -139,6 +155,21 @@ const InputFile = ({ id, label, files }) => {
 
   return (
     <InputFileContainer>
+      <ConfirmDialog
+        open={open}
+        title="Excluir Arquivo"
+        description={`Tem certeza que deseja excluir "${toDelete?.name}"? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir Arquivo"
+        cancelLabel="Cancelar"
+        loading={false}
+        onConfirm={() => toDelete && deleteFile()}
+        onCancel={() => {
+          if (!busy) {
+            setOpen(false);
+            setToDelete(null);
+          }
+        }}
+      />
       <label htmlFor={id}>{label}</label>
       <input
         type="file"
@@ -177,7 +208,7 @@ const InputFile = ({ id, label, files }) => {
                   <button
                     type="button"
                     onClick={() => {
-                      deleteFile(it.path);
+                      handleAskDelete(it);
                     }}
                   >
                     <FontAwesomeIcon icon={faTrash} />

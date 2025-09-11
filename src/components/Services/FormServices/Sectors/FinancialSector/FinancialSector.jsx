@@ -4,6 +4,7 @@ import InputText from "@components/Services/InputText/InputText";
 import SelectItem from "@components/SelectItem/SelectItem";
 import InputSector from "../InputSector/InputSector";
 import InputDiscount from "../InputSector/InputDiscount";
+import InputFile from "./../../../../InputFile/InputFile";
 
 const FinancialSector = ({
   services,
@@ -12,6 +13,7 @@ const FinancialSector = ({
   defaultDiscount,
   amountPaid,
   payer,
+  files,
 }) => {
   const [valueWithDiscount, setValueWithDiscount] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -116,6 +118,12 @@ const FinancialSector = ({
           placeholder="DIGITE O NOME DO PAGADOR"
           defaultValue={payer}
           uppercase={true}
+        />
+
+        <InputFile
+          label="Comprovante de Pagamento"
+          id="proofPaymentFile"
+          files={files?.proofPayment}
         />
       </Container>
     </>

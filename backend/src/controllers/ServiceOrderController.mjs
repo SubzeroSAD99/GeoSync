@@ -196,6 +196,12 @@ class ServiceOrderController {
       ? [req.files.clientFile]
       : [];
 
+    const proofPaymentFiles = Array.isArray(req.files?.proofPaymentFile)
+      ? req.files.proofPaymentFile
+      : req.files?.proofPaymentFile
+      ? [req.files.proofPaymentFile]
+      : [];
+
     if (error) {
       await FileController.cleanupTmpFiles(req.files);
 
@@ -283,6 +289,11 @@ class ServiceOrderController {
           order.id,
           "externo"
         );
+        await FileController.validateAndMoveMany(
+          proofPaymentFiles,
+          order.id,
+          "comprovantes"
+        );
       } catch (error) {
         if (error.msg) return res.status(400).json({ msg: error.msg });
         return res.status(500).json({ msg: "Erro interno do servidor." });
@@ -337,6 +348,12 @@ class ServiceOrderController {
         ? req.files.clientFile
         : req.files?.clientFile
         ? [req.files.clientFile]
+        : [];
+
+      const proofPaymentFiles = Array.isArray(req.files?.proofPaymentFile)
+        ? req.files.proofPaymentFile
+        : req.files?.proofPaymentFile
+        ? [req.files.proofPaymentFile]
         : [];
 
       delete req.body.id;
@@ -474,6 +491,11 @@ class ServiceOrderController {
       try {
         await FileController.validateAndMoveMany(internalFiles, id, "interno");
         await FileController.validateAndMoveMany(clientFiles, id, "externo");
+        await FileController.validateAndMoveMany(
+          proofPaymentFiles,
+          id,
+          "comprovantes"
+        );
       } catch (error) {
         if (error.msg) return res.status(400).json({ msg: error.msg });
         return res.status(500).json({ msg: "Erro interno do servidor." });
@@ -637,8 +659,6 @@ class ServiceOrderController {
 
       res.json(data);
     } catch (err) {
-      console.log(err);
-
       res.status(500).json({ msg: "Erro interno do servidor!" });
     }
   }
@@ -965,8 +985,6 @@ class ServiceOrderController {
         if (guidePhone)
           await WhatsappController.sendMessage(guidePhone, message);
       } catch (err) {
-        console.log(err);
-
         return res.json({ warn: true, msg: "Erro ao enviar mensagens!" });
       }
       return res.json({ msg: "Serviço confirmado com sucesso!" });

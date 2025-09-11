@@ -288,6 +288,7 @@ const FormServices = ({
         defaultDiscount={discount}
         services={services}
         payer={payer}
+        files={files}
       />
 
       <ExtrasSector
