@@ -112,7 +112,7 @@ const FinancialSector = ({
         <InputSector
           type="text"
           label="Pagador"
-          id="payer"
+          name="payer"
           placeholder="DIGITE O NOME DO PAGADOR"
           defaultValue={payer}
           uppercase={true}

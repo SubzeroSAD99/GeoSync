@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { InputContainer, StyledInput } from "./InputSector.styled.mjs";
 
 const InputSector = ({
-  id,
+  name,
   type,
   label,
   defaultValue,
@@ -22,11 +22,10 @@ const InputSector = ({
 
   return (
     <InputContainer>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={name}>{label}</label>
       <StyledInput
         type={type}
-        id={id}
-        name={id}
+        name={name}
         inputMode={inputMode}
         pattern={pattern}
         onChange={onChange}

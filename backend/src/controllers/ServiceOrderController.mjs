@@ -619,6 +619,8 @@ class ServiceOrderController {
             through: { attributes: [] },
             required: false,
           },
+
+          { association: "OwnerReader", attributes: ["fullName"] },
         ],
         order: [["createdAt", "DESC"]],
       });
@@ -646,17 +648,27 @@ class ServiceOrderController {
       const { cpf, role } = req.employee;
 
       const rows = await ServiceOrder.findAll({
-        where: { finished: true },
+        where: {
+          finished: true,
+          ...(role === "cadista"
+            ? {
+                [Op.or]: [
+                  { "$cadists.cpf$": cpf }, // aparece se for cadista
+                  { processing_resp: id },
+                ],
+              }
+            : {}),
+        },
         attributes: { exclude: ["updatedAt"] },
         include: [
-          { association: "OwnerReader", attributes: ["fullName"] },
           {
-            model: Employee,
-            as: "cadists",
+            association: "cadists",
             attributes: ["fullName"],
             through: { attributes: [] },
-            ...(role === "cadista" ? { where: { cpf } } : {}),
+            required: false,
           },
+
+          { association: "OwnerReader", attributes: ["fullName"] },
         ],
         order: [["createdAt", "DESC"]],
       });
@@ -890,6 +902,15 @@ class ServiceOrderController {
       }
 
       order.confirmed = true;
+
+      const splitedHour = order.measurementHour?.slice(0, -3);
+      const shift = ServiceOrderController.getShift(splitedHour);
+
+      if (!shift)
+        return res
+          .status(500)
+          .json({ msg: "Horário do agendamento não foi definido!" });
+
       await order.save();
 
       const topographerName = order.TopographerReader?.fullName;
@@ -908,8 +929,6 @@ class ServiceOrderController {
       const guidePhone = order.GuideReader?.phoneNumber;
 
       try {
-        const splitedHour = order.measurementHour?.slice(0, -3);
-
         const message = ServiceOrderController.getMessage({
           date: formatDate(order.measurementDate).split(",")[0],
           hour: [
@@ -926,7 +945,7 @@ class ServiceOrderController {
             localities: order.locality,
             locations: order.location,
           },
-          shift: ServiceOrderController.getShift(splitedHour),
+          shift,
           client: ownerName,
           contractor: contractorName,
           guide: guideName,
@@ -946,6 +965,8 @@ class ServiceOrderController {
         if (guidePhone)
           await WhatsappController.sendMessage(guidePhone, message);
       } catch (err) {
+        console.log(err);
+
         return res.json({ warn: true, msg: "Erro ao enviar mensagens!" });
       }
       return res.json({ msg: "Serviço confirmado com sucesso!" });
@@ -1022,6 +1043,8 @@ class ServiceOrderController {
   }
 
   static getShift(timeStr) {
+    if (!timeStr) return null;
+
     const [h, m] = timeStr.split(":").map(Number);
 
     if (h >= 5 && h < 12) {

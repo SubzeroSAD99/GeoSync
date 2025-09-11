@@ -30,7 +30,7 @@ const MeasurementSector = ({
         <InputSector
           type="time"
           label="Hora"
-          id="measurementHour"
+          name="measurementHour"
           defaultValue={measurementHour}
         />
       </Container>

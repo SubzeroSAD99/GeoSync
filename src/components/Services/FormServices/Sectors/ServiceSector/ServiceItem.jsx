@@ -27,7 +27,7 @@ const ServiceItem = memo(
     return (
       <Container>
         <InputSector
-          id="code"
+          name="code"
           defaultValue={code}
           type="text"
           label="Código"
@@ -66,7 +66,7 @@ const ServiceItem = memo(
         />
 
         <InputSector
-          id="quantity"
+          name="quantity"
           type="number"
           label="Quantidade"
           defaultValue={quantity}
@@ -91,7 +91,7 @@ const ServiceItem = memo(
         />
 
         <InputSector
-          id="locality"
+          name="locality"
           type="text"
           label="Localidade"
           defaultValue={locality}
@@ -101,7 +101,7 @@ const ServiceItem = memo(
         />
 
         <InputSector
-          id={`location`}
+          name="location"
           type="url"
           label="Link"
           defaultValue={location}
