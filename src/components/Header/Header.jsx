@@ -7,12 +7,7 @@ import {
   UserContainer,
 } from "./Header.styles.mjs";
 import { useMediaQuery } from "react-responsive";
-import {
-  faArrowRightFromBracket,
-  faBars,
-  faMoon,
-  faSun,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket, faBars, faMoon, faSun } from "@/icons.mjs";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -5,7 +5,11 @@ import { useAuth } from "@contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useCanAccess from "@/hooks/useCanAccess.mjs";
-import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPenToSquare,
+  faEye,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import Loading from "@components/Loading/Loading";
 import ConfirmDialog from "../../ConfirmDialog/ConfirmDialog.jsx";
 
@@ -128,7 +132,7 @@ const Section = () => {
           {
             buttonInfo: {
               condition: canAccess("service", "update"),
-              icon: faEdit,
+              icon: faPenToSquare,
               label: "Editar",
               color: "#e48900",
               click: handleEdit,

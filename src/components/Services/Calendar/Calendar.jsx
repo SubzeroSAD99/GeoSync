@@ -9,11 +9,7 @@ import {
   StyledButton,
 } from "./Calendar.styled.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight, faEye } from "@/icons.mjs";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import api from "@utils/api.mjs";

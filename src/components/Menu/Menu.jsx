@@ -11,7 +11,7 @@ import {
   faTable,
   faTableCellsRowLock,
   faUsers,
-  faCalendarAlt,
+  faCalendarDays,
   faGears,
   faTableCellsRowUnlock,
   faEarthAmerica,
@@ -57,7 +57,7 @@ const Menu = () => {
 
         {
           label: "Agendamento",
-          icon: faCalendarAlt,
+          icon: faCalendarDays,
           redirect: "/servicos/agendamento",
           condition: canAccess("service", "viewSchedule"),
         },

@@ -7,7 +7,7 @@ import {
   DialogHeader,
 } from "./ConfirmDialog.styled.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWarning } from "@fortawesome/free-solid-svg-icons";
+import { faTriangleExclamation } from "@/icons.mjs";
 
 export default function ConfirmDialog({
   open,
@@ -92,7 +92,7 @@ export default function ConfirmDialog({
       <Dialog ref={dialogRef}>
         <DialogHeader>
           <div>
-            <FontAwesomeIcon icon={faWarning} />
+            <FontAwesomeIcon icon={faTriangleExclamation} />
             <h1 id="confirm-title">{title}</h1>
           </div>
           <p id="confirm-desc">{description}</p>

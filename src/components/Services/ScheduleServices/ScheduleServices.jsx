@@ -9,11 +9,7 @@ import {
   StyledTh,
   TableContainer,
 } from "./ScheduleService.styled.mjs";
-import {
-  faCheck,
-  faLocationDot,
-  faSquareCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faLocationDot, faSquareCheck } from "@/icons.mjs";
 import api from "@utils/api.mjs";
 import { toast } from "react-toastify";
 import { useAuth } from "@contexts/AuthContext";

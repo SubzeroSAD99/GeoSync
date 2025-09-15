@@ -1,6 +1,6 @@
 import React from "react";
 import { StyledFontAwesome, Title } from "./NotFound.styles.mjs";
-import { faLinkSlash } from "@fortawesome/free-solid-svg-icons";
+import { faLinkSlash } from "@/icons.mjs";
 
 const NotFound = () => {
   return (

@@ -1,7 +1,7 @@
 {
   "name": "geosync",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -37,6 +37,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "rollup-plugin-visualizer": "^6.0.3",
     "vite": "^6.2.0"
   }
 }

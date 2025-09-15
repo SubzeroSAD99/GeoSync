@@ -5,21 +5,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import SelectItem from "@components/SelectItem/SelectItem";
-import { Container } from "../Sectors.styled.mjs";
-import InputSector from "../InputSector/InputSector";
 import {
   TitleContainer,
   ServiceContainer,
   TableContainer,
   ButtonCloseTable,
 } from "./ServiceSector.styled.mjs";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTable, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTable, faTrash } from "@/icons.mjs";
 import { toast } from "react-toastify";
 import api from "@utils/api.mjs";
 import ServiceItem from "./ServiceItem";
 import TableServiceTypes from "@components/Management/ServiceTypes/TableServiceTypes/TableServiceTypes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const createServiceFactory =
   (idRef) =>
@@ -93,13 +90,14 @@ const ServiceSector = ({
     [setServices, createService]
   );
 
-  const showTable = useCallback((id) => {
-    setInfoTable(
-      services.map((it) => {
-        if (it.id === id) return serviceObjValues[it.serviceType];
-      })[0]
-    );
-  });
+  const showTable = useCallback(
+    (id) => {
+      const svc = services.find((it) => it.id === id);
+      if (!svc) return;
+      setInfoTable(serviceObjValues[svc.serviceType] ?? null);
+    },
+    [services, serviceObjValues]
+  );
 
   useEffect(() => {
     // Service Types
@@ -161,6 +159,8 @@ const ServiceSector = ({
     step,
     quantity,
     municipality,
+    locality,
+    location,
     createService,
   ]);
 
@@ -169,7 +169,7 @@ const ServiceSector = ({
       {infoTable && (
         <TableContainer>
           <div>
-            <ButtonCloseTable type="button" onClick={() => setInfoTable("")}>
+            <ButtonCloseTable type="button" onClick={() => setInfoTable(null)}>
               X
             </ButtonCloseTable>
           </div>
@@ -199,7 +199,6 @@ const ServiceSector = ({
             )}
 
             <ServiceItem
-              key={s.id}
               idx={idx}
               service={s}
               options={{
@@ -215,7 +214,7 @@ const ServiceSector = ({
                 },
               }}
               updateService={updateService}
-              removeService={() => removeService(s.id)}
+              removeService={(e) => removeService(e, s.id)}
               errors={errors}
             />
           </ServiceContainer>

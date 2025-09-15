@@ -8,7 +8,7 @@ import {
   ItemsContainer,
 } from "./InputMultiSelect.styled.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@/icons.mjs";
 
 const InputMultiSelect = (props) => {
   const [value, setValue] = useState("");

@@ -10,7 +10,7 @@ import {
 } from "./MenuItemList.styles.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown } from "@/icons.mjs";
 
 const MenuItemList = ({
   label,

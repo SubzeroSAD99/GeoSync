@@ -25,7 +25,7 @@ import {
   faFileZipper,
   faMessage,
   faPaperclip,
-} from "@fortawesome/free-solid-svg-icons";
+} from "@/icons.mjs";
 import {
   Background,
   Circle,

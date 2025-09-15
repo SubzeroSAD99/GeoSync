@@ -5,6 +5,7 @@ import {
   InputFileContainer,
 } from "./InputFile.styled.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+//Icons
 import {
   faCompassDrafting,
   faDownload,
@@ -21,7 +22,8 @@ import {
   faFileWord,
   faFileZipper,
   faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+} from "@/icons.mjs";
+
 import { toast } from "react-toastify";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import api from "@utils/api.mjs";

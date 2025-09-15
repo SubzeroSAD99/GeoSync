@@ -1,11 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import {
-  faEdit,
-  faTrash,
-  faUser,
-  faUserTie,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash, faUser, faUserTie } from "@/icons.mjs";
 import {
   Actions,
   ButtonDelete,
@@ -56,7 +51,7 @@ const RowTable = ({ rows, obj, onDelete, onEdit }) => {
               onEdit(obj.id);
             }}
           >
-            <FontAwesomeIcon icon={faEdit} />
+            <FontAwesomeIcon icon={faPenToSquare} />
             <span>Editar</span>
           </ButtonEdit>
         </Actions>

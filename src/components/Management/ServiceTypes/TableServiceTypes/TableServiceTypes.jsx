@@ -9,10 +9,7 @@ import {
   PageContainer,
 } from "./TableServiceTypes.styled.mjs";
 
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight } from "@/icons.mjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TableServiceTypes = ({ title, array }) => {

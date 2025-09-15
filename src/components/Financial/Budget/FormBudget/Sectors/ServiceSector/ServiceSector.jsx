@@ -11,12 +11,12 @@ import {
   TableContainer,
   ButtonCloseTable,
 } from "./ServiceSector.styled.mjs";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTable, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTable, faTrash } from "@/icons.mjs";
 import { toast } from "react-toastify";
 import api from "@utils/api.mjs";
 import ServiceItem from "./ServiceItem";
 import TableServiceTypes from "@components/Management/ServiceTypes/TableServiceTypes/TableServiceTypes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const createServiceFactory =
   (idRef) =>
