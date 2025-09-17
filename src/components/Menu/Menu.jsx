@@ -23,7 +23,8 @@ import {
   faTicketSimple,
   faMoneyCheckDollar,
   faTag,
-} from "@fortawesome/free-solid-svg-icons";
+  faFile,
+} from "@/icons.mjs";
 import useCanAccess from "@/hooks/useCanAccess.mjs";
 import { useMediaQuery } from "react-responsive";
 
@@ -121,6 +122,12 @@ const Menu = () => {
           label: "Orçamentos",
           icon: faMoneyCheckDollar,
           redirect: "/financeiro/orcamentos",
+        },
+
+        {
+          label: "Relatório",
+          icon: faFile,
+          redirect: "/financeiro/relatorio",
         },
       ],
     },

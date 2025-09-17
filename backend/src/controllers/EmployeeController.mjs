@@ -37,7 +37,7 @@ class EmployeeController {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production", // só em HTTPS
           sameSite: "Strict", // contra CSRF
-          maxAge: 60 * 60 * 1000, // 1h em ms
+          maxAge: 60 * 60 * 8000, // 8h em ms
         })
         .json({
           employee: {

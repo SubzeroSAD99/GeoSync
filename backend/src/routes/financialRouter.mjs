@@ -23,6 +23,12 @@ router.post(
 );
 
 router.post(
+  "/genReport",
+  authorize("financial", "read"),
+  FinancialController.genReport
+);
+
+router.post(
   "/serviceCharger",
   authorize("financial", "create"),
   FinancialController.serviceCharger

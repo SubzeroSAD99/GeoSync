@@ -1,11 +1,12 @@
-import { col } from "sequelize";
+import { col, Op } from "sequelize";
 import ServiceOrder from "../models/ServiceOrder.mjs";
-import { formatCurrency, formatPhone } from "../utils/format.mjs";
+import { formatCurrency, formatPhone, parseDate } from "../utils/format.mjs";
 import { pipePdfToStream, pdfToBuffer } from "../utils/genPdf.mjs";
 import { toTitleCase } from "../utils/format.mjs";
 import pipeReceiptToStream from "../utils/genReceipt.mjs";
 import Budget from "../models/Budget.mjs";
 import WhatsappContolller from "./WhatsappController.mjs";
+import { pipePdfReportToStream } from "../utils/genReport.mjs";
 
 class FinancialController {
   static async genPdfOs(req, res) {
@@ -119,6 +120,84 @@ class FinancialController {
       );
     } catch (error) {
       res.status(500).json({ msg: "Erro interno no servidor!" });
+    }
+  }
+
+  static async genReport(req, res) {
+    try {
+      const { start, end } = req.body;
+
+      const isEmpty = (v) =>
+        v === undefined ||
+        v === null ||
+        (typeof v === "string" && v.trim() === "");
+
+      const hasStart = !isEmpty(start);
+      const hasEnd = !isEmpty(end);
+
+      // Normalizar datas (se vierem como string)
+      const startDate = hasStart ? parseDate(start) : null;
+      const endDate = hasEnd ? parseDate(end) : null;
+
+      if (hasStart && isNaN(startDate)) {
+        return res.status(400).json({ msg: "Data de inicio inválida." });
+      }
+      if (hasEnd && isNaN(endDate)) {
+        return res.status(400).json({ msg: "Data final inválida." });
+      }
+
+      // Incluir o dia todo no 'end'
+      if (endDate) {
+        endDate.setHours(23, 59, 59, 999);
+      }
+
+      if (startDate && endDate && endDate < startDate) {
+        return res
+          .status(400)
+          .json({ msg: "A data final não pode ser menor que a de inicio" });
+      }
+
+      let where = {};
+
+      if (startDate && endDate) {
+        where.measurementDate = { [Op.gte]: startDate, [Op.lte]: endDate };
+      } else if (startDate && !endDate) {
+        where.measurementDate = { [Op.gte]: startDate };
+      } else if (!startDate && endDate) {
+        where.measurementDate = { [Op.lte]: endDate };
+      }
+
+      const services = await ServiceOrder.findAll({
+        attributes: [
+          "serviceType",
+          "paymentSituation",
+          "serviceValue",
+          "quantity",
+          "amountPaid",
+          "discount",
+        ],
+        where,
+        raw: true,
+        order: [["createdAt", "ASC"]],
+      });
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `inline; filename="Relátorio ${start} - ${end}.pdf"`
+      );
+
+      pipePdfReportToStream(
+        {
+          services,
+          period: `${startDate ? start : "Inicio"} - ${endDate ? end : "Fim"}`,
+        },
+        res
+      );
+    } catch (err) {
+      console.log(err);
+
+      res.status(500).json({ msg: "Erro interno do servidor!" });
     }
   }
 

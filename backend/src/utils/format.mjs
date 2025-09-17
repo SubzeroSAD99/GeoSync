@@ -16,6 +16,12 @@ const formatDate = (dateIso) => {
   return date.toLocaleString("pt-BR");
 };
 
+const parseDate = (str) => {
+  if (!str) return null;
+  const [dd, mm, yyyy] = str.split("/");
+  return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+};
+
 const formatPhone = (phone) => {
   const raw = phone?.replace(/\D+/g, "");
 
@@ -49,4 +55,11 @@ const toTitleCase = (str) => {
     ) => (word.length > 2 ? word[0].toUpperCase() + word.slice(1) : word)
   );
 };
-export { formatCurrency, formatDate, formatPhone, parseCurrency, toTitleCase };
+export {
+  formatCurrency,
+  formatDate,
+  formatPhone,
+  parseDate,
+  parseCurrency,
+  toTitleCase,
+};

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SelectItem from "@components/SelectItem/SelectItem";
-import InputDate from "@components/Services/InputDate/InputDate";
+import InputDate from "@components/InputDate/InputDate";
 import { Container } from "../Sectors.styled.mjs";
 import InputSector from "../InputSector/InputSector";
 

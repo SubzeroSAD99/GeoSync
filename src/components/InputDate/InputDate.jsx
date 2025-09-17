@@ -4,7 +4,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import { Portuguese } from "flatpickr/dist/l10n/pt.js";
 import { DateContainer, StyledInput } from "./InputDate.styled.mjs";
 
-const CustomInput = React.forwardRef(({ value }, ref) => {
+const CustomInput = React.forwardRef(({ value, name }, ref) => {
   const handleInput = (e) => {
     let v = e.target.value.replace(/\D/g, "").slice(0, 8);
 
@@ -19,8 +19,8 @@ const CustomInput = React.forwardRef(({ value }, ref) => {
   return (
     <StyledInput
       type="text"
-      id="measurementDate"
-      name="measurementDate"
+      id={name}
+      name={name}
       ref={ref}
       defaultValue={value || ""}
       placeholder="dd/mm/yyyy"
@@ -29,7 +29,7 @@ const CustomInput = React.forwardRef(({ value }, ref) => {
   );
 });
 
-const InputDate = ({ value }) => {
+const InputDate = ({ label, name = "measurementDate", value }) => {
   const [date, setDate] = useState(value || "");
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const InputDate = ({ value }) => {
 
   return (
     <DateContainer>
-      <label htmlFor="measurementDate">Data</label>
+      <label htmlFor={name}>{label ?? "Data"}</label>
       <Flatpickr
         value={date}
         onChange={(selectedDates) => {
@@ -50,7 +50,7 @@ const InputDate = ({ value }) => {
           allowInput: true,
         }}
         render={({ value, ...props }, ref) => (
-          <CustomInput {...props} value={value} ref={ref} />
+          <CustomInput {...props} name={name} value={value} ref={ref} />
         )}
       />
     </DateContainer>
