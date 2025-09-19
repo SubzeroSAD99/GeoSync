@@ -1,49 +1,102 @@
-import HomePage from "./pages/Services/HomePage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
+import { lazy } from "react";
+
+// Pages (lazy = code-splitting por rota)
+const HomePage = lazy(() => import("./pages/Services/HomePage.jsx"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
 
 // Services
-import RegisterServicesPage from "./pages/Services/RegisterServicesPage.jsx";
-import ClosedServicesPage from "./pages/Services/ClosedServicesPage.jsx";
-import EditServicesPage from "./pages/Services/EditServicesPage.jsx";
-import ScheduleServicesPage from "./pages/Services/ScheduleServicesPage.jsx";
-import TrackingServicePage from "./pages/Services/TrackingServicePage";
+const RegisterServicesPage = lazy(() =>
+  import("./pages/Services/RegisterServicesPage.jsx")
+);
+const ClosedServicesPage = lazy(() =>
+  import("./pages/Services/ClosedServicesPage.jsx")
+);
+const EditServicesPage = lazy(() =>
+  import("./pages/Services/EditServicesPage.jsx")
+);
+const ScheduleServicesPage = lazy(() =>
+  import("./pages/Services/ScheduleServicesPage.jsx")
+);
+const TrackingServicePage = lazy(() =>
+  import("./pages/Services/TrackingServicePage")
+);
 
 // Employees
-import EmployeesPage from "./pages/Management/Employees/EmployeesPage.jsx";
-import RegisterEmployeesPage from "./pages/Management/Employees/RegisterEmployeesPage.jsx";
-import EditEmployeesPage from "./pages/Management/Employees/EditEmployeesPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
+const EmployeesPage = lazy(() =>
+  import("./pages/Management/Employees/EmployeesPage.jsx")
+);
+const RegisterEmployeesPage = lazy(() =>
+  import("./pages/Management/Employees/RegisterEmployeesPage.jsx")
+);
+const EditEmployeesPage = lazy(() =>
+  import("./pages/Management/Employees/EditEmployeesPage.jsx")
+);
+const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 
 // Municipalities
-import MunicipalitiesPage from "./pages/Management/Municipalities/MunicipalitiesPage.jsx";
-import RegisterMunicipalitiesPage from "./pages/Management/Municipalities/RegisterMunicipalitiesPage.jsx";
-import EditMunicipalitiesPage from "./pages/Management/Municipalities/EditMunicipalitiesPage.jsx";
+const MunicipalitiesPage = lazy(() =>
+  import("./pages/Management/Municipalities/MunicipalitiesPage.jsx")
+);
+const RegisterMunicipalitiesPage = lazy(() =>
+  import("./pages/Management/Municipalities/RegisterMunicipalitiesPage.jsx")
+);
+const EditMunicipalitiesPage = lazy(() =>
+  import("./pages/Management/Municipalities/EditMunicipalitiesPage.jsx")
+);
 
 // Clients
-import ClientsPage from "./pages/Management/Clients/ClientsPage.jsx";
-import EditClientsPage from "./pages/Management/Clients/EditClientsPage.jsx";
-import RegisterClientsPage from "./pages/Management/Clients/RegisterClientsPage.jsx";
+const ClientsPage = lazy(() =>
+  import("./pages/Management/Clients/ClientsPage.jsx")
+);
+const EditClientsPage = lazy(() =>
+  import("./pages/Management/Clients/EditClientsPage.jsx")
+);
+const RegisterClientsPage = lazy(() =>
+  import("./pages/Management/Clients/RegisterClientsPage.jsx")
+);
 
 // Equipments
-import EquipmentsPage from "./pages/Management/Equipments/EquipmentsPage.jsx";
-import RegisterEquipmentsPage from "./pages/Management/Equipments/RegisterEquipmentsPage.jsx";
-import EditEquipmentsPage from "./pages/Management/Equipments/EditEquipmentsPage.jsx";
+const EquipmentsPage = lazy(() =>
+  import("./pages/Management/Equipments/EquipmentsPage.jsx")
+);
+const RegisterEquipmentsPage = lazy(() =>
+  import("./pages/Management/Equipments/RegisterEquipmentsPage.jsx")
+);
+const EditEquipmentsPage = lazy(() =>
+  import("./pages/Management/Equipments/EditEquipmentsPage.jsx")
+);
 
-// Vehicle
-import VehiclesPage from "./pages/Management/Vehicles/VehiclesPage.jsx";
-import EditVehiclesPage from "./pages/Management/Vehicles/EditVehiclesPage.jsx";
-import RegisterVehiclesPage from "./pages/Management/Vehicles/RegisterVehiclesPage.jsx";
+// Vehicles
+const VehiclesPage = lazy(() =>
+  import("./pages/Management/Vehicles/VehiclesPage.jsx")
+);
+const EditVehiclesPage = lazy(() =>
+  import("./pages/Management/Vehicles/EditVehiclesPage.jsx")
+);
+const RegisterVehiclesPage = lazy(() =>
+  import("./pages/Management/Vehicles/RegisterVehiclesPage.jsx")
+);
 
 // ServiceTypes
-import ServiceTypesPage from "./pages/Management/ServiceTypes/ServiceTypesPage.jsx";
-import EditServiceTypesPage from "./pages/Management/ServiceTypes/EditServiceTypesPage.jsx";
-import RegisterServiceTypesPage from "./pages/Management/ServiceTypes/RegisterServiceTypesPage.jsx";
+const ServiceTypesPage = lazy(() =>
+  import("./pages/Management/ServiceTypes/ServiceTypesPage.jsx")
+);
+const EditServiceTypesPage = lazy(() =>
+  import("./pages/Management/ServiceTypes/EditServiceTypesPage.jsx")
+);
+const RegisterServiceTypesPage = lazy(() =>
+  import("./pages/Management/ServiceTypes/RegisterServiceTypesPage.jsx")
+);
 
 // Financial
-import OsPage from "./pages/Financial/Os/OsPage.jsx";
-import BudgetPage from "./pages/Financial/Budget/BudgetPage.jsx";
-import RegisterBudgetPage from "./pages/Financial/Budget/RegisterBudgetPage.jsx";
-import ReportPage from "./pages/Financial/Report/ReportPage";
+const OsPage = lazy(() => import("./pages/Financial/Os/OsPage.jsx"));
+const BudgetPage = lazy(() =>
+  import("./pages/Financial/Budget/BudgetPage.jsx")
+);
+const RegisterBudgetPage = lazy(() =>
+  import("./pages/Financial/Budget/RegisterBudgetPage.jsx")
+);
+const ReportPage = lazy(() => import("./pages/Financial/Report/ReportPage"));
 
 const publicRoutes = [
   { path: "/login", element: <LoginPage /> },

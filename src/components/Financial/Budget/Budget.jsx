@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TableServices from "@components/Services/TableServices/TableServices";
-import {
-  faFilePdf,
-  faRotate,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf, faRotate, faTrash } from "@/icons.mjs";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import { toast } from "react-toastify";
 import api from "@utils/api.mjs";

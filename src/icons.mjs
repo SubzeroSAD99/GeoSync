@@ -50,6 +50,9 @@ import { faPaperclip } from "@fortawesome/free-solid-svg-icons/faPaperclip";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { faUserTie } from "@fortawesome/free-solid-svg-icons/faUserTie";
+import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons/faHandHoldingDollar";
+import { faReceipt } from "@fortawesome/free-solid-svg-icons/faReceipt";
+import { faRotate } from "@fortawesome/free-solid-svg-icons/faRotate";
 
 export {
   faCompassDrafting,
@@ -104,4 +107,7 @@ export {
   faPenToSquare,
   faUser,
   faUserTie,
+  faReceipt,
+  faHandHoldingDollar,
+  faRotate,
 };

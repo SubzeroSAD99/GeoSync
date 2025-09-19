@@ -22,23 +22,25 @@ export default defineConfig({
       "@contexts": path.resolve(__dirname, "./src/contexts"),
     },
   },
+  optimizeDeps: {
+    include: [
+      "@fortawesome/fontawesome-svg-core",
+      "@fortawesome/free-solid-svg-icons",
+      "@fortawesome/react-fontawesome",
+    ],
+  },
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (!id.includes("node_modules")) return;
 
-          // só separe o que é grande/de uso frequente
           if (id.includes("react-dom")) return "react-dom";
           if (id.includes("/react/")) return "react";
           if (id.includes("react-router")) return "react-router";
           if (id.includes("styled-components")) return "styled-components";
-          if (id.includes("@emotion") || id.includes("stylis"))
-            return "emotion";
           if (id.includes("socket.io-client")) return "socketio";
           if (id.includes("react-toastify")) return "toast";
-          if (id.includes("imask")) return "imask";
-          if (id.includes("@fortawesome")) return "fontawesome";
         },
       },
     },

@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableServices from "@components/Services/TableServices/TableServices.jsx";
 import { useAuth } from "@contexts/AuthContext.jsx";
 import api from "@utils/api.mjs";
-import {
-  faFilePdf,
-  faHandHoldingDollar,
-  faReceipt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf, faHandHoldingDollar, faReceipt } from "@/icons.mjs";
 import { toast } from "react-toastify";
 import Loading from "@components/Loading/Loading";
 
