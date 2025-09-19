@@ -53,7 +53,7 @@ const EditMunicipalities = ({ id }) => {
 
   return (
     <section>
-      <Title>Editar Funcionario</Title>
+      <Title>Editar Municipio</Title>
 
       <FormMunicipalities
         name={name}

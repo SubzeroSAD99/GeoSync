@@ -17,6 +17,26 @@ ServiceType.init(
       unique: true,
     },
 
+    uf: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    law: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+
+    products: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+
+    timeline: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+
     values: {
       type: DataTypes.JSONB,
       allowNull: false,

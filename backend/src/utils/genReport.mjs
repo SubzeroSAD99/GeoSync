@@ -10,11 +10,11 @@ const genPdf = ({ services = {}, period }) => {
     margin: 20,
   });
 
-  const { left, right } = doc.page.margins;
   const defaultMoveDown = 0.5;
 
   const paintPage = () => {
     const { width, height } = doc.page;
+    const borderPadding = 20;
 
     doc.save();
 
@@ -32,12 +32,30 @@ const genPdf = ({ services = {}, period }) => {
     // Border
     doc.lineWidth(0.5); // espessura da linha
     doc.strokeColor("#048f50"); // cor da borda
-    doc.rect(10, 10, width - 20, height - 20).stroke();
+    doc
+      .rect(
+        borderPadding,
+        borderPadding,
+        width - borderPadding * 2,
+        height - borderPadding * 2
+      )
+      .stroke();
+
+    doc.page.margins = {
+      top: borderPadding + 10,
+      left: borderPadding + 10,
+      right: borderPadding + 10,
+      bottom: borderPadding + 10,
+    };
+
+    doc.x = doc.page.margins.left;
+    doc.y = doc.page.margins.top;
 
     doc.restore();
   };
 
-  // pinta a primeira página e registra para as próximas
+  const { left, right } = doc.page.margins;
+
   paintPage();
   doc.on("pageAdded", paintPage);
 
@@ -207,8 +225,8 @@ const genPdf = ({ services = {}, period }) => {
 
   doc
     .moveDown(3)
-    .moveTo(left, doc.y)
-    .lineTo(doc.page.width - right, doc.y)
+    .moveTo(left * 2, doc.y)
+    .lineTo(doc.page.width - right * 2, doc.y)
     .stroke("#afafaf");
 
   doc.moveDown(3);
