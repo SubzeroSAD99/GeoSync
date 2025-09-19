@@ -74,8 +74,8 @@ const Section = () => {
     navigate(`/servicos/editar/${id}`);
   };
 
-  const handleView = async (id) => {
-    window.open(`/servicos/rastreamento/${id}`, "_blank");
+  const handleView = async (id, chk) => {
+    window.open(`/servicos/rastreamento/${id}/${chk}`, "_blank");
   };
 
   if (loading) return <Loading />;

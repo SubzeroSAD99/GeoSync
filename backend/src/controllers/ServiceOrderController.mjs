@@ -7,6 +7,7 @@ import FileController from "./FileController.mjs";
 import db from "../db/db.mjs";
 import Employee from "../models/Employee.mjs";
 import { configDotenv } from "dotenv";
+import { makeChecksum } from "../utils/publicUrl.mjs";
 configDotenv();
 
 const FRONT_END_URL = process.env.CORS_ORIGINS;
@@ -473,7 +474,9 @@ class ServiceOrderController {
                 Olá, *${toTitleCase(client?.name)}*.
                 O seu serviço avançou para uma nova etapa. Clique no link abaixo para acompanhar o andamento do processo:
 
-                ${FRONT_END_URL}/servicos/rastreamento/${id}`
+                ${FRONT_END_URL}/servicos/rastreamento/${id}/${makeChecksum(
+                  id
+                )}`
                   .split("\n")
                   .map((line) => line.trim())
                   .join("\n")
@@ -654,6 +657,7 @@ class ServiceOrderController {
           owner: json.OwnerReader?.fullName ?? null,
           cadists: (json.cadists ?? []).map((c) => c.fullName),
           createdAt: formatDate(json.createdAt).split(",")[0],
+          chk: makeChecksum(json.id),
         };
       });
 
@@ -700,6 +704,7 @@ class ServiceOrderController {
           owner: json.OwnerReader?.fullName ?? null,
           cadists: (json.cadists ?? []).map((c) => c.fullName),
           createdAt: formatDate(json.createdAt).split(",")[0],
+          chk: makeChecksum(json.id),
         };
       });
 

@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   faCircleExclamation,
   faCircleQuestion,
@@ -56,6 +50,7 @@ import { io } from "socket.io-client";
 import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
 import debounce from "lodash.debounce";
 import StepInfo from "./StepInfo/StepInfo";
+import NotFound from "@components/NotFound/NotFound";
 
 const EXT_ICON_MAP = {
   dwg: faCompassDrafting,
@@ -143,7 +138,7 @@ const copyToClipboard = async (text) => {
   }
 };
 
-const TrackingService = ({ id }) => {
+const TrackingService = ({ id, chk }) => {
   const [service, setService] = useState({});
   const [qrCodeInfo, setQrCodeInfo] = useState({});
   const [files, setFiles] = useState([]);
@@ -306,7 +301,7 @@ const TrackingService = ({ id }) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await api.post("/service/getStep", { id });
+        const response = await api.post("/service/getStep", { id, chk });
 
         if (response.data) {
           setService(response.data.service);
@@ -328,7 +323,7 @@ const TrackingService = ({ id }) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await api.post("/file/read", { id });
+        const response = await api.post("/file/read", { id, chk });
 
         if (response.data) {
           setFiles(response.data.files);
@@ -526,11 +521,11 @@ const TrackingService = ({ id }) => {
             alignItems: "center",
             height: "100%",
             padding: "3rem",
+            flex: 1,
+            textTransform: "none",
           }}
         >
-          <StyledSection>
-            <h2>SERVIÇO NÃO ENCONTRADO</h2>
-          </StyledSection>
+          <NotFound msg="Serviço não encontrado!" />
         </StyledMain>
       )}
       {needPayment && Object.keys(qrCodeInfo).length === 0 && (

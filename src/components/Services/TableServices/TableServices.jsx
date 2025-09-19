@@ -138,6 +138,7 @@ const TableServices = ({
                 <RowTable
                   key={`${it.id}-${index}`}
                   id={it.id}
+                  chk={it.chk}
                   item={it}
                   options={options.map((it) => it.column)}
                   actions={actions}

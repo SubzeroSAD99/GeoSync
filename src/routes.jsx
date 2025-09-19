@@ -49,7 +49,9 @@ const publicRoutes = [
   { path: "/login", element: <LoginPage /> },
   {
     path: "/servicos",
-    children: [{ path: "rastreamento/:id", element: <TrackingServicePage /> }],
+    children: [
+      { path: "rastreamento/:id/:chk", element: <TrackingServicePage /> },
+    ],
   },
 ];
 

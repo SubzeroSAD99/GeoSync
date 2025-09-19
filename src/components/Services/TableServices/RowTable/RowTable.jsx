@@ -13,7 +13,7 @@ const evaluateCondition = (condition, ctx) => {
   return !!condition;
 };
 
-const RowTable = ({ id, item, options, actions = [] }) => {
+const RowTable = ({ id, chk, item, options, actions = [] }) => {
   return (
     <tr key={id}>
       {options.map((it, index) => (
@@ -57,7 +57,7 @@ const RowTable = ({ id, item, options, actions = [] }) => {
               <Button
                 key={`${buttonInfo.label}-${index}`}
                 color={buttonInfo.color}
-                onClick={() => buttonInfo.click(id)}
+                onClick={() => buttonInfo.click(id, chk)}
               >
                 <FontAwesomeIcon icon={buttonInfo.icon} />
                 <span>{buttonInfo.label}</span>

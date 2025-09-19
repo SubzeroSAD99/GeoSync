@@ -4,6 +4,7 @@ import { authenticate } from "../middlewares/authMiddleware.mjs";
 import ServiceOrderController from "../controllers/ServiceOrderController.mjs";
 import permissions from "../access/permissions.mjs";
 import FileController from "../controllers/FileController.mjs";
+import { requireChecksum } from "../utils/publicUrl.mjs";
 
 const router = Router();
 
@@ -20,8 +21,12 @@ router.post("/validate", authenticate, (req, res) => {
 router.post("/login", EmployeeController.login);
 router.post("/logout", authenticate, EmployeeController.logout);
 
-router.post("/service/getStep", ServiceOrderController.getStep);
-router.post("/file/read", FileController.read);
+router.post(
+  "/service/getStep",
+  requireChecksum,
+  ServiceOrderController.getStep
+);
+router.post("/file/read", requireChecksum, FileController.read);
 router.post("/file/downloadFile", FileController.downloadClient);
 
 export default router;

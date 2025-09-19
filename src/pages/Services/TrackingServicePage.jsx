@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 const TrackingServicePage = () => {
   const params = useParams();
 
-  return <TrackingService id={params.id} />;
+  return <TrackingService id={params.id} chk={params.chk} />;
 };
 
 export default TrackingServicePage;
